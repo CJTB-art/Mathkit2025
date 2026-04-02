@@ -1,0 +1,368 @@
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-card h2 {
+  font-family: "DM Serif Display", serif;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.login-card p {
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  color: var(--text2);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.field input {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border2);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field input:focus {
+  border-color: var(--accent);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: #111;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+
+.login-btn:hover {
+  background: var(--accent2);
+}
+
+.login-err {
+  font-size: 12px;
+  color: var(--red);
+  margin-top: 0.5rem;
+  display: none;
+}
+
+.login-actions {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.admin-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 80px 1.5rem;
+}
+
+.admin-header {
+  margin-bottom: 2rem;
+}
+
+.admin-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-header h2 {
+  font-family: "DM Serif Display", serif;
+  font-size: 1.8rem;
+}
+
+.admin-header p {
+  font-size: 13px;
+  color: var(--text2);
+  font-weight: 300;
+}
+
+.admin-help {
+  color: var(--blue);
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.astat {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  flex: 1;
+  min-width: 140px;
+}
+
+.astat-num {
+  font-family: "DM Serif Display", serif;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.astat-num.total,
+.astat-num.partial {
+  color: var(--accent);
+}
+
+.astat-num.live {
+  color: var(--green);
+}
+
+.astat-num.empty {
+  color: var(--text3);
+}
+
+.astat-label {
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+
+.admin-grade-block {
+  margin-bottom: 2.5rem;
+}
+
+.admin-grade-title {
+  font-family: "DM Serif Display", serif;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-grade-meta {
+  font-family: "Sora", sans-serif;
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 400;
+}
+
+.admin-quarter-block {
+  margin-bottom: 1rem;
+}
+
+.admin-quarter-block .quarter-label {
+  margin-bottom: 0.5rem;
+}
+
+.admin-lesson-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  margin-bottom: 6px;
+  transition: background 0.2s;
+  flex-wrap: wrap;
+}
+
+.admin-lesson-row:hover {
+  background: var(--bg3);
+}
+
+.alr-q {
+  font-size: 10px;
+  color: var(--text2);
+  min-width: 24px;
+}
+
+.alr-code {
+  font-size: 10px;
+  color: var(--text3);
+  font-family: monospace;
+  min-width: 100px;
+}
+
+.alr-topic {
+  flex: 1;
+  min-width: 160px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.upload-slots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.uslot-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.uslot {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 11px;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  max-width: 136px;
+}
+
+.uslot:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.uslot.uploaded {
+  border-color: var(--green-border);
+  color: var(--green);
+  background: var(--green-bg);
+}
+
+.uslot.uploaded:hover {
+  border-color: var(--green);
+}
+
+.slot-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uslot input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.del-file-btn {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--red);
+  cursor: pointer;
+  color: #fff;
+  font-size: 10px;
+  line-height: 1;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 2px;
+  transition: all 0.2s;
+  z-index: 5;
+  position: relative;
+}
+
+.admin-lesson-row:hover .del-file-btn {
+  display: inline-flex;
+}
+
+.alr-status {
+  min-width: 70px;
+  text-align: right;
+}
+
+.status-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 100px;
+  text-transform: uppercase;
+}
+
+.sp-live {
+  background: var(--green-bg);
+  color: var(--green);
+  border: 1px solid var(--green-border);
+}
+
+.sp-partial {
+  background: rgba(245, 200, 66, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(245, 200, 66, 0.2);
+}
+
+.sp-empty {
+  background: var(--bg3);
+  color: var(--text3);
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 640px) {
+  .admin-lesson-row {
+    flex-wrap: wrap;
+  }
+
+  .upload-slots {
+    width: 100%;
+  }
+
+  .alr-status {
+    min-width: auto;
+    text-align: left;
+  }
+}

@@ -21,11 +21,11 @@ export function getUploads(key) {
 
 export function getStatus(key) {
   const uploadState = getUploads(key);
-  const count = ["ppt", "lp", "activity"].filter((type) =>
+  const count = ["ppt", "lp", "activity", "worksheet"].filter((type) =>
     Boolean(uploadState[type]),
   ).length;
 
-  if (count === 3) {
+  if (count === 4) {
     return "live";
   }
 

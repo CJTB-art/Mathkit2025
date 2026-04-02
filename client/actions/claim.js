@@ -49,7 +49,10 @@ export function confirmClaim() {
 
   state.userFreeLesson = state.pendingClaim.key;
   closeClaimModal();
-  showToast("Lesson claimed. Download your free bundle below.", "success");
+  showToast(
+    "Lesson claimed. Your LP, PPT, worksheet, and web-based game activity bundle is ready below.",
+    "success",
+  );
   renderPublic();
 }
 

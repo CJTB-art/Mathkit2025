@@ -172,6 +172,69 @@
   display: block;
 }
 
+.home-details {
+  padding: 1.5rem 1.5rem 0;
+}
+
+.home-details-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.home-details-head {
+  max-width: 720px;
+  margin-bottom: 1.5rem;
+}
+
+.home-details-title {
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.home-details-sub {
+  margin-top: 0.65rem;
+  max-width: 620px;
+  color: var(--text2);
+  font-size: 0.95rem;
+  font-weight: 300;
+}
+
+.home-details-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.home-detail-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.15rem;
+}
+
+.home-detail-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+}
+
+.home-detail-card p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text2);
+}
+
+.home-footer {
+  margin-top: 1.5rem;
+}
+
 .lessons-page {
   padding-top: 92px;
   padding-bottom: 1.25rem;
@@ -598,7 +661,40 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 3rem 1.5rem 4.5rem;
-  scroll-margin-top: 84px;
+}
+
+.pricing-page {
+  padding-top: 92px;
+}
+
+.pricing-page-head {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pricing-page-copy {
+  max-width: 640px;
+}
+
+.pricing-page-title {
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+}
+
+.pricing-page-sub {
+  margin-top: 0.5rem;
+  color: var(--text2);
+  font-size: 0.95rem;
+  font-weight: 300;
+  max-width: 580px;
 }
 
 .pricing-grid {
@@ -814,6 +910,10 @@
     width: min(100%, 760px);
     transform: none;
   }
+
+  .home-details-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
@@ -853,7 +953,9 @@
     width: 100%;
   }
 
+  .home-details,
   .lessons-page-head,
+  .pricing-page-head,
   .free-claim-banner,
   .filter-bar,
   .catalog,
@@ -864,6 +966,10 @@
   }
 
   .lessons-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-details-grid {
     grid-template-columns: 1fr;
   }
 

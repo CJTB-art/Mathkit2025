@@ -1,5 +1,167 @@
 import { icon } from "../scripts/helpers.js";
 
+function createPricingSection({ includeHeader = true } = {}) {
+  return `
+    <section class="pricing-section" id="pricing">
+      ${includeHeader ? `
+        <div class="section-tag">Pricing</div>
+        <div class="section-title">Start for free. Own it forever.</div>
+      ` : ""}
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-name">Free</div>
+          <div class="pricing-price">PHP 0</div>
+          <div class="pricing-per">forever</div>
+          <ul class="pricing-features">
+            <li>${icon("check", "icon icon-sm chk")} 1 free lesson of your choice</li>
+            <li>${icon("check", "icon icon-sm chk")} Full LP + PPT + worksheet download</li>
+            <li>${icon("check", "icon icon-sm chk")} Full web-based game activity access</li>
+            <li>${icon("check", "icon icon-sm chk")} Zip bundle download</li>
+          </ul>
+          <button
+            type="button"
+            class="pricing-cta pricing-cta-outline"
+            data-action="cta-free-plan"
+          >
+            ${icon("gift", "icon icon-sm")}
+            Get started free
+          </button>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Most Popular</div>
+          <div class="pricing-name">Per Grade Pack</div>
+          <div class="pricing-price">PHP 299</div>
+          <div class="pricing-per">one-time - pick any grade level</div>
+          <ul class="pricing-features">
+            <li>${icon("check", "icon icon-sm chk")} All lessons for your chosen grade</li>
+            <li>${icon("check", "icon icon-sm chk")} LP + PPT + worksheet for every lesson</li>
+            <li>${icon("check", "icon icon-sm chk")} All web-based game activities</li>
+            <li>${icon("check", "icon icon-sm chk")} All four quarters included</li>
+            <li>${icon("check", "icon icon-sm chk")} Download as zip bundles</li>
+          </ul>
+          <button
+            type="button"
+            class="pricing-cta pricing-cta-filled"
+            data-action="cta-grade-pack"
+          >
+            ${icon("arrow-right", "icon icon-sm")}
+            Get a Grade Pack - PHP 299
+          </button>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-name">All Grades Bundle</div>
+          <div class="pricing-price">PHP 799</div>
+          <div class="pricing-per">one-time - Grades 7, 8, 9 and 10</div>
+          <ul class="pricing-features">
+            <li>${icon("check", "icon icon-sm chk")} Every lesson across all grades</li>
+            <li>${icon("check", "icon icon-sm chk")} LP + PPT + worksheet for every lesson</li>
+            <li>${icon("check", "icon icon-sm chk")} All web-based game activities</li>
+            <li>${icon("check", "icon icon-sm chk")} Teacher dashboard</li>
+            <li>${icon("check", "icon icon-sm chk")} Save PHP 397 vs buying separately</li>
+          </ul>
+          <button
+            type="button"
+            class="pricing-cta pricing-cta-outline"
+            data-action="cta-all-grades"
+          >
+            ${icon("package", "icon icon-sm")}
+            Get the Bundle - PHP 799
+          </button>
+        </div>
+      </div>
+      <div class="pricing-note">
+        All packs are one-time purchases. No subscriptions and no renewals.
+      </div>
+    </section>
+  `;
+}
+
+function createHomeDetailsSection() {
+  return `
+    <section class="home-details">
+      <div class="home-details-inner">
+        <div class="home-details-head">
+          <div class="section-tag">About MathKit PH</div>
+          <h2 class="home-details-title">
+            Built for teachers who need clearer prep, steadier lessons, and less friction in class.
+          </h2>
+          <p class="home-details-sub">
+            MathKit PH is a classroom-first resource library designed to make daily teaching more practical, more consistent, and easier to sustain through lesson files, printable worksheets, and web-based game activities.
+          </p>
+        </div>
+        <div class="home-details-grid">
+          <article class="home-detail-card">
+            <div class="home-detail-label">About</div>
+            <p>
+              We create DepEd-aligned math materials that are ready to use, easy to scan, and realistic for everyday teaching.
+            </p>
+          </article>
+          <article class="home-detail-card">
+            <div class="home-detail-label">Technology</div>
+            <p>
+              Activities are designed as web-based games so technology supports learning directly instead of being added as an afterthought.
+            </p>
+          </article>
+          <article class="home-detail-card">
+            <div class="home-detail-label">Worksheets</div>
+            <p>
+              Ready-to-print worksheets can be paired with every lesson for practice, reinforcement, and offline classroom use.
+            </p>
+          </article>
+          <article class="home-detail-card">
+            <div class="home-detail-label">Mission</div>
+            <p>
+              Help teachers spend less time assembling resources and more time teaching with confidence through complete lesson packs.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function createSiteFooter(extraClass = "") {
+  const footerClass = extraClass
+    ? `site-footer ${extraClass}`
+    : "site-footer";
+
+  return `
+    <footer class="${footerClass}">
+      <div>
+        <div class="footer-logo">
+          <img
+            class="brand-logo"
+            src="./shared/assets/logo.png"
+            alt="MathKit PH logo"
+          />
+          <span>MathKit PH</span>
+        </div>
+        <div class="footer-copy">
+          Made by a Math teacher, for Math teachers.
+        </div>
+      </div>
+      <div class="footer-links">
+        <button
+          type="button"
+          class="footer-link"
+          data-action="open-gumroad"
+        >
+          ${icon("shopping-bag", "icon icon-sm")}
+          Gumroad
+        </button>
+        <button
+          type="button"
+          class="footer-link"
+          data-action="contact-support"
+        >
+          ${icon("mail", "icon icon-sm")}
+          Contact
+        </button>
+      </div>
+    </footer>
+  `;
+}
+
 export function createAppShell() {
   return `
     <nav>
@@ -64,8 +226,8 @@ export function createAppShell() {
         </div>
         <div class="modal-sub">
           You get <strong>one free lesson</strong> of your choice. You will
-          receive the full LP, PPT, and interactive activity bundled for
-          download at no cost.
+          receive the full LP, PPT, printable worksheet, and web-based
+          game activity bundled for download at no cost.
         </div>
         <div class="modal-lesson-preview">
           <div class="topic" id="claimPreviewTopic"></div>
@@ -137,8 +299,8 @@ export function createAppShell() {
             </button>
           </div>
           <p>
-            Upload PPT, LP, and Activity for each lesson. A lesson goes live
-            once all three are set.<br />
+            Upload PPT, LP, Worksheet, and Web Game for each lesson. A lesson
+            goes live once all four are set.<br />
             <span class="admin-help">
               ${icon("info", "icon icon-sm")}
               Hover a row to reveal the remove button for each file.
@@ -163,9 +325,9 @@ export function createAppShell() {
               your students.
             </h1>
             <p>
-              Download ready-to-use LPs and PPTs. Then let students play with
-              live interactive activities built for each lesson. No setup. No
-              prep. Just teach.
+              Download ready-to-use LPs, PPTs, and printable worksheets. Then
+              let students play with web-based game activities built for each
+              lesson. No setup. No prep. Just teach.
             </p>
             <div class="hero-actions">
               <button
@@ -192,6 +354,8 @@ export function createAppShell() {
           </div>
         </div>
       </div>
+      ${createHomeDetailsSection()}
+      ${createSiteFooter("home-footer")}
     </div>
 
     <div class="view" id="clientView">
@@ -200,7 +364,7 @@ export function createAppShell() {
           <div class="lessons-page-copy">
             <h2 class="lessons-page-title">Browse lessons</h2>
             <p class="lessons-page-sub">
-              Filter by grade and availability, claim one free lesson, then use the packs below when you need full access.
+              Filter by grade and availability, claim one free lesson, then unlock complete packs with LPs, PPTs, printable worksheets, and web-based game activities.
             </p>
           </div>
           <button
@@ -294,114 +458,34 @@ export function createAppShell() {
         </div>
 
         <div class="catalog" id="publicCatalog"></div>
-
-        <hr class="divider lessons-divider" />
-        <section class="pricing-section" id="pricing">
-          <div class="section-tag">Pricing</div>
-          <div class="section-title">Start for free. Own it forever.</div>
-          <div class="pricing-grid">
-            <div class="pricing-card">
-              <div class="pricing-name">Free</div>
-              <div class="pricing-price">PHP 0</div>
-              <div class="pricing-per">forever</div>
-              <ul class="pricing-features">
-                <li>${icon("check", "icon icon-sm chk")} 1 free lesson of your choice</li>
-                <li>${icon("check", "icon icon-sm chk")} Full LP + PPT download</li>
-                <li>${icon("check", "icon icon-sm chk")} Full activity access</li>
-                <li>${icon("check", "icon icon-sm chk")} Zip bundle download</li>
-              </ul>
-              <button
-                type="button"
-                class="pricing-cta pricing-cta-outline"
-                data-action="cta-free-plan"
-              >
-                ${icon("gift", "icon icon-sm")}
-                Get started free
-              </button>
-            </div>
-            <div class="pricing-card featured">
-              <div class="pricing-badge">Most Popular</div>
-              <div class="pricing-name">Per Grade Pack</div>
-              <div class="pricing-price">PHP 299</div>
-              <div class="pricing-per">one-time - pick any grade level</div>
-              <ul class="pricing-features">
-                <li>${icon("check", "icon icon-sm chk")} All lessons for your chosen grade</li>
-                <li>${icon("check", "icon icon-sm chk")} LP + PPT for every lesson</li>
-                <li>${icon("check", "icon icon-sm chk")} All interactive activities</li>
-                <li>${icon("check", "icon icon-sm chk")} All four quarters included</li>
-                <li>${icon("check", "icon icon-sm chk")} Download as zip bundles</li>
-              </ul>
-              <button
-                type="button"
-                class="pricing-cta pricing-cta-filled"
-                data-action="cta-grade-pack"
-              >
-                ${icon("arrow-right", "icon icon-sm")}
-                Get a Grade Pack - PHP 299
-              </button>
-            </div>
-            <div class="pricing-card">
-              <div class="pricing-name">All Grades Bundle</div>
-              <div class="pricing-price">PHP 799</div>
-              <div class="pricing-per">one-time - Grades 7, 8, 9 and 10</div>
-              <ul class="pricing-features">
-                <li>${icon("check", "icon icon-sm chk")} Every lesson across all grades</li>
-                <li>${icon("check", "icon icon-sm chk")} LP + PPT for every lesson</li>
-                <li>${icon("check", "icon icon-sm chk")} All interactive activities</li>
-                <li>${icon("check", "icon icon-sm chk")} Teacher dashboard</li>
-                <li>
-                  ${icon("check", "icon icon-sm chk")} Save PHP 397 vs buying separately
-                </li>
-              </ul>
-              <button
-                type="button"
-                class="pricing-cta pricing-cta-outline"
-                data-action="cta-all-grades"
-              >
-                ${icon("package", "icon icon-sm")}
-                Get the Bundle - PHP 799
-              </button>
-            </div>
-          </div>
-          <div class="pricing-note">
-            All packs are one-time purchases. No subscriptions and no renewals.
-          </div>
-        </section>
       </section>
 
-      <footer class="site-footer">
-        <div>
-          <div class="footer-logo">
-            <img
-              class="brand-logo"
-              src="./shared/assets/logo.png"
-              alt="MathKit PH logo"
-            />
-            <span>MathKit PH</span>
+      ${createSiteFooter()}
+    </div>
+
+    <div class="view" id="pricingView">
+      <section class="pricing-page">
+        <div class="pricing-page-head">
+          <div class="pricing-page-copy">
+            <div class="section-tag">Pricing</div>
+            <h2 class="pricing-page-title">Simple one-time access for teachers and grade-level needs.</h2>
+            <p class="pricing-page-sub">
+              Choose a free lesson, a single grade pack, or the full bundle for LPs, PPTs, printable worksheets, and web-based game activities. No subscriptions and no renewals.
+            </p>
           </div>
-          <div class="footer-copy">
-            Made by a Math teacher, for Math teachers.
-          </div>
-        </div>
-        <div class="footer-links">
           <button
             type="button"
-            class="footer-link"
-            data-action="open-gumroad"
+            class="btn-sm lessons-back"
+            data-action="show-home"
           >
-            ${icon("shopping-bag", "icon icon-sm")}
-            Gumroad
-          </button>
-          <button
-            type="button"
-            class="footer-link"
-            data-action="contact-support"
-          >
-            ${icon("mail", "icon icon-sm")}
-            Contact
+            ${icon("arrow-left", "icon icon-sm")}
+            Back to Home
           </button>
         </div>
-      </footer>
+        ${createPricingSection({ includeHeader: false })}
+      </section>
+
+      ${createSiteFooter()}
     </div>
   `;
 }

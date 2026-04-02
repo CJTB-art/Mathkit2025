@@ -32,10 +32,9 @@ export function showLessons() {
 }
 
 export function showPricing() {
-  setActiveView("lessons");
+  setActiveView("pricing");
   syncAdminNavButton();
-  renderPublic();
-  scrollToSection("pricing");
+  scrollToTop();
 }
 
 export function showAdmin() {
@@ -170,7 +169,12 @@ export function handleUploadChange(input) {
 
   const uploadState = getUploads(key);
 
-  if (uploadState.ppt && uploadState.lp && uploadState.activity) {
+  if (
+    uploadState.ppt &&
+    uploadState.lp &&
+    uploadState.activity &&
+    uploadState.worksheet
+  ) {
     showToast("Lesson is now live.", "success");
   } else {
     showToast(`${file.name} saved.`, "success");
@@ -189,7 +193,8 @@ export function handleDeleteUpload(button) {
   if (
     !state.uploads[key].ppt &&
     !state.uploads[key].lp &&
-    !state.uploads[key].activity
+    !state.uploads[key].activity &&
+    !state.uploads[key].worksheet
   ) {
     delete state.uploads[key];
   }
@@ -215,7 +220,8 @@ function renderLessonRow(lesson) {
       <div class="upload-slots">
         ${renderUploadSlot(key, "ppt", "PPT")}
         ${renderUploadSlot(key, "lp", "LP")}
-        ${renderUploadSlot(key, "activity", "Activity")}
+        ${renderUploadSlot(key, "activity", "Web Game")}
+        ${renderUploadSlot(key, "worksheet", "Worksheet")}
       </div>
       <div class="alr-status"><span class="status-pill ${statusClass}">${statusLabel}</span></div>
     </div>
@@ -229,6 +235,8 @@ function renderUploadSlot(key, fileType, label) {
       ? ".pptx,.ppt,.pdf"
       : fileType === "lp"
         ? ".doc,.docx,.pdf"
+        : fileType === "worksheet"
+          ? ".pdf,.doc,.docx"
         : ".html,.htm,.zip";
 
   if (file) {
@@ -296,12 +304,17 @@ function slotIconName(fileType, uploaded) {
     return "play";
   }
 
+  if (fileType === "worksheet") {
+    return "printer";
+  }
+
   return "file";
 }
 
 function setActiveView(view) {
   document.getElementById("homeView")?.classList.toggle("active", view === "home");
   document.getElementById("clientView")?.classList.toggle("active", view === "lessons");
+  document.getElementById("pricingView")?.classList.toggle("active", view === "pricing");
   document.getElementById("adminView")?.classList.toggle("active", view === "admin");
   document.getElementById("loginView")?.classList.toggle("active", view === "login");
   syncNavLinks(view);
@@ -315,7 +328,9 @@ function setActiveView(view) {
 
 function syncNavLinks(view) {
   document
-    .querySelectorAll('#navLinks [data-action="show-home"], #navLinks [data-action="show-lessons"]')
+    .querySelectorAll(
+      '#navLinks [data-action="show-home"], #navLinks [data-action="show-lessons"], #navLinks [data-action="show-pricing"]',
+    )
     .forEach((element) => {
       if (!(element instanceof HTMLElement)) {
         return;
@@ -324,7 +339,8 @@ function syncNavLinks(view) {
       const action = element.dataset.action;
       const isActive =
         (action === "show-home" && view === "home") ||
-        (action === "show-lessons" && view === "lessons");
+        (action === "show-lessons" && view === "lessons") ||
+        (action === "show-pricing" && view === "pricing");
 
       element.classList.toggle("active", isActive);
     });
@@ -354,20 +370,4 @@ function scrollToTop() {
   if (typeof window !== "undefined") {
     window.scrollTo({ top: 0, behavior: "auto" });
   }
-}
-
-function scrollToSection(id) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  window.requestAnimationFrame(() => {
-    const element = document.getElementById(id);
-
-    if (!element) {
-      return;
-    }
-
-    element.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
 }

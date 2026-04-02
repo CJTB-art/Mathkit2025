@@ -48,7 +48,7 @@ function renderClaimBanner() {
           <div class="fcb-title">You have 1 free lesson to claim.</div>
           <div class="fcb-sub">
             Pick any available lesson, claim it once, and get the full LP, PPT,
-            and activity in one zip download.
+            worksheet, and web-based game activity in one zip download.
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@ function renderClaimBanner() {
           Free lesson claimed: ${escapeHtml(claimedLesson?.topic || "Current lesson")}
         </div>
         <div class="fcb-sub">
-          Download your bundle anytime from the matching lesson card below.
+          Download your LP, PPT, worksheet, and web-based game activity bundle anytime from the matching lesson card below.
         </div>
       </div>
     </div>
@@ -195,15 +195,15 @@ function renderLessonCard(lesson) {
 
 function renderLessonSummary(isLive, isMyFree, hasClaimed) {
   if (!isLive) {
-    return "LP, PPT, and activity will appear here once this lesson is published.";
+    return "LP, PPT, printable worksheet, and web-based game activity will appear here once this lesson is published.";
   }
 
   if (isMyFree) {
-    return "Your claimed lesson is ready as one full downloadable bundle.";
+    return "Your claimed lesson is ready as one full downloadable teaching bundle.";
   }
 
   if (!hasClaimed) {
-    return "Claim this lesson once to unlock the LP, PPT, and interactive activity.";
+    return "Claim this lesson once to unlock the LP, PPT, printable worksheet, and web-based game activity.";
   }
 
   return "This lesson is already prepared and unlocks through a grade pack or full bundle.";
@@ -232,7 +232,7 @@ function renderLessonFooter(lesson, key, isLive, isMyFree, hasClaimed) {
           ${icon("download", "icon icon-sm")}
           Download Free Bundle
         </button>
-        <div class="card-includes">Includes LP, PPT, and activity</div>
+        <div class="card-includes">Includes LP, PPT, worksheet, and web-based game activity</div>
       </div>
     `;
   }
@@ -254,7 +254,7 @@ function renderLessonFooter(lesson, key, isLive, isMyFree, hasClaimed) {
           ${icon("gift", "icon icon-sm")}
           Claim Free
         </button>
-        <div class="card-includes">One-click access to LP, PPT, and activity</div>
+        <div class="card-includes">One-click access to LP, PPT, worksheet, and web-based game activity</div>
       </div>
     `;
   }
@@ -265,7 +265,7 @@ function renderLessonFooter(lesson, key, isLive, isMyFree, hasClaimed) {
         ${icon("lock", "icon icon-sm")}
         Unlock through a pack or bundle
       </div>
-      <div class="card-includes">LP, PPT, and activity are already included once purchased</div>
+      <div class="card-includes">LP, PPT, worksheet, and web-based game activity are already included once purchased</div>
     </div>
   `;
 }

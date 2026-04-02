@@ -13,9 +13,12 @@ export async function handleDownloadBundle(button) {
   }
 
   const uploadState = getUploads(key);
-  const files = [uploadState.ppt, uploadState.lp, uploadState.activity].filter(
-    Boolean,
-  );
+  const files = [
+    uploadState.ppt,
+    uploadState.lp,
+    uploadState.activity,
+    uploadState.worksheet,
+  ].filter(Boolean);
 
   if (!files.length) {
     showToast("No files uploaded yet.", "error");

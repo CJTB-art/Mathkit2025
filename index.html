@@ -1,0 +1,2002 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MathKit PH — DepEd Math Lessons</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0c0c0e;
+        --bg2: #141416;
+        --bg3: #1c1c1f;
+        --border: rgba(255, 255, 255, 0.08);
+        --border2: rgba(255, 255, 255, 0.14);
+        --text: #f0f0f0;
+        --text2: #888;
+        --text3: #555;
+        --accent: #f5c842;
+        --accent2: #e6b830;
+        --accent-bg: rgba(245, 200, 66, 0.08);
+        --card: #141416;
+        --nav-bg: rgba(12, 12, 14, 0.92);
+        --green: rgba(34, 197, 94, 1);
+        --green-bg: rgba(34, 197, 94, 0.1);
+        --green-border: rgba(34, 197, 94, 0.25);
+        --radius: 12px;
+        --radius-sm: 8px;
+      }
+      [data-theme="light"] {
+        --bg: #fafaf9;
+        --bg2: #f4f4f2;
+        --bg3: #eeeeed;
+        --border: rgba(0, 0, 0, 0.08);
+        --border2: rgba(0, 0, 0, 0.14);
+        --text: #111;
+        --text2: #666;
+        --text3: #aaa;
+        --accent: #c49a10;
+        --accent2: #a88200;
+        --accent-bg: rgba(196, 154, 16, 0.08);
+        --card: #fff;
+        --nav-bg: rgba(250, 250, 249, 0.92);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Sora", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 15px;
+        line-height: 1.6;
+        min-height: 100vh;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* NAV */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        background: var(--nav-bg);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+      }
+      .logo {
+        font-family: "DM Serif Display", serif;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .logo-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: inline-block;
+      }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .btn-sm {
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        font-family: "Sora", sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid var(--border2);
+        background: transparent;
+        color: var(--text2);
+        transition: all 0.2s;
+      }
+      .btn-sm:hover {
+        background: var(--bg3);
+        color: var(--text);
+      }
+      .btn-accent {
+        background: var(--accent);
+        color: #111;
+        border-color: var(--accent);
+      }
+      .btn-accent:hover {
+        background: var(--accent2);
+      }
+      .theme-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        border: 1px solid var(--border2);
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text2);
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+      .theme-btn:hover {
+        background: var(--bg3);
+      }
+
+      /* VIEWS */
+      .view {
+        display: none;
+      }
+      .view.active {
+        display: block;
+      }
+
+      /* ─── PUBLIC VIEW ─── */
+      .public-hero {
+        padding: 100px 1.5rem 60px;
+        max-width: 860px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--accent-bg);
+        border: 1px solid rgba(245, 200, 66, 0.2);
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 14px;
+        border-radius: 100px;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .public-hero h1 {
+        font-family: "DM Serif Display", serif;
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin-bottom: 1rem;
+      }
+      .public-hero h1 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .public-hero p {
+        color: var(--text2);
+        font-size: 0.95rem;
+        max-width: 500px;
+        margin: 0 auto 2rem;
+        font-weight: 300;
+      }
+      #typewriter-word {
+        color: var(--accent);
+        font-style: italic;
+      }
+      .tw-cursor {
+        display: inline-block;
+        color: var(--accent);
+        font-style: normal;
+        font-weight: 300;
+        animation: blink 0.7s step-end infinite;
+        margin-left: 1px;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* FILTER BAR */
+      .filter-bar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        max-width: 1100px;
+        margin: 0 auto 1.5rem;
+        padding: 0 1.5rem;
+      }
+      .filter-label {
+        font-size: 11px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        font-weight: 600;
+        margin-right: 4px;
+      }
+      .ftab {
+        padding: 5px 14px;
+        border-radius: 100px;
+        border: 1px solid var(--border2);
+        background: transparent;
+        color: var(--text2);
+        font-family: "Sora", sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .ftab:hover {
+        background: var(--bg3);
+        color: var(--text);
+      }
+      .ftab.active {
+        background: var(--accent);
+        color: #111;
+        border-color: var(--accent);
+        font-weight: 700;
+      }
+      .filter-sep {
+        width: 1px;
+        height: 20px;
+        background: var(--border2);
+        margin: 0 4px;
+      }
+
+      /* CATALOG */
+      .catalog {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.5rem 80px;
+      }
+      .grade-block {
+        margin-bottom: 3rem;
+      }
+      .grade-heading {
+        font-family: "DM Serif Display", serif;
+        font-size: 1.4rem;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .quarter-block {
+        margin-bottom: 1.75rem;
+      }
+      .quarter-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+      }
+      .lessons-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+        gap: 0.75rem;
+      }
+
+      /* LESSON CARD */
+      .lcard {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+      .lcard::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: transparent;
+        transition: background 0.2s;
+      }
+      .lcard.live:hover {
+        border-color: var(--border2);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+      .lcard.live:hover::before {
+        background: var(--accent);
+      }
+      .lcard.coming {
+        opacity: 0.5;
+        cursor: default;
+      }
+      .lcard.free-card::before {
+        background: var(--green) !important;
+      }
+      .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.75rem;
+      }
+      .badge {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 9px;
+        border-radius: 100px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .b-grade {
+        background: var(--accent-bg);
+        color: var(--accent);
+        border: 1px solid rgba(245, 200, 66, 0.2);
+      }
+      .b-q {
+        background: var(--bg3);
+        color: var(--text2);
+        border: 1px solid var(--border);
+      }
+      .b-free {
+        background: var(--green-bg);
+        color: var(--green);
+        border: 1px solid var(--green-border);
+      }
+      .b-live {
+        background: rgba(59, 130, 246, 0.1);
+        color: #60a5fa;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+      }
+      .b-soon {
+        background: var(--bg3);
+        color: var(--text3);
+        border: 1px solid var(--border);
+      }
+      .card-topic {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 4px;
+        line-height: 1.3;
+      }
+      .card-code {
+        font-size: 10px;
+        color: var(--text3);
+        margin-bottom: 0.75rem;
+        font-family: monospace;
+      }
+      .card-chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .chip {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 9px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--bg2);
+        font-size: 11px;
+        color: var(--text2);
+        font-weight: 500;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+      .chip:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-bg);
+      }
+      .chip.disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
+      }
+      .chip.disabled:hover {
+        border-color: var(--border);
+        color: var(--text2);
+        background: var(--bg2);
+      }
+
+      /* PROGRESS BAR */
+      .progress-wrap {
+        max-width: 1100px;
+        margin: 0 auto 2rem;
+        padding: 0 1.5rem;
+      }
+      .progress-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+      .progress-label {
+        font-size: 12px;
+        color: var(--text2);
+        min-width: 80px;
+      }
+      .progress-bar-bg {
+        flex: 1;
+        height: 5px;
+        background: var(--bg3);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+      }
+      .progress-count {
+        font-size: 11px;
+        color: var(--text3);
+        min-width: 60px;
+        text-align: right;
+      }
+
+      /* ─── ADMIN VIEW ─── */
+      .admin-wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 80px 1.5rem 80px;
+      }
+      .admin-header {
+        margin-bottom: 2rem;
+      }
+      .admin-header h2 {
+        font-family: "DM Serif Display", serif;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+      .admin-header p {
+        font-size: 13px;
+        color: var(--text2);
+        font-weight: 300;
+      }
+      .admin-stats {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+      .astat {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1rem 1.25rem;
+        flex: 1;
+        min-width: 140px;
+      }
+      .astat-num {
+        font-family: "DM Serif Display", serif;
+        font-size: 1.8rem;
+        line-height: 1;
+      }
+      .astat-label {
+        font-size: 11px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-top: 4px;
+      }
+      .admin-grade-block {
+        margin-bottom: 2.5rem;
+      }
+      .admin-grade-title {
+        font-family: "DM Serif Display", serif;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .admin-lesson-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.6rem 0.75rem;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--bg2);
+        margin-bottom: 6px;
+        transition: background 0.2s;
+      }
+      .admin-lesson-row:hover {
+        background: var(--bg3);
+      }
+      .alr-topic {
+        flex: 1;
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .alr-code {
+        font-size: 10px;
+        color: var(--text3);
+        font-family: monospace;
+        min-width: 100px;
+      }
+      .alr-q {
+        font-size: 10px;
+        color: var(--text2);
+        min-width: 24px;
+      }
+      .upload-slots {
+        display: flex;
+        gap: 6px;
+      }
+      .uslot {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        font-size: 11px;
+        color: var(--text3);
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+      .uslot input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+      }
+      .uslot:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .uslot.uploaded {
+        border-color: var(--green-border);
+        color: var(--green);
+        background: var(--green-bg);
+      }
+      .uslot.uploaded:hover {
+        border-color: var(--green);
+      }
+      .alr-status {
+        min-width: 70px;
+        text-align: right;
+      }
+      .status-pill {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 9px;
+        border-radius: 100px;
+        text-transform: uppercase;
+      }
+      .sp-live {
+        background: var(--green-bg);
+        color: var(--green);
+        border: 1px solid var(--green-border);
+      }
+      .sp-partial {
+        background: rgba(245, 200, 66, 0.1);
+        color: var(--accent);
+        border: 1px solid rgba(245, 200, 66, 0.2);
+      }
+      .sp-empty {
+        background: var(--bg3);
+        color: var(--text3);
+        border: 1px solid var(--border);
+      }
+      .sp-free {
+        background: rgba(59, 130, 246, 0.1);
+        color: #60a5fa;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+      }
+
+      /* LOGIN */
+      .login-wrap {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+      .login-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 380px;
+      }
+      .login-card h2 {
+        font-family: "DM Serif Display", serif;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .login-card p {
+        font-size: 13px;
+        color: var(--text2);
+        margin-bottom: 2rem;
+        font-weight: 300;
+      }
+      .field {
+        margin-bottom: 1rem;
+      }
+      .field label {
+        display: block;
+        font-size: 12px;
+        color: var(--text2);
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+      .field input {
+        width: 100%;
+        padding: 9px 12px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border2);
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Sora", sans-serif;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .field input:focus {
+        border-color: var(--accent);
+      }
+      .login-btn {
+        width: 100%;
+        padding: 10px;
+        border-radius: var(--radius-sm);
+        background: var(--accent);
+        color: #111;
+        border: none;
+        font-family: "Sora", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 0.5rem;
+      }
+      .login-btn:hover {
+        background: var(--accent2);
+      }
+      .login-err {
+        font-size: 12px;
+        color: #f87171;
+        margin-top: 0.5rem;
+        display: none;
+      }
+
+      /* TOAST */
+      .toast {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        background: var(--bg2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem 1.25rem;
+        font-size: 13px;
+        color: var(--text);
+        z-index: 999;
+        transform: translateY(80px);
+        opacity: 0;
+        transition: all 0.3s;
+        pointer-events: none;
+      }
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .toast.success {
+        border-color: var(--green-border);
+        color: var(--green);
+      }
+
+      /* UTIL */
+      .divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      @media (max-width: 640px) {
+        .admin-lesson-row {
+          flex-wrap: wrap;
+        }
+        .upload-slots {
+          flex-wrap: wrap;
+        }
+        .lessons-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <div class="logo"><span class="logo-dot"></span>MathKit PH</div>
+      <div class="nav-right">
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">
+          🌙
+        </button>
+        <button class="btn-sm" id="adminNavBtn" onclick="showAdmin()">
+          Admin
+        </button>
+      </div>
+    </nav>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ══════════════════════════════════════
+     LOGIN VIEW
+══════════════════════════════════════ -->
+    <div class="view" id="loginView">
+      <div class="login-wrap">
+        <div class="login-card">
+          <h2>Admin Login</h2>
+          <p>Enter your password to manage lesson uploads.</p>
+          <div class="field">
+            <label>Password</label>
+            <input
+              type="password"
+              id="pwInput"
+              placeholder="••••••••"
+              onkeydown="if (event.key === 'Enter') doLogin();"
+            />
+          </div>
+          <button class="login-btn" onclick="doLogin()">Sign in</button>
+          <div class="login-err" id="loginErr">
+            Incorrect password. Try again.
+          </div>
+          <div style="margin-top: 1rem; text-align: center">
+            <button class="btn-sm" onclick="showPublic()">
+              ← Back to catalog
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+     ADMIN VIEW
+══════════════════════════════════════ -->
+    <div class="view" id="adminView">
+      <div class="admin-wrap">
+        <div class="admin-header">
+          <h2>Lesson Manager</h2>
+          <p>
+            Upload PPT, DLP, and Activity link for each lesson. A lesson goes
+            live automatically once all three are set.
+          </p>
+        </div>
+        <div class="admin-stats" id="adminStats"></div>
+        <div id="adminCatalog"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+     PUBLIC VIEW
+══════════════════════════════════════ -->
+    <div class="view active" id="publicView">
+      <div class="public-hero">
+        <div class="hero-tag">🇵🇭 DepEd K–10 Math Materials</div>
+        <h1>
+          Lesson plans that<br /><span id="typewriter-word"></span
+          ><span class="tw-cursor">|</span><br />your students.
+        </h1>
+        <p>
+          Download ready-to-use DLPs and PPTs. Then let students play — live
+          interactive activities built for each lesson. No setup. No prep. Just
+          teach.
+        </p>
+      </div>
+
+      <div class="progress-wrap" id="progressWrap"></div>
+
+      <div class="filter-bar">
+        <span class="filter-label">Grade</span>
+        <button class="ftab active" onclick="setFilter('grade', 'all', this)">
+          All
+        </button>
+        <button class="ftab" onclick="setFilter('grade', '7', this)">7</button>
+        <button class="ftab" onclick="setFilter('grade', '8', this)">8</button>
+        <button class="ftab" onclick="setFilter('grade', '9', this)">9</button>
+        <button class="ftab" onclick="setFilter('grade', '10', this)">
+          10
+        </button>
+        <div class="filter-sep"></div>
+        <span class="filter-label">Status</span>
+        <button
+          class="ftab active"
+          onclick="setFilter('status', 'all', this)"
+          data-ftype="status"
+        >
+          All
+        </button>
+        <button
+          class="ftab"
+          onclick="setFilter('status', 'live', this)"
+          data-ftype="status"
+        >
+          Available
+        </button>
+        <button
+          class="ftab"
+          onclick="setFilter('status', 'coming', this)"
+          data-ftype="status"
+        >
+          Coming Soon
+        </button>
+      </div>
+
+      <div class="catalog" id="publicCatalog"></div>
+    </div>
+
+    <script>
+      /* ══════════════════════════════════
+   CURRICULUM DATA
+   Source: DepEd K–12 Math CG 2014
+══════════════════════════════════ */
+      const CURRICULUM = [
+        // ── GRADE 7 ──
+        {
+          grade: 7,
+          q: "Q1",
+          strand: "Numbers & Number Sense",
+          topic: "Sets and the Real Number System",
+          code: "M7NS-Ia",
+        },
+        {
+          grade: 7,
+          q: "Q1",
+          strand: "Numbers & Number Sense",
+          topic: "Absolute Value and Operations on Integers",
+          code: "M7NS-Ic",
+        },
+        {
+          grade: 7,
+          q: "Q1",
+          strand: "Numbers & Number Sense",
+          topic: "Rational Numbers and the Number Line",
+          code: "M7NS-Ie",
+        },
+        {
+          grade: 7,
+          q: "Q1",
+          strand: "Numbers & Number Sense",
+          topic: "Square Roots and Irrational Numbers",
+          code: "M7NS-Ig",
+        },
+        {
+          grade: 7,
+          q: "Q1",
+          strand: "Numbers & Number Sense",
+          topic: "Real Numbers in Real Life",
+          code: "M7NS-Ii",
+        },
+        {
+          grade: 7,
+          q: "Q2",
+          strand: "Measurement",
+          topic: "Precision, Accuracy and Significant Figures",
+          code: "M7ME-IIa",
+        },
+        {
+          grade: 7,
+          q: "Q2",
+          strand: "Measurement",
+          topic: "Conversion of Units (Metric & English)",
+          code: "M7ME-IIb",
+        },
+        {
+          grade: 7,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Algebraic Expressions and Polynomials",
+          code: "M7AL-IIc",
+        },
+        {
+          grade: 7,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Laws of Exponents and Polynomial Operations",
+          code: "M7AL-IId",
+        },
+        {
+          grade: 7,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Special Products",
+          code: "M7AL-IIe",
+        },
+        {
+          grade: 7,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Linear Equations and Inequalities in One Variable",
+          code: "M7AL-IIh",
+        },
+        {
+          grade: 7,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Solving Problems on Equations and Inequalities",
+          code: "M7AL-IIj",
+        },
+        {
+          grade: 7,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Points, Lines, and Planes",
+          code: "M7GE-IIIa",
+        },
+        {
+          grade: 7,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Angles: Kinds and Relationships",
+          code: "M7GE-IIIb",
+        },
+        {
+          grade: 7,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Parallel Lines and Transversals",
+          code: "M7GE-IIIc",
+        },
+        {
+          grade: 7,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Polygons: Angles and Sides",
+          code: "M7GE-IIIe",
+        },
+        {
+          grade: 7,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Circles and Related Terms",
+          code: "M7GE-IIIg",
+        },
+        {
+          grade: 7,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Constructing Geometric Figures",
+          code: "M7GE-IIIh",
+        },
+        {
+          grade: 7,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Introduction to Statistics",
+          code: "M7SP-IVa",
+        },
+        {
+          grade: 7,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Data Collection and Frequency Distribution",
+          code: "M7SP-IVb",
+        },
+        {
+          grade: 7,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Graphs: Bar, Line, Pie, Histogram, Ogive",
+          code: "M7SP-IVd",
+        },
+        {
+          grade: 7,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Measures of Central Tendency",
+          code: "M7SP-IVf",
+        },
+        {
+          grade: 7,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Measures of Variability",
+          code: "M7SP-IVh",
+        },
+        {
+          grade: 7,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Interpreting Data and Drawing Conclusions",
+          code: "M7SP-IVj",
+        },
+
+        // ── GRADE 8 ──
+        {
+          grade: 8,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Factoring Polynomials",
+          code: "M8AL-Ia",
+        },
+        {
+          grade: 8,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Rational Algebraic Expressions",
+          code: "M8AL-Ic",
+        },
+        {
+          grade: 8,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "The Rectangular Coordinate System",
+          code: "M8AL-Ie-1",
+        },
+        {
+          grade: 8,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Slope of a Line",
+          code: "M8AL-Ie-4",
+        },
+        {
+          grade: 8,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Graphing Linear Equations in Two Variables",
+          code: "M8AL-If",
+        },
+        {
+          grade: 8,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Finding the Equation of a Line",
+          code: "M8AL-Ig-1",
+        },
+        {
+          grade: 8,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Systems of Linear Equations",
+          code: "M8AL-Ih",
+        },
+        {
+          grade: 8,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic:
+            "Solving Systems: Graphing, Substitution, Elimination, Cramer's Rule",
+          code: "M8AL-Ii",
+        },
+        {
+          grade: 8,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Linear Inequalities in Two Variables",
+          code: "M8AL-IIa",
+        },
+        {
+          grade: 8,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Systems of Linear Inequalities",
+          code: "M8AL-IIb",
+        },
+        {
+          grade: 8,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Linear Programming (Simple)",
+          code: "M8AL-IIc-1",
+        },
+        {
+          grade: 8,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Relations and Functions",
+          code: "M8AL-IIc-2",
+        },
+        {
+          grade: 8,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Linear Functions and Their Graphs",
+          code: "M8AL-IId",
+        },
+        {
+          grade: 8,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "If-Then Statements: Hypothesis and Conclusion",
+          code: "M8GE-IIf",
+        },
+        {
+          grade: 8,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Inverse, Converse, and Contrapositive",
+          code: "M8GE-IIg",
+        },
+        {
+          grade: 8,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Inductive and Deductive Reasoning; Proofs",
+          code: "M8GE-IIh",
+        },
+        {
+          grade: 8,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Axiomatic Structure of Geometry",
+          code: "M8GE-IIIa",
+        },
+        {
+          grade: 8,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Triangle Congruence: SAS, ASA, SSS",
+          code: "M8GE-IIId",
+        },
+        {
+          grade: 8,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Proving Triangle Congruence",
+          code: "M8GE-IIIg",
+        },
+        {
+          grade: 8,
+          q: "Q4",
+          strand: "Geometry",
+          topic: "Triangle Inequality Theorems",
+          code: "M8GE-IVa",
+        },
+        {
+          grade: 8,
+          q: "Q4",
+          strand: "Geometry",
+          topic: "Parallel and Perpendicular Lines",
+          code: "M8GE-IVd",
+        },
+        {
+          grade: 8,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Experiments, Outcomes, Sample Space, Events",
+          code: "M8SP-IVf",
+        },
+        {
+          grade: 8,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Probability of Simple Events",
+          code: "M8SP-IVh",
+        },
+        {
+          grade: 8,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Experimental vs Theoretical Probability",
+          code: "M8SP-IVi",
+        },
+        {
+          grade: 8,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Linear Correlation and Regression",
+          code: "M8SP-IVj",
+        },
+
+        // ── GRADE 9 ──
+        {
+          grade: 9,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Quadratic Equations: Extracting Roots, Factoring",
+          code: "M9AL-Ia",
+        },
+        {
+          grade: 9,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Quadratic Equations: Completing the Square",
+          code: "M9AL-Ib",
+        },
+        {
+          grade: 9,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Quadratic Formula and the Discriminant",
+          code: "M9AL-Ic",
+        },
+        {
+          grade: 9,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Sum and Product of Roots",
+          code: "M9AL-Id",
+        },
+        {
+          grade: 9,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Equations Transformable into Quadratic",
+          code: "M9AL-Ie",
+        },
+        {
+          grade: 9,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Solving Problems Involving Quadratic Equations",
+          code: "M9AL-If",
+        },
+        {
+          grade: 9,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Quadratic Inequalities",
+          code: "M9AL-IIa",
+        },
+        {
+          grade: 9,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Quadratic Functions: Graphs and Transformations",
+          code: "M9AL-IIb",
+        },
+        {
+          grade: 9,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Quadratic Functions: Vertex, Axis, Intercepts",
+          code: "M9AL-IIc",
+        },
+        {
+          grade: 9,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Rational Algebraic Equations",
+          code: "M9AL-IId",
+        },
+        {
+          grade: 9,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Variations: Direct, Inverse, Joint, Combined",
+          code: "M9AL-IIe",
+        },
+        {
+          grade: 9,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Radicals: Simplifying and Operations",
+          code: "M9AL-IIf",
+        },
+        {
+          grade: 9,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Parallelograms: Properties and Theorems",
+          code: "M9GE-IIIa",
+        },
+        {
+          grade: 9,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Special Parallelograms: Rectangle, Rhombus, Square",
+          code: "M9GE-IIIb",
+        },
+        {
+          grade: 9,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Trapezoids and Kites",
+          code: "M9GE-IIIc",
+        },
+        {
+          grade: 9,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Triangle Similarity: AA, SAS, SSS",
+          code: "M9GE-IIId",
+        },
+        {
+          grade: 9,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Right Triangle Similarity and Special Triangles",
+          code: "M9GE-IIIe",
+        },
+        {
+          grade: 9,
+          q: "Q3",
+          strand: "Geometry",
+          topic: "Applying Triangle Similarity",
+          code: "M9GE-IIIf",
+        },
+        {
+          grade: 9,
+          q: "Q4",
+          strand: "Geometry",
+          topic: "Six Trigonometric Ratios",
+          code: "M9GE-IVa",
+        },
+        {
+          grade: 9,
+          q: "Q4",
+          strand: "Geometry",
+          topic: "Trigonometric Ratios of Special Angles",
+          code: "M9GE-IVb",
+        },
+        {
+          grade: 9,
+          q: "Q4",
+          strand: "Geometry",
+          topic: "Angles of Elevation and Depression",
+          code: "M9GE-IVc",
+        },
+        {
+          grade: 9,
+          q: "Q4",
+          strand: "Geometry",
+          topic: "Solving Right Triangles in Real Life",
+          code: "M9GE-IVd",
+        },
+        {
+          grade: 9,
+          q: "Q4",
+          strand: "Geometry",
+          topic: "Law of Sines and Law of Cosines",
+          code: "M9GE-IVf",
+        },
+        {
+          grade: 9,
+          q: "Q4",
+          strand: "Geometry",
+          topic: "Solving Oblique Triangles",
+          code: "M9GE-IVh",
+        },
+        {
+          grade: 9,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Normal Standard Distribution",
+          code: "M9SP-IVj",
+        },
+
+        // ── GRADE 10 ──
+        {
+          grade: 10,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Arithmetic Sequences",
+          code: "M10AL-Ib",
+        },
+        {
+          grade: 10,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Geometric Sequences",
+          code: "M10AL-Id",
+        },
+        {
+          grade: 10,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Other Sequences: Harmonic and Fibonacci",
+          code: "M10AL-If-1",
+        },
+        {
+          grade: 10,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Solving Problems on Sequences and Series",
+          code: "M10AL-If-2",
+        },
+        {
+          grade: 10,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Polynomial Division: Long and Synthetic",
+          code: "M10AL-Ig",
+        },
+        {
+          grade: 10,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Remainder Theorem and Factor Theorem",
+          code: "M10AL-Ig-2",
+        },
+        {
+          grade: 10,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Factoring Polynomials",
+          code: "M10AL-Ih",
+        },
+        {
+          grade: 10,
+          q: "Q1",
+          strand: "Patterns & Algebra",
+          topic: "Solving Polynomial Equations",
+          code: "M10AL-Ii",
+        },
+        {
+          grade: 10,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Polynomial Functions and Their Graphs",
+          code: "M10AL-IIa",
+        },
+        {
+          grade: 10,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Descartes' Rule of Signs",
+          code: "M10AL-IIb-1",
+        },
+        {
+          grade: 10,
+          q: "Q2",
+          strand: "Patterns & Algebra",
+          topic: "Rational Root Theorem",
+          code: "M10AL-IIb-2",
+        },
+        {
+          grade: 10,
+          q: "Q2",
+          strand: "Geometry",
+          topic: "Chords, Arcs, and Central Angles",
+          code: "M10GE-IId",
+        },
+        {
+          grade: 10,
+          q: "Q2",
+          strand: "Geometry",
+          topic: "Inscribed Angles and Their Theorems",
+          code: "M10GE-IId-2",
+        },
+        {
+          grade: 10,
+          q: "Q2",
+          strand: "Geometry",
+          topic: "Secants, Tangents, and Segments",
+          code: "M10GE-IIe",
+        },
+        {
+          grade: 10,
+          q: "Q2",
+          strand: "Geometry",
+          topic: "Solving Problems on Circles",
+          code: "M10GE-IIf",
+        },
+        {
+          grade: 10,
+          q: "Q2",
+          strand: "Geometry",
+          topic: "Distance Formula and Its Applications",
+          code: "M10GE-IIg",
+        },
+        {
+          grade: 10,
+          q: "Q2",
+          strand: "Geometry",
+          topic: "Equation of a Circle",
+          code: "M10GE-IIh",
+        },
+        {
+          grade: 10,
+          q: "Q3",
+          strand: "Statistics & Probability",
+          topic: "Permutations of Objects",
+          code: "M10SP-IIIa",
+        },
+        {
+          grade: 10,
+          q: "Q3",
+          strand: "Statistics & Probability",
+          topic: "Circular Permutations",
+          code: "M10SP-IIIb-1",
+        },
+        {
+          grade: 10,
+          q: "Q3",
+          strand: "Statistics & Probability",
+          topic: "Permutations with Repetition",
+          code: "M10SP-IIIb-2",
+        },
+        {
+          grade: 10,
+          q: "Q3",
+          strand: "Statistics & Probability",
+          topic: "Combinations",
+          code: "M10SP-IIIc",
+        },
+        {
+          grade: 10,
+          q: "Q3",
+          strand: "Statistics & Probability",
+          topic: "Solving Problems on Permutations and Combinations",
+          code: "M10SP-IIIf",
+        },
+        {
+          grade: 10,
+          q: "Q3",
+          strand: "Statistics & Probability",
+          topic: "Probability of Union and Intersection of Events",
+          code: "M10SP-IIIg",
+        },
+        {
+          grade: 10,
+          q: "Q3",
+          strand: "Statistics & Probability",
+          topic: "Conditional Probability",
+          code: "M10SP-IIIh",
+          free: true,
+        },
+        {
+          grade: 10,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Measures of Position: Quartiles",
+          code: "M10SP-IVa",
+        },
+        {
+          grade: 10,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Deciles and Percentiles",
+          code: "M10SP-IVb",
+        },
+        {
+          grade: 10,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Interpreting a Box-and-Whisker Plot",
+          code: "M10SP-IVd",
+        },
+        {
+          grade: 10,
+          q: "Q4",
+          strand: "Statistics & Probability",
+          topic: "Statistical Mini-Research Methods",
+          code: "M10SP-IVf",
+        },
+      ];
+
+      /* ══════════════════════════════════
+   STATE — persisted in localStorage
+══════════════════════════════════ */
+      const ADMIN_PW = "mathkit2025";
+
+      function getUploads() {
+        try {
+          return JSON.parse(localStorage.getItem("mk_uploads") || "{}");
+        } catch (e) {
+          return {};
+        }
+      }
+      function saveUploads(u) {
+        localStorage.setItem("mk_uploads", JSON.stringify(u));
+      }
+
+      function lessonKey(l) {
+        return l.code + "_" + l.grade + "_" + l.q;
+      }
+
+      function getLessonStatus(l) {
+        if (l.free) return "free";
+        const u = getUploads()[lessonKey(l)] || {};
+        const has = ["ppt", "dlp", "activity"].filter((k) => u[k]);
+        if (has.length === 3) return "live";
+        if (has.length > 0) return "partial";
+        return "empty";
+      }
+
+      /* ══════════════════════════════════
+   FILTERS
+══════════════════════════════════ */
+      let filters = { grade: "all", status: "all" };
+
+      function setFilter(type, val, btn) {
+        filters[type] = val;
+        const scope =
+          type === "grade"
+            ? '[onclick*="grade"]'
+            : '[data-ftype="status"],[onclick*="status"]';
+        document.querySelectorAll(".ftab").forEach((b) => {
+          if (
+            (type === "grade" &&
+              b.getAttribute("onclick") &&
+              b.getAttribute("onclick").includes("'grade'")) ||
+            (type === "status" &&
+              b.getAttribute("onclick") &&
+              b.getAttribute("onclick").includes("'status'"))
+          ) {
+            b.classList.remove("active");
+          }
+        });
+        btn.classList.add("active");
+        renderPublic();
+      }
+
+      /* ══════════════════════════════════
+   PUBLIC RENDER
+══════════════════════════════════ */
+      function renderPublic() {
+        const uploads = getUploads();
+
+        // Progress bars
+        const pg = document.getElementById("progressWrap");
+        const grades = [7, 8, 9, 10];
+        let pgHtml = '<div style="display:flex;gap:2rem;flex-wrap:wrap;">';
+        grades.forEach((g) => {
+          const gl = CURRICULUM.filter((l) => l.grade === g);
+          const done = gl.filter(
+            (l) => l.free || getLessonStatus(l) === "live",
+          ).length;
+          pgHtml += `<div style="flex:1;min-width:180px;">
+      <div class="progress-row">
+        <span class="progress-label">Grade ${g}</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.round((done / gl.length) * 100)}%"></div></div>
+        <span class="progress-count">${done}/${gl.length}</span>
+      </div>
+    </div>`;
+        });
+        pgHtml += "</div>";
+        pg.innerHTML = pgHtml;
+
+        // Catalog
+        const cat = document.getElementById("publicCatalog");
+        let filtered = CURRICULUM.filter((l) => {
+          const gMatch =
+            filters.grade === "all" || String(l.grade) === filters.grade;
+          const st = l.free
+            ? "live"
+            : getLessonStatus(l) === "live"
+              ? "live"
+              : "coming";
+          const sMatch = filters.status === "all" || filters.status === st;
+          return gMatch && sMatch;
+        });
+
+        if (!filtered.length) {
+          cat.innerHTML =
+            '<div style="text-align:center;padding:4rem;color:var(--text3);font-size:13px;">No lessons match this filter yet.</div>';
+          return;
+        }
+
+        // Group by grade then quarter
+        const byGrade = {};
+        filtered.forEach((l) => {
+          if (!byGrade[l.grade]) byGrade[l.grade] = [];
+          byGrade[l.grade].push(l);
+        });
+
+        let html = "";
+        Object.keys(byGrade)
+          .sort((a, b) => a - b)
+          .forEach((g) => {
+            const byQ = {};
+            byGrade[g].forEach((l) => {
+              if (!byQ[l.q]) byQ[l.q] = [];
+              byQ[l.q].push(l);
+            });
+            html += `<div class="grade-block"><div class="grade-heading">Grade ${g}</div>`;
+            ["Q1", "Q2", "Q3", "Q4"].forEach((q) => {
+              if (!byQ[q]) return;
+              html += `<div class="quarter-block"><div class="quarter-label">Quarter ${q.replace("Q", "")}</div><div class="lessons-grid">`;
+              byQ[q].forEach((l) => {
+                const st = l.free
+                  ? "live"
+                  : getLessonStatus(l) === "live"
+                    ? "live"
+                    : "coming";
+                const u = uploads[lessonKey(l)] || {};
+                const isLive = st === "live";
+                html += `<div class="lcard ${isLive ? "live" : "coming"} ${l.free ? "free-card" : ""}">
+          <div class="card-top">
+            <div style="display:flex;gap:5px;flex-wrap:wrap;">
+              <span class="badge b-grade">G${l.grade}</span>
+              <span class="badge b-q">${l.q}</span>
+            </div>
+            <span class="badge ${l.free ? "b-free" : isLive ? "b-live" : "b-soon"}">${l.free ? "Free" : isLive ? "Available" : "Coming Soon"}</span>
+          </div>
+          <div class="card-topic">${l.topic}</div>
+          <div class="card-code">${l.code} · ${l.strand}</div>
+          <div class="card-chips">
+            <div class="chip ${(!isLive && !l.free) || (!u.dlp && !l.free) ? "disabled" : ""}" title="Download DLP">📄 DLP</div>
+            <div class="chip ${(!isLive && !l.free) || (!u.ppt && !l.free) ? "disabled" : ""}" title="Download PPT">📊 PPT</div>
+            <div class="chip ${(!isLive && !l.free) || (!u.activity && !l.free) ? "disabled" : ""}" title="Launch Activity">🎮 Activity</div>
+          </div>
+        </div>`;
+              });
+              html += "</div></div>";
+            });
+            html += "</div>";
+          });
+        cat.innerHTML = html;
+      }
+
+      /* ══════════════════════════════════
+   ADMIN RENDER
+══════════════════════════════════ */
+      function renderAdmin() {
+        const uploads = getUploads();
+        const total = CURRICULUM.length;
+        const live = CURRICULUM.filter(
+          (l) => l.free || getLessonStatus(l) === "live",
+        ).length;
+        const partial = CURRICULUM.filter(
+          (l) => !l.free && getLessonStatus(l) === "partial",
+        ).length;
+        const empty = CURRICULUM.filter(
+          (l) => !l.free && getLessonStatus(l) === "empty",
+        ).length;
+
+        document.getElementById("adminStats").innerHTML = `
+    <div class="astat"><div class="astat-num" style="color:var(--accent)">${total}</div><div class="astat-label">Total Lessons</div></div>
+    <div class="astat"><div class="astat-num" style="color:var(--green)">${live}</div><div class="astat-label">Live</div></div>
+    <div class="astat"><div class="astat-num" style="color:var(--accent)">${partial}</div><div class="astat-label">Partial</div></div>
+    <div class="astat"><div class="astat-num" style="color:var(--text3)">${empty}</div><div class="astat-label">Not Started</div></div>
+  `;
+
+        // Group by grade
+        const byGrade = {};
+        CURRICULUM.forEach((l) => {
+          if (!byGrade[l.grade]) byGrade[l.grade] = [];
+          byGrade[l.grade].push(l);
+        });
+
+        let html = "";
+        Object.keys(byGrade)
+          .sort((a, b) => a - b)
+          .forEach((g) => {
+            const gl = byGrade[g];
+            const gdone = gl.filter(
+              (l) => l.free || getLessonStatus(l) === "live",
+            ).length;
+            html += `<div class="admin-grade-block">
+      <div class="admin-grade-title">
+        Grade ${g}
+        <span style="font-family:'Sora',sans-serif;font-size:12px;color:var(--text3);font-weight:400;">${gdone}/${gl.length} live</span>
+      </div>`;
+
+            ["Q1", "Q2", "Q3", "Q4"].forEach((q) => {
+              const ql = gl.filter((l) => l.q === q);
+              if (!ql.length) return;
+              html += `<div style="margin-bottom:1rem;"><div class="quarter-label" style="margin-bottom:.5rem;">Quarter ${q.replace("Q", "")}</div>`;
+              ql.forEach((l) => {
+                const key = lessonKey(l);
+                const u = uploads[key] || {};
+                const st = l.free ? "free" : getLessonStatus(l);
+                const pillClass =
+                  {
+                    live: "sp-live",
+                    partial: "sp-partial",
+                    empty: "sp-empty",
+                    free: "sp-free",
+                  }[st] || "sp-empty";
+                const pillLabel =
+                  {
+                    live: "Live",
+                    partial: "Partial",
+                    empty: "Empty",
+                    free: "Free",
+                  }[st] || "Empty";
+
+                const slot = (
+                  type,
+                  label,
+                ) => `<div class="uslot ${u[type] ? "uploaded" : ""}" id="slot_${key}_${type}" title="${u[type] ? u[type] : "Upload " + label}">
+          <input type="file" onchange="handleUpload('${key}','${type}',this)" ${l.free ? "disabled" : ""} accept="${type === "activity" ? ".html,.htm,.zip" : ".pptx,.ppt,.pdf,.docx"}"/>
+          ${u[type] ? "✓" : "+"} ${label}
+        </div>`;
+
+                html += `<div class="admin-lesson-row">
+          <div class="alr-q">${l.q}</div>
+          <div class="alr-code">${l.code}</div>
+          <div class="alr-topic">${l.topic}</div>
+          <div class="upload-slots">
+            ${
+              l.free
+                ? '<span style="font-size:11px;color:var(--green);padding:4px 8px;">Free preview — no upload needed</span>'
+                : slot("ppt", "PPT") +
+                  slot("dlp", "DLP") +
+                  slot("activity", "Activity")
+            }
+          </div>
+          <div class="alr-status"><span class="status-pill ${pillClass}">${pillLabel}</span></div>
+        </div>`;
+              });
+              html += "</div>";
+            });
+            html += "</div>";
+          });
+        document.getElementById("adminCatalog").innerHTML = html;
+      }
+
+      function handleUpload(key, type, input) {
+        if (!input.files[0]) return;
+        const fname = input.files[0].name;
+        const uploads = getUploads();
+        if (!uploads[key]) uploads[key] = {};
+        uploads[key][type] = fname;
+        saveUploads(uploads);
+
+        // Update slot UI immediately
+        const slot = document.getElementById("slot_" + key + "_" + type);
+        if (slot) {
+          slot.classList.add("uploaded");
+          slot.title = fname;
+          slot.childNodes[1].textContent = "✓ " + type.toUpperCase();
+        }
+
+        // Check if now live
+        const u = uploads[key];
+        if (u.ppt && u.dlp && u.activity)
+          showToast("🎉 Lesson is now live!", "success");
+        else showToast("✓ " + fname + " saved", "success");
+
+        // Re-render stats
+        const total = CURRICULUM.length;
+        const live = CURRICULUM.filter(
+          (l) => l.free || getLessonStatus(l) === "live",
+        ).length;
+        const partial = CURRICULUM.filter(
+          (l) => !l.free && getLessonStatus(l) === "partial",
+        ).length;
+        const empty = CURRICULUM.filter(
+          (l) => !l.free && getLessonStatus(l) === "empty",
+        ).length;
+        document
+          .getElementById("adminStats")
+          .querySelector(".astat-num").textContent = total;
+        document.querySelectorAll(".astat-num")[1].textContent = live;
+        document.querySelectorAll(".astat-num")[2].textContent = partial;
+        document.querySelectorAll(".astat-num")[3].textContent = empty;
+      }
+
+      /* ══════════════════════════════════
+   NAV / LOGIN
+══════════════════════════════════ */
+      let isAdmin = false;
+
+      function showPublic() {
+        document.getElementById("publicView").classList.add("active");
+        document.getElementById("adminView").classList.remove("active");
+        document.getElementById("loginView").classList.remove("active");
+        document.getElementById("adminNavBtn").textContent = isAdmin
+          ? "Admin ✓"
+          : "Admin";
+        renderPublic();
+      }
+
+      function showAdmin() {
+        if (isAdmin) {
+          document.getElementById("adminView").classList.add("active");
+          document.getElementById("publicView").classList.remove("active");
+          document.getElementById("loginView").classList.remove("active");
+          renderAdmin();
+        } else {
+          document.getElementById("loginView").classList.add("active");
+          document.getElementById("publicView").classList.remove("active");
+          document.getElementById("adminView").classList.remove("active");
+          setTimeout(() => document.getElementById("pwInput").focus(), 100);
+        }
+      }
+
+      function doLogin() {
+        const pw = document.getElementById("pwInput").value;
+        if (pw === ADMIN_PW) {
+          isAdmin = true;
+          document.getElementById("loginErr").style.display = "none";
+          document.getElementById("pwInput").value = "";
+          document.getElementById("adminNavBtn").textContent = "Admin ✓";
+          showAdmin();
+        } else {
+          document.getElementById("loginErr").style.display = "block";
+        }
+      }
+
+      function toggleTheme() {
+        const h = document.documentElement;
+        const btn = document.getElementById("themeBtn");
+        if (h.getAttribute("data-theme") === "dark") {
+          h.setAttribute("data-theme", "light");
+          btn.textContent = "☀️";
+        } else {
+          h.setAttribute("data-theme", "dark");
+          btn.textContent = "🌙";
+        }
+      }
+
+      /* ══════════════════════════════════
+   TOAST
+══════════════════════════════════ */
+      let toastTimer;
+      function showToast(msg, type = "") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = "toast show " + (type || "");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => (t.className = "toast"), 2800);
+      }
+
+      /* ══════════════════════════════════
+   TYPEWRITER
+══════════════════════════════════ */
+      const TW_WORDS = [
+        "engage",
+        "excite",
+        "challenge",
+        "motivate",
+        "captivate",
+        "inspire",
+        "empower",
+      ];
+      let twI = 0,
+        twC = 0,
+        twDel = false;
+      const twEl = document.getElementById("typewriter-word");
+      function twType() {
+        const word = TW_WORDS[twI];
+        if (!twDel) {
+          twEl.textContent = word.slice(0, twC + 1);
+          twC++;
+          if (twC === word.length) {
+            setTimeout(() => {
+              twDel = true;
+              twTick();
+            }, 1800);
+            return;
+          }
+        } else {
+          twEl.textContent = word.slice(0, twC - 1);
+          twC--;
+          if (twC === 0) {
+            twDel = false;
+            twI = (twI + 1) % TW_WORDS.length;
+          }
+        }
+        setTimeout(twType, twDel ? 60 : 90);
+      }
+      function twTick() {
+        setTimeout(twType, 60);
+      }
+      setTimeout(twType, 800);
+
+      /* ══════════════════════════════════
+   INIT
+══════════════════════════════════ */
+      renderPublic();
+    </script>
+  </body>
+</html>

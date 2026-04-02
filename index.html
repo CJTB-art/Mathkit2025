@@ -6,964 +6,252 @@
     <title>MathKit PH — DepEd Math Lessons</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
       :root {
-        --bg: #0c0c0e;
-        --bg2: #141416;
-        --bg3: #1c1c1f;
-        --border: rgba(255, 255, 255, 0.08);
-        --border2: rgba(255, 255, 255, 0.14);
-        --text: #f0f0f0;
-        --text2: #888;
-        --text3: #555;
-        --accent: #f5c842;
-        --accent2: #e6b830;
-        --accent-bg: rgba(245, 200, 66, 0.08);
-        --card: #141416;
-        --nav-bg: rgba(12, 12, 14, 0.92);
-        --green: rgba(34, 197, 94, 1);
-        --green-bg: rgba(34, 197, 94, 0.1);
-        --green-border: rgba(34, 197, 94, 0.25);
-        --radius: 12px;
-        --radius-sm: 8px;
+        --bg:#0c0c0e;--bg2:#141416;--bg3:#1c1c1f;
+        --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+        --text:#f0f0f0;--text2:#888;--text3:#555;
+        --accent:#f5c842;--accent2:#e6b830;--accent-bg:rgba(245,200,66,0.08);
+        --card:#141416;--nav-bg:rgba(12,12,14,0.92);
+        --green:rgba(34,197,94,1);--green-bg:rgba(34,197,94,0.1);--green-border:rgba(34,197,94,0.25);
+        --blue:#60a5fa;--blue-bg:rgba(96,165,250,0.1);--blue-border:rgba(96,165,250,0.25);
+        --red:#f87171;--red-bg:rgba(248,113,113,0.1);--red-border:rgba(248,113,113,0.25);
+        --radius:12px;--radius-sm:8px;
       }
       [data-theme="light"] {
-        --bg: #fafaf9;
-        --bg2: #f4f4f2;
-        --bg3: #eeeeed;
-        --border: rgba(0, 0, 0, 0.08);
-        --border2: rgba(0, 0, 0, 0.14);
-        --text: #111;
-        --text2: #666;
-        --text3: #aaa;
-        --accent: #c49a10;
-        --accent2: #a88200;
-        --accent-bg: rgba(196, 154, 16, 0.08);
-        --card: #fff;
-        --nav-bg: rgba(250, 250, 249, 0.92);
+        --bg:#fafaf9;--bg2:#f4f4f2;--bg3:#eeeeed;
+        --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+        --text:#111;--text2:#666;--text3:#aaa;
+        --accent:#c49a10;--accent2:#a88200;--accent-bg:rgba(196,154,16,0.08);
+        --card:#fff;--nav-bg:rgba(250,250,249,0.92);
       }
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      html {
-        scroll-behavior: smooth;
-      }
-      body {
-        font-family: "Sora", sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        font-size: 15px;
-        line-height: 1.6;
-        min-height: 100vh;
-        transition:
-          background 0.3s,
-          color 0.3s;
-      }
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+      html{scroll-behavior:smooth;}
+      body{font-family:"Sora",sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh;transition:background 0.3s,color 0.3s;}
+      a{color:inherit;text-decoration:none;}
 
-      /* NAV */
-      nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 200;
-        background: var(--nav-bg);
-        backdrop-filter: blur(16px);
-        border-bottom: 1px solid var(--border);
-        height: 56px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 1.5rem;
-      }
-      .logo {
-        font-family: "DM Serif Display", serif;
-        font-size: 1.25rem;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .logo-dot {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--accent);
-        display: inline-block;
-      }
-      .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .btn-sm {
-        padding: 6px 14px;
-        border-radius: var(--radius-sm);
-        font-family: "Sora", sans-serif;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        border: 1px solid var(--border2);
-        background: transparent;
-        color: var(--text2);
-        transition: all 0.2s;
-      }
-      .btn-sm:hover {
-        background: var(--bg3);
-        color: var(--text);
-      }
-      .btn-accent {
-        background: var(--accent);
-        color: #111;
-        border-color: var(--accent);
-      }
-      .btn-accent:hover {
-        background: var(--accent2);
-      }
-      .theme-btn {
-        width: 32px;
-        height: 32px;
-        border-radius: 6px;
-        border: 1px solid var(--border2);
-        background: transparent;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text2);
-        font-size: 14px;
-        transition: all 0.2s;
-      }
-      .theme-btn:hover {
-        background: var(--bg3);
-      }
+      nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+      .logo{font-family:"DM Serif Display",serif;font-size:1.25rem;display:flex;align-items:center;gap:8px;}
+      .logo-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;}
+      .nav-right{display:flex;align-items:center;gap:10px;}
+      .btn-sm{padding:6px 14px;border-radius:var(--radius-sm);font-family:"Sora",sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all 0.2s;}
+      .btn-sm:hover{background:var(--bg3);color:var(--text);}
+      .theme-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--border2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:14px;transition:all 0.2s;}
+      .theme-btn:hover{background:var(--bg3);}
 
-      /* VIEWS */
-      .view {
-        display: none;
-      }
-      .view.active {
-        display: block;
-      }
+      .view{display:none;}.view.active{display:block;}
 
-      /* ─── PUBLIC VIEW ─── */
-      .public-hero {
-        padding: 100px 1.5rem 60px;
-        max-width: 860px;
-        margin: 0 auto;
-        text-align: center;
-      }
-      .hero-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: var(--accent-bg);
-        border: 1px solid rgba(245, 200, 66, 0.2);
-        color: var(--accent);
-        font-size: 11px;
-        font-weight: 600;
-        padding: 4px 14px;
-        border-radius: 100px;
-        margin-bottom: 1.5rem;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-      }
-      .public-hero h1 {
-        font-family: "DM Serif Display", serif;
-        font-size: clamp(2rem, 5vw, 3.2rem);
-        line-height: 1.15;
-        letter-spacing: -0.02em;
-        margin-bottom: 1rem;
-      }
-      .public-hero h1 em {
-        font-style: italic;
-        color: var(--accent);
-      }
-      .public-hero p {
-        color: var(--text2);
-        font-size: 0.95rem;
-        max-width: 500px;
-        margin: 0 auto 2rem;
-        font-weight: 300;
-      }
-      #typewriter-word {
-        color: var(--accent);
-        font-style: italic;
-      }
-      .tw-cursor {
-        display: inline-block;
-        color: var(--accent);
-        font-style: normal;
-        font-weight: 300;
-        animation: blink 0.7s step-end infinite;
-        margin-left: 1px;
-      }
-      @keyframes blink {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0;
-        }
-      }
+      .public-hero{padding:100px 1.5rem 60px;max-width:860px;margin:0 auto;text-align:center;}
+      .hero-tag{display:inline-flex;align-items:center;gap:6px;background:var(--accent-bg);border:1px solid rgba(245,200,66,0.2);color:var(--accent);font-size:11px;font-weight:600;padding:4px 14px;border-radius:100px;margin-bottom:1.5rem;letter-spacing:0.05em;text-transform:uppercase;}
+      .public-hero h1{font-family:"DM Serif Display",serif;font-size:clamp(2rem,5vw,3.2rem);line-height:1.15;letter-spacing:-0.02em;margin-bottom:1rem;}
+      .public-hero p{color:var(--text2);font-size:0.95rem;max-width:500px;margin:0 auto 2rem;font-weight:300;}
+      #typewriter-word{color:var(--accent);font-style:italic;}
+      .tw-cursor{display:inline-block;color:var(--accent);font-style:normal;font-weight:300;animation:blink 0.7s step-end infinite;margin-left:1px;}
+      @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+      /* FREE CLAIM BANNER */
+      .free-claim-banner{max-width:1100px;margin:0 auto 1.5rem;padding:0 1.5rem;}
+      .fcb-inner{background:linear-gradient(135deg,rgba(245,200,66,0.08) 0%,rgba(34,197,94,0.06) 100%);border:1px solid rgba(245,200,66,0.25);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+      .fcb-icon{font-size:1.5rem;flex-shrink:0;}
+      .fcb-text{flex:1;min-width:180px;}
+      .fcb-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:2px;}
+      .fcb-sub{font-size:12px;color:var(--text2);font-weight:300;}
+      .fcb-claimed{background:rgba(34,197,94,0.06);border-color:var(--green-border);}
+      .fcb-claimed .fcb-title{color:var(--green);}
 
       /* PRICING */
-      .pricing-section {
-        max-width: 860px;
-        margin: 0 auto;
-        padding: 0 1.5rem 100px;
-      }
-      .section-tag {
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: var(--accent);
-        font-weight: 600;
-        margin-bottom: 10px;
-      }
-      .section-title {
-        font-family: "DM Serif Display", serif;
-        font-size: clamp(1.5rem, 4vw, 2.2rem);
-        line-height: 1.15;
-        letter-spacing: -0.02em;
-        margin-bottom: 2.5rem;
-        color: var(--text);
-      }
-      .pricing-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1rem;
-      }
-      .pricing-card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 2rem;
-        position: relative;
-        transition: all 0.2s;
-      }
-      .pricing-card.featured {
-        border-color: var(--accent);
-        background: var(--accent-bg);
-      }
-      .pricing-badge {
-        position: absolute;
-        top: -1px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--accent);
-        color: #111;
-        font-size: 10px;
-        font-weight: 700;
-        padding: 4px 14px;
-        border-radius: 0 0 8px 8px;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        white-space: nowrap;
-      }
-      .pricing-name {
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--text2);
-        margin-bottom: 10px;
-      }
-      .pricing-price {
-        font-family: "DM Serif Display", serif;
-        font-size: 2.4rem;
-        color: var(--text);
-        line-height: 1;
-        margin-bottom: 4px;
-      }
-      .pricing-per {
-        font-size: 12px;
-        color: var(--text3);
-        margin-bottom: 1.25rem;
-      }
-      .pricing-features {
-        list-style: none;
-        margin-bottom: 1.75rem;
-      }
-      .pricing-features li {
-        font-size: 13px;
-        color: var(--text2);
-        padding: 5px 0;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 300;
-        border-bottom: 1px solid var(--border);
-      }
-      .pricing-features li:last-child {
-        border-bottom: none;
-      }
-      .chk {
-        color: #22c55e;
-        font-size: 13px;
-        flex-shrink: 0;
-      }
-      .pricing-cta {
-        width: 100%;
-        padding: 10px;
-        border-radius: var(--radius-sm);
-        font-family: "Sora", sans-serif;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-      .pricing-cta-outline {
-        background: transparent;
-        color: var(--text);
-        border: 1px solid var(--border2);
-      }
-      .pricing-cta-outline:hover {
-        background: var(--bg3);
-      }
-      .pricing-cta-filled {
-        background: var(--accent);
-        color: #111;
-        border: none;
-      }
-      .pricing-cta-filled:hover {
-        background: var(--accent2);
-      }
-      .pricing-note {
-        font-size: 11px;
-        color: var(--text3);
-        text-align: center;
-        margin-top: 1rem;
-        line-height: 1.6;
-      }
-      .pricing-note a {
-        color: var(--text2);
-        text-decoration: underline;
-        text-underline-offset: 2px;
-      }
+      .pricing-section{max-width:860px;margin:0 auto;padding:0 1.5rem 100px;}
+      .section-tag{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);font-weight:600;margin-bottom:10px;}
+      .section-title{font-family:"DM Serif Display",serif;font-size:clamp(1.5rem,4vw,2.2rem);line-height:1.15;letter-spacing:-0.02em;margin-bottom:2.5rem;color:var(--text);}
+      .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;}
+      .pricing-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;position:relative;transition:all 0.2s;}
+      .pricing-card.featured{border-color:var(--accent);background:var(--accent-bg);}
+      .pricing-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--accent);color:#111;font-size:10px;font-weight:700;padding:4px 14px;border-radius:0 0 8px 8px;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;}
+      .pricing-name{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text2);margin-bottom:10px;}
+      .pricing-price{font-family:"DM Serif Display",serif;font-size:2.4rem;color:var(--text);line-height:1;margin-bottom:4px;}
+      .pricing-per{font-size:12px;color:var(--text3);margin-bottom:1.25rem;}
+      .pricing-features{list-style:none;margin-bottom:1.75rem;}
+      .pricing-features li{font-size:13px;color:var(--text2);padding:5px 0;display:flex;align-items:center;gap:8px;font-weight:300;border-bottom:1px solid var(--border);}
+      .pricing-features li:last-child{border-bottom:none;}
+      .chk{color:#22c55e;font-size:13px;flex-shrink:0;}
+      .pricing-cta{width:100%;padding:10px;border-radius:var(--radius-sm);font-family:"Sora",sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+      .pricing-cta-outline{background:transparent;color:var(--text);border:1px solid var(--border2);}
+      .pricing-cta-outline:hover{background:var(--bg3);}
+      .pricing-cta-filled{background:var(--accent);color:#111;border:none;}
+      .pricing-cta-filled:hover{background:var(--accent2);}
+      .pricing-note{font-size:11px;color:var(--text3);text-align:center;margin-top:1rem;line-height:1.6;}
 
-      /* FOOTER */
-      .site-footer {
-        border-top: 1px solid var(--border);
-        padding: 2rem 1.5rem;
-        max-width: 1100px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 1rem;
-      }
-      .footer-logo {
-        font-family: "DM Serif Display", serif;
-        font-size: 1.05rem;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .footer-links {
-        display: flex;
-        gap: 1.25rem;
-      }
-      .footer-links a {
-        font-size: 12px;
-        color: var(--text3);
-        transition: color 0.2s;
-      }
-      .footer-links a:hover {
-        color: var(--text2);
-      }
+      .site-footer{border-top:1px solid var(--border);padding:2rem 1.5rem;max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+      .footer-logo{font-family:"DM Serif Display",serif;font-size:1.05rem;display:flex;align-items:center;gap:8px;}
+      .footer-links{display:flex;gap:1.25rem;}
+      .footer-links a{font-size:12px;color:var(--text3);transition:color 0.2s;}
+      .footer-links a:hover{color:var(--text2);}
 
-      /* FILTER BAR */
-      .filter-bar {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        align-items: center;
-        max-width: 1100px;
-        margin: 0 auto 1.5rem;
-        padding: 0 1.5rem;
-      }
-      .filter-label {
-        font-size: 11px;
-        color: var(--text3);
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
-        font-weight: 600;
-        margin-right: 4px;
-      }
-      .ftab {
-        padding: 5px 14px;
-        border-radius: 100px;
-        border: 1px solid var(--border2);
-        background: transparent;
-        color: var(--text2);
-        font-family: "Sora", sans-serif;
-        font-size: 12px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-      .ftab:hover {
-        background: var(--bg3);
-        color: var(--text);
-      }
-      .ftab.active {
-        background: var(--accent);
-        color: #111;
-        border-color: var(--accent);
-        font-weight: 700;
-      }
-      .filter-sep {
-        width: 1px;
-        height: 20px;
-        background: var(--border2);
-        margin: 0 4px;
-      }
+      .filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;max-width:1100px;margin:0 auto 1.5rem;padding:0 1.5rem;}
+      .filter-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;margin-right:4px;}
+      .ftab{padding:5px 14px;border-radius:100px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:"Sora",sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+      .ftab:hover{background:var(--bg3);color:var(--text);}
+      .ftab.active{background:var(--accent);color:#111;border-color:var(--accent);font-weight:700;}
+      .filter-sep{width:1px;height:20px;background:var(--border2);margin:0 4px;}
 
-      /* CATALOG */
-      .catalog {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 0 1.5rem 80px;
-      }
-      .grade-block {
-        margin-bottom: 3rem;
-      }
-      .grade-heading {
-        font-family: "DM Serif Display", serif;
-        font-size: 1.4rem;
-        color: var(--text);
-        margin-bottom: 0.5rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 1px solid var(--border);
-      }
-      .quarter-block {
-        margin-bottom: 1.75rem;
-      }
-      .quarter-label {
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--accent);
-        font-weight: 600;
-        margin-bottom: 0.75rem;
-      }
-      .lessons-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-        gap: 0.75rem;
-      }
+      .catalog{max-width:1100px;margin:0 auto;padding:0 1.5rem 80px;}
+      .grade-block{margin-bottom:3rem;}
+      .grade-heading{font-family:"DM Serif Display",serif;font-size:1.4rem;color:var(--text);margin-bottom:0.5rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}
+      .quarter-block{margin-bottom:1.75rem;}
+      .quarter-label{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);font-weight:600;margin-bottom:0.75rem;}
+      .lessons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:0.75rem;}
 
       /* LESSON CARD */
-      .lcard {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 1.25rem;
-        transition: all 0.2s;
-        position: relative;
-        overflow: hidden;
-      }
-      .lcard::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: transparent;
-        transition: background 0.2s;
-      }
-      .lcard.live:hover {
-        border-color: var(--border2);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-      }
-      .lcard.live:hover::before {
-        background: var(--accent);
-      }
-      .lcard.coming {
-        opacity: 0.5;
-        cursor: default;
-      }
-      .lcard.free-card::before {
-        background: var(--green) !important;
-      }
-      .card-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 0.75rem;
-      }
-      .badge {
-        font-size: 10px;
-        font-weight: 700;
-        padding: 2px 9px;
-        border-radius: 100px;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-      .b-grade {
-        background: var(--accent-bg);
-        color: var(--accent);
-        border: 1px solid rgba(245, 200, 66, 0.2);
-      }
-      .b-q {
-        background: var(--bg3);
-        color: var(--text2);
-        border: 1px solid var(--border);
-      }
-      .b-free {
-        background: var(--green-bg);
-        color: var(--green);
-        border: 1px solid var(--green-border);
-      }
-      .b-live {
-        background: rgba(59, 130, 246, 0.1);
-        color: #60a5fa;
-        border: 1px solid rgba(59, 130, 246, 0.2);
-      }
-      .b-soon {
-        background: var(--bg3);
-        color: var(--text3);
-        border: 1px solid var(--border);
-      }
-      .card-topic {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text);
-        margin-bottom: 4px;
-        line-height: 1.3;
-      }
-      .card-code {
-        font-size: 10px;
-        color: var(--text3);
-        margin-bottom: 0.75rem;
-        font-family: monospace;
-      }
-      .card-chips {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-      }
-      .chip {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        padding: 4px 9px;
-        border-radius: 6px;
-        border: 1px solid var(--border);
-        background: var(--bg2);
-        font-size: 11px;
-        color: var(--text2);
-        font-weight: 500;
-        transition: all 0.2s;
-        cursor: pointer;
-      }
-      .chip:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-        background: var(--accent-bg);
-      }
-      /* Preview chip — green tint, no download */
-      .chip.preview {
-        border-color: var(--green-border);
-        color: var(--green);
-        background: var(--green-bg);
-        cursor: default;
-      }
-      .chip.preview:hover {
-        border-color: var(--green-border);
-        color: var(--green);
-        background: var(--green-bg);
-      }
-      .chip.disabled {
-        cursor: not-allowed;
-        opacity: 0.4;
-      }
-      .chip.disabled:hover {
-        border-color: var(--border);
-        color: var(--text2);
-        background: var(--bg2);
-      }
+      .lcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;transition:all 0.2s;position:relative;overflow:hidden;}
+      .lcard::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:transparent;transition:background 0.2s;}
+      .lcard.live:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.15);}
+      .lcard.live:hover::before{background:var(--accent);}
+      .lcard.coming{opacity:0.5;cursor:default;}
+      .lcard.user-free-card::before{background:var(--green) !important;}
+      .lcard.user-free-card{border-color:var(--green-border);}
+      .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;}
+      .badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:100px;text-transform:uppercase;letter-spacing:0.04em;}
+      .b-grade{background:var(--accent-bg);color:var(--accent);border:1px solid rgba(245,200,66,0.2);}
+      .b-q{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
+      .b-free{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+      .b-live{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);}
+      .b-soon{background:var(--bg3);color:var(--text3);border:1px solid var(--border);}
+      .card-topic{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3;}
+      .card-code{font-size:10px;color:var(--text3);margin-bottom:0.75rem;font-family:monospace;}
+      .card-chips{display:flex;gap:6px;flex-wrap:wrap;}
 
-      /* PROGRESS BAR */
-      .progress-wrap {
-        max-width: 1100px;
-        margin: 0 auto 2rem;
-        padding: 0 1.5rem;
-      }
-      .progress-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 6px;
-      }
-      .progress-label {
-        font-size: 12px;
-        color: var(--text2);
-        min-width: 80px;
-      }
-      .progress-bar-bg {
-        flex: 1;
-        height: 5px;
-        background: var(--bg3);
-        border-radius: 10px;
-        overflow: hidden;
-      }
-      .progress-bar-fill {
-        height: 100%;
-        background: var(--accent);
-        border-radius: 10px;
-        transition: width 0.5s ease;
-      }
-      .progress-count {
-        font-size: 11px;
-        color: var(--text3);
-        min-width: 60px;
-        text-align: right;
-      }
+      .chip{display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);font-size:11px;color:var(--text2);font-weight:500;transition:all 0.2s;cursor:pointer;user-select:none;}
+      .chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+      .chip.disabled{cursor:not-allowed;opacity:0.4;}
+      .chip.disabled:hover{border-color:var(--border);color:var(--text2);background:var(--bg2);}
+      .chip.claim-chip{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);animation:pulse-claim 2s ease-in-out infinite;}
+      .chip.claim-chip:hover{background:var(--accent);color:#111;}
+      @keyframes pulse-claim{0%,100%{box-shadow:0 0 0 0 rgba(245,200,66,0)}50%{box-shadow:0 0 0 4px rgba(245,200,66,0.15)}}
+      .chip.dl-bundle{border-color:var(--green-border);color:var(--green);background:var(--green-bg);}
+      .chip.dl-bundle:hover{background:var(--green);color:#111;}
 
-      /* ─── ADMIN VIEW ─── */
-      .admin-wrap {
-        max-width: 960px;
-        margin: 0 auto;
-        padding: 80px 1.5rem 80px;
-      }
-      .admin-header {
-        margin-bottom: 2rem;
-      }
-      .admin-header h2 {
-        font-family: "DM Serif Display", serif;
-        font-size: 1.8rem;
-        margin-bottom: 0.5rem;
-      }
-      .admin-header p {
-        font-size: 13px;
-        color: var(--text2);
-        font-weight: 300;
-      }
-      .admin-stats {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-      }
-      .astat {
-        background: var(--bg2);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        padding: 1rem 1.25rem;
-        flex: 1;
-        min-width: 140px;
-      }
-      .astat-num {
-        font-family: "DM Serif Display", serif;
-        font-size: 1.8rem;
-        line-height: 1;
-      }
-      .astat-label {
-        font-size: 11px;
-        color: var(--text3);
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        margin-top: 4px;
-      }
-      .admin-grade-block {
-        margin-bottom: 2.5rem;
-      }
-      .admin-grade-title {
-        font-family: "DM Serif Display", serif;
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .admin-lesson-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 0.6rem 0.75rem;
-        border-radius: var(--radius-sm);
-        border: 1px solid var(--border);
-        background: var(--bg2);
-        margin-bottom: 6px;
-        transition: background 0.2s;
-      }
-      .admin-lesson-row:hover {
-        background: var(--bg3);
-      }
-      .alr-topic {
-        flex: 1;
-        font-size: 13px;
-        font-weight: 500;
-      }
-      .alr-code {
-        font-size: 10px;
-        color: var(--text3);
-        font-family: monospace;
-        min-width: 100px;
-      }
-      .alr-q {
-        font-size: 10px;
-        color: var(--text2);
-        min-width: 24px;
-      }
-      .upload-slots {
-        display: flex;
-        gap: 6px;
-      }
-      .uslot {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        padding: 4px 10px;
-        border-radius: 6px;
-        border: 1px solid var(--border);
-        background: var(--bg);
-        font-size: 11px;
-        color: var(--text3);
-        cursor: pointer;
-        transition: all 0.2s;
-        position: relative;
-        overflow: hidden;
-      }
-      .uslot input[type="file"] {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        cursor: pointer;
-        width: 100%;
-      }
-      .uslot:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-      }
-      .uslot.uploaded {
-        border-color: var(--green-border);
-        color: var(--green);
-        background: var(--green-bg);
-      }
-      .uslot.uploaded:hover {
-        border-color: var(--green);
-      }
-      /* Free lesson upload slot — blue tint to distinguish */
-      .uslot.free-slot {
-        border-color: rgba(59, 130, 246, 0.3);
-        color: #60a5fa;
-      }
-      .uslot.free-slot:hover {
-        border-color: #60a5fa;
-      }
-      .alr-status {
-        min-width: 70px;
-        text-align: right;
-      }
-      .status-pill {
-        font-size: 10px;
-        font-weight: 700;
-        padding: 2px 9px;
-        border-radius: 100px;
-        text-transform: uppercase;
-      }
-      .sp-live {
-        background: var(--green-bg);
-        color: var(--green);
-        border: 1px solid var(--green-border);
-      }
-      .sp-partial {
-        background: rgba(245, 200, 66, 0.1);
-        color: var(--accent);
-        border: 1px solid rgba(245, 200, 66, 0.2);
-      }
-      .sp-empty {
-        background: var(--bg3);
-        color: var(--text3);
-        border: 1px solid var(--border);
-      }
-      .sp-free {
-        background: rgba(59, 130, 246, 0.1);
-        color: #60a5fa;
-        border: 1px solid rgba(59, 130, 246, 0.2);
-      }
+      .progress-wrap{max-width:1100px;margin:0 auto 2rem;padding:0 1.5rem;}
+      .progress-row{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+      .progress-label{font-size:12px;color:var(--text2);min-width:80px;}
+      .progress-bar-bg{flex:1;height:5px;background:var(--bg3);border-radius:10px;overflow:hidden;}
+      .progress-bar-fill{height:100%;background:var(--accent);border-radius:10px;transition:width 0.5s ease;}
+      .progress-count{font-size:11px;color:var(--text3);min-width:60px;text-align:right;}
+
+      /* ADMIN */
+      .admin-wrap{max-width:960px;margin:0 auto;padding:80px 1.5rem 80px;}
+      .admin-header{margin-bottom:2rem;}
+      .admin-header h2{font-family:"DM Serif Display",serif;font-size:1.8rem;margin-bottom:0.5rem;}
+      .admin-header p{font-size:13px;color:var(--text2);font-weight:300;}
+      .admin-stats{display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
+      .astat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem 1.25rem;flex:1;min-width:140px;}
+      .astat-num{font-family:"DM Serif Display",serif;font-size:1.8rem;line-height:1;}
+      .astat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;}
+      .admin-grade-block{margin-bottom:2.5rem;}
+      .admin-grade-title{font-family:"DM Serif Display",serif;font-size:1.2rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+      .admin-lesson-row{display:flex;align-items:center;gap:10px;padding:0.6rem 0.75rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);margin-bottom:6px;transition:background 0.2s;flex-wrap:wrap;}
+      .admin-lesson-row:hover{background:var(--bg3);}
+      .alr-topic{flex:1;font-size:13px;font-weight:500;min-width:160px;}
+      .alr-code{font-size:10px;color:var(--text3);font-family:monospace;min-width:100px;}
+      .alr-q{font-size:10px;color:var(--text2);min-width:24px;}
+      .upload-slots{display:flex;gap:6px;flex-wrap:wrap;}
+
+      /* UPLOAD SLOT WITH DELETE */
+      .uslot-wrap{position:relative;display:inline-flex;align-items:center;}
+      .uslot{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);font-size:11px;color:var(--text3);cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;max-width:120px;}
+      .uslot span.slot-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+      .uslot input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;}
+      .uslot:hover{border-color:var(--accent);color:var(--accent);}
+      .uslot.uploaded{border-color:var(--green-border);color:var(--green);background:var(--green-bg);}
+      .uslot.uploaded:hover{border-color:var(--green);}
+      .del-file-btn{display:none;width:16px;height:16px;border-radius:50%;background:var(--red);border:none;cursor:pointer;color:#fff;font-size:9px;line-height:1;align-items:center;justify-content:center;flex-shrink:0;margin-left:2px;transition:all 0.2s;z-index:5;position:relative;}
+      .admin-lesson-row:hover .del-file-btn{display:flex;}
+
+      .alr-status{min-width:70px;text-align:right;}
+      .status-pill{font-size:10px;font-weight:700;padding:2px 9px;border-radius:100px;text-transform:uppercase;}
+      .sp-live{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+      .sp-partial{background:rgba(245,200,66,0.1);color:var(--accent);border:1px solid rgba(245,200,66,0.2);}
+      .sp-empty{background:var(--bg3);color:var(--text3);border:1px solid var(--border);}
 
       /* LOGIN */
-      .login-wrap {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-      }
-      .login-card {
-        background: var(--bg2);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 2.5rem;
-        width: 100%;
-        max-width: 380px;
-      }
-      .login-card h2 {
-        font-family: "DM Serif Display", serif;
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-      }
-      .login-card p {
-        font-size: 13px;
-        color: var(--text2);
-        margin-bottom: 2rem;
-        font-weight: 300;
-      }
-      .field {
-        margin-bottom: 1rem;
-      }
-      .field label {
-        display: block;
-        font-size: 12px;
-        color: var(--text2);
-        margin-bottom: 6px;
-        font-weight: 500;
-      }
-      .field input {
-        width: 100%;
-        padding: 9px 12px;
-        border-radius: var(--radius-sm);
-        border: 1px solid var(--border2);
-        background: var(--bg);
-        color: var(--text);
-        font-family: "Sora", sans-serif;
-        font-size: 13px;
-        outline: none;
-        transition: border-color 0.2s;
-      }
-      .field input:focus {
-        border-color: var(--accent);
-      }
-      .login-btn {
-        width: 100%;
-        padding: 10px;
-        border-radius: var(--radius-sm);
-        background: var(--accent);
-        color: #111;
-        border: none;
-        font-family: "Sora", sans-serif;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s;
-        margin-top: 0.5rem;
-      }
-      .login-btn:hover {
-        background: var(--accent2);
-      }
-      .login-err {
-        font-size: 12px;
-        color: #f87171;
-        margin-top: 0.5rem;
-        display: none;
-      }
+      .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+      .login-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:2.5rem;width:100%;max-width:380px;}
+      .login-card h2{font-family:"DM Serif Display",serif;font-size:1.5rem;margin-bottom:0.5rem;}
+      .login-card p{font-size:13px;color:var(--text2);margin-bottom:2rem;font-weight:300;}
+      .field{margin-bottom:1rem;}
+      .field label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500;}
+      .field input{width:100%;padding:9px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg);color:var(--text);font-family:"Sora",sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
+      .field input:focus{border-color:var(--accent);}
+      .login-btn{width:100%;padding:10px;border-radius:var(--radius-sm);background:var(--accent);color:#111;border:none;font-family:"Sora",sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
+      .login-btn:hover{background:var(--accent2);}
+      .login-err{font-size:12px;color:#f87171;margin-top:0.5rem;display:none;}
+
+      /* MODAL */
+      .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(5px);z-index:500;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+      .modal-overlay.open{opacity:1;pointer-events:all;}
+      .modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:2rem;max-width:460px;width:100%;transform:scale(0.94) translateY(12px);transition:transform 0.25s;}
+      .modal-overlay.open .modal-box{transform:scale(1) translateY(0);}
+      .modal-title{font-family:"DM Serif Display",serif;font-size:1.4rem;margin-bottom:0.5rem;}
+      .modal-sub{font-size:13px;color:var(--text2);font-weight:300;margin-bottom:1.5rem;line-height:1.6;}
+      .modal-lesson-preview{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.5rem;}
+      .modal-lesson-preview .topic{font-size:14px;font-weight:600;margin-bottom:4px;}
+      .modal-lesson-preview .meta{font-size:11px;color:var(--text3);font-family:monospace;}
+      .modal-actions{display:flex;gap:10px;}
+      .modal-btn{flex:1;padding:10px;border-radius:var(--radius-sm);font-family:"Sora",sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;border:none;}
+      .modal-btn-cancel{background:var(--bg3);color:var(--text2);}
+      .modal-btn-cancel:hover{color:var(--text);}
+      .modal-btn-confirm{background:var(--accent);color:#111;}
+      .modal-btn-confirm:hover{background:var(--accent2);}
 
       /* TOAST */
-      .toast {
-        position: fixed;
-        bottom: 1.5rem;
-        right: 1.5rem;
-        background: var(--bg2);
-        border: 1px solid var(--border2);
-        border-radius: var(--radius-sm);
-        padding: 0.75rem 1.25rem;
-        font-size: 13px;
-        color: var(--text);
-        z-index: 999;
-        transform: translateY(80px);
-        opacity: 0;
-        transition: all 0.3s;
-        pointer-events: none;
-      }
-      .toast.show {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      .toast.success {
-        border-color: var(--green-border);
-        color: var(--green);
-      }
+      .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:0.75rem 1.25rem;font-size:13px;color:var(--text);z-index:999;transform:translateY(80px);opacity:0;transition:all 0.3s;pointer-events:none;max-width:320px;}
+      .toast.show{transform:translateY(0);opacity:1;}
+      .toast.success{border-color:var(--green-border);color:var(--green);}
+      .toast.error{border-color:var(--red-border);color:var(--red);}
 
-      /* UTIL */
-      .divider {
-        border: none;
-        border-top: 1px solid var(--border);
-        max-width: 1100px;
-        margin: 0 auto;
-      }
-      @media (max-width: 640px) {
-        .admin-lesson-row {
-          flex-wrap: wrap;
-        }
-        .upload-slots {
-          flex-wrap: wrap;
-        }
-        .lessons-grid {
-          grid-template-columns: 1fr;
-        }
+      .divider{border:none;border-top:1px solid var(--border);max-width:1100px;margin:0 auto;}
+      @media(max-width:640px){
+        .admin-lesson-row{flex-wrap:wrap;}
+        .upload-slots{flex-wrap:wrap;}
+        .lessons-grid{grid-template-columns:1fr;}
+        .modal-actions{flex-direction:column;}
       }
     </style>
   </head>
   <body>
-    <!-- NAV -->
+
     <nav>
       <div class="logo"><span class="logo-dot"></span>MathKit PH</div>
-      <div
-        style="display: flex; align-items: center; gap: 1.5rem"
-        id="navLinks"
-      >
-        <a
-          href="#lessons"
-          style="font-size: 13px; color: var(--text2); transition: color 0.2s"
-          onmouseover="this.style.color = 'var(--text)'"
-          onmouseout="this.style.color = 'var(--text2)'"
-          >Lessons</a
-        >
-        <a
-          href="#pricing"
-          style="font-size: 13px; color: var(--text2); transition: color 0.2s"
-          onmouseover="this.style.color = 'var(--text)'"
-          onmouseout="this.style.color = 'var(--text2)'"
-          >Pricing</a
-        >
+      <div style="display:flex;align-items:center;gap:1.5rem" id="navLinks">
+        <a href="#lessons" style="font-size:13px;color:var(--text2);transition:color 0.2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">Lessons</a>
+        <a href="#pricing" style="font-size:13px;color:var(--text2);transition:color 0.2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">Pricing</a>
       </div>
       <div class="nav-right">
-        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">
-          🌙
-        </button>
-        <button class="btn-sm" id="adminNavBtn" onclick="showAdmin()">
-          Admin
-        </button>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+        <button class="btn-sm" id="adminNavBtn" onclick="showAdmin()">Admin</button>
       </div>
     </nav>
 
-    <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
-    <!-- ══════════════════════════════════════
-     LOGIN VIEW
-══════════════════════════════════════ -->
+    <!-- CLAIM MODAL -->
+    <div class="modal-overlay" id="claimModal">
+      <div class="modal-box">
+        <div class="modal-title">🎁 Claim Your Free Lesson</div>
+        <div class="modal-sub">You get <strong>one free lesson</strong> of your choice. You'll get the full LP, PPT, and interactive activity bundled for download — at no cost, forever. Choose wisely!</div>
+        <div class="modal-lesson-preview">
+          <div class="topic" id="claimPreviewTopic"></div>
+          <div class="meta" id="claimPreviewMeta"></div>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Cancel</button>
+          <button class="modal-btn modal-btn-confirm" onclick="confirmClaim()">Yes, claim this free!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGIN VIEW -->
     <div class="view" id="loginView">
       <div class="login-wrap">
         <div class="login-card">
@@ -971,119 +259,56 @@
           <p>Enter your password to manage lesson uploads.</p>
           <div class="field">
             <label>Password</label>
-            <input
-              type="password"
-              id="pwInput"
-              placeholder="••••••••"
-              onkeydown="if (event.key === 'Enter') doLogin();"
-            />
+            <input type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin();" />
           </div>
           <button class="login-btn" onclick="doLogin()">Sign in</button>
-          <div class="login-err" id="loginErr">
-            Incorrect password. Try again.
-          </div>
-          <div style="margin-top: 1rem; text-align: center">
-            <button class="btn-sm" onclick="showPublic()">
-              ← Back to catalog
-            </button>
+          <div class="login-err" id="loginErr">Incorrect password. Try again.</div>
+          <div style="margin-top:1rem;text-align:center;">
+            <button class="btn-sm" onclick="showPublic()">← Back to catalog</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════
-     ADMIN VIEW
-══════════════════════════════════════ -->
+    <!-- ADMIN VIEW -->
     <div class="view" id="adminView">
       <div class="admin-wrap">
         <div class="admin-header">
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              flex-wrap: wrap;
-              gap: 1rem;
-              margin-bottom: 0.75rem;
-            "
-          >
-            <h2 style="margin-bottom: 0">Lesson Manager</h2>
-            <!-- BACK BUTTON -->
-            <button
-              class="btn-sm"
-              onclick="showPublic()"
-              style="display: flex; align-items: center; gap: 6px"
-            >
-              ← Back to Catalog
-            </button>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:0.75rem;">
+            <h2 style="margin-bottom:0;">Lesson Manager</h2>
+            <button class="btn-sm" onclick="showPublic()">← Back to Catalog</button>
           </div>
-          <p>
-            Upload PPT, DLP, and Activity for each lesson. A lesson goes live
-            once all three are set.<br />
-            <span style="color: #60a5fa; font-size: 12px"
-              >ⓘ Free-preview lessons still require all three uploads — they
-              just show as preview-only (no download) to students.</span
-            >
-          </p>
+          <p>Upload PPT, LP, and Activity for each lesson. A lesson goes live once all three are set.<br>
+          <span style="color:var(--blue);font-size:12px;">ⓘ Hover a row to reveal the <strong>✕</strong> delete button on each file. You can also re-upload to replace a file.</span></p>
         </div>
         <div class="admin-stats" id="adminStats"></div>
         <div id="adminCatalog"></div>
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════
-     PUBLIC VIEW
-══════════════════════════════════════ -->
+    <!-- PUBLIC VIEW -->
     <div class="view active" id="publicView">
       <div class="public-hero">
         <div class="hero-tag">🇵🇭 DepEd K–10 Math Materials</div>
-        <h1>
-          Lesson plans that<br /><span id="typewriter-word"></span
-          ><span class="tw-cursor">|</span><br />your students.
-        </h1>
-        <p>
-          Download ready-to-use DLPs and PPTs. Then let students play — live
-          interactive activities built for each lesson. No setup. No prep. Just
-          teach.
-        </p>
+        <h1>Lesson plans that<br><span id="typewriter-word"></span><span class="tw-cursor">|</span><br>your students.</h1>
+        <p>Download ready-to-use LPs and PPTs. Then let students play — live interactive activities built for each lesson. No setup. No prep. Just teach.</p>
       </div>
 
+      <div class="free-claim-banner" id="freeClaimBanner"></div>
       <div class="progress-wrap" id="progressWrap"></div>
 
       <div class="filter-bar">
         <span class="filter-label">Grade</span>
-        <button class="ftab active" onclick="setFilter('grade', 'all', this)">
-          All
-        </button>
-        <button class="ftab" onclick="setFilter('grade', '7', this)">7</button>
-        <button class="ftab" onclick="setFilter('grade', '8', this)">8</button>
-        <button class="ftab" onclick="setFilter('grade', '9', this)">9</button>
-        <button class="ftab" onclick="setFilter('grade', '10', this)">
-          10
-        </button>
+        <button class="ftab active" onclick="setFilter('grade','all',this)">All</button>
+        <button class="ftab" onclick="setFilter('grade','7',this)">7</button>
+        <button class="ftab" onclick="setFilter('grade','8',this)">8</button>
+        <button class="ftab" onclick="setFilter('grade','9',this)">9</button>
+        <button class="ftab" onclick="setFilter('grade','10',this)">10</button>
         <div class="filter-sep"></div>
         <span class="filter-label">Status</span>
-        <button
-          class="ftab active"
-          onclick="setFilter('status', 'all', this)"
-          data-ftype="status"
-        >
-          All
-        </button>
-        <button
-          class="ftab"
-          onclick="setFilter('status', 'live', this)"
-          data-ftype="status"
-        >
-          Available
-        </button>
-        <button
-          class="ftab"
-          onclick="setFilter('status', 'coming', this)"
-          data-ftype="status"
-        >
-          Coming Soon
-        </button>
+        <button class="ftab active" onclick="setFilter('status','all',this)">All</button>
+        <button class="ftab" onclick="setFilter('status','live',this)">Available</button>
+        <button class="ftab" onclick="setFilter('status','coming',this)">Coming Soon</button>
       </div>
 
       <div class="catalog" id="publicCatalog"></div>
@@ -1091,8 +316,8 @@
 
     <!-- PRICING + FOOTER -->
     <div id="publicExtra">
-      <hr class="divider" style="margin-top: 0" />
-      <section class="pricing-section" id="pricing" style="padding-top: 80px">
+      <hr class="divider" style="margin-top:0;">
+      <section class="pricing-section" id="pricing" style="padding-top:80px;">
         <div class="section-tag">Pricing</div>
         <div class="section-title">Start for free. Own it forever.</div>
         <div class="pricing-grid">
@@ -1101,14 +326,12 @@
             <div class="pricing-price">₱0</div>
             <div class="pricing-per">forever</div>
             <ul class="pricing-features">
-              <li><span class="chk">✓</span> 1 free lesson per grade level</li>
-              <li><span class="chk">✓</span> DLP + PPT preview</li>
+              <li><span class="chk">✓</span> 1 free lesson of your choice</li>
+              <li><span class="chk">✓</span> Full LP + PPT download</li>
               <li><span class="chk">✓</span> Full activity access</li>
-              <li><span class="chk">✓</span> Live leaderboard</li>
+              <li><span class="chk">✓</span> Zip bundle download</li>
             </ul>
-            <button class="pricing-cta pricing-cta-outline">
-              Get started free
-            </button>
+            <button class="pricing-cta pricing-cta-outline">Get started free</button>
           </div>
           <div class="pricing-card featured">
             <div class="pricing-badge">Most Popular</div>
@@ -1116,17 +339,13 @@
             <div class="pricing-price">₱299</div>
             <div class="pricing-per">one-time · pick any grade level</div>
             <ul class="pricing-features">
-              <li>
-                <span class="chk">✓</span> All lessons for your chosen grade
-              </li>
-              <li><span class="chk">✓</span> DLP + PPT for every lesson</li>
+              <li><span class="chk">✓</span> All lessons for your chosen grade</li>
+              <li><span class="chk">✓</span> LP + PPT for every lesson</li>
               <li><span class="chk">✓</span> All interactive activities</li>
               <li><span class="chk">✓</span> All four quarters included</li>
-              <li><span class="chk">✓</span> Teacher dashboard</li>
+              <li><span class="chk">✓</span> Download as zip bundles</li>
             </ul>
-            <button class="pricing-cta pricing-cta-filled">
-              Get a Grade Pack — ₱299
-            </button>
+            <button class="pricing-cta pricing-cta-filled">Get a Grade Pack — ₱299</button>
           </div>
           <div class="pricing-card">
             <div class="pricing-name">All Grades Bundle</div>
@@ -1134,1163 +353,470 @@
             <div class="pricing-per">one-time · Grades 7, 8, 9 &amp; 10</div>
             <ul class="pricing-features">
               <li><span class="chk">✓</span> Every lesson across all grades</li>
-              <li><span class="chk">✓</span> DLP + PPT for every lesson</li>
+              <li><span class="chk">✓</span> LP + PPT for every lesson</li>
               <li><span class="chk">✓</span> All interactive activities</li>
               <li><span class="chk">✓</span> Teacher dashboard</li>
               <li><span class="chk">✓</span> Save ₱397 vs buying separately</li>
             </ul>
-            <button class="pricing-cta pricing-cta-outline">
-              Get the Bundle — ₱799
-            </button>
+            <button class="pricing-cta pricing-cta-outline">Get the Bundle — ₱799</button>
           </div>
         </div>
-        <div class="pricing-note">
-          All packs are one-time purchases — no subscriptions, no renewals.
-        </div>
+        <div class="pricing-note">All packs are one-time purchases — no subscriptions, no renewals.</div>
       </section>
-
-      <hr class="divider" />
+      <hr class="divider">
       <footer class="site-footer">
         <div>
-          <div class="footer-logo">
-            <span class="logo-dot"></span> MathKit PH
-          </div>
-          <div style="font-size: 12px; color: var(--text3); margin-top: 5px">
-            Made by a Math teacher, for Math teachers. 🇵🇭
-          </div>
+          <div class="footer-logo"><span class="logo-dot"></span> MathKit PH</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:5px;">Made by a Math teacher, for Math teachers. 🇵🇭</div>
         </div>
-        <div class="footer-links">
-          <a href="#">Gumroad</a>
-          <a href="#">Contact</a>
-        </div>
+        <div class="footer-links"><a href="#">Gumroad</a><a href="#">Contact</a></div>
       </footer>
     </div>
 
     <script>
-      /* ══════════════════════════════════
-   CURRICULUM DATA
-   Source: DepEd K–12 Math CG 2014
-══════════════════════════════════ */
-      const CURRICULUM = [
-        // ── GRADE 7 ──
-        {
-          grade: 7,
-          q: "Q1",
-          strand: "Numbers & Number Sense",
-          topic: "Sets and the Real Number System",
-          code: "M7NS-Ia",
-        },
-        {
-          grade: 7,
-          q: "Q1",
-          strand: "Numbers & Number Sense",
-          topic: "Absolute Value and Operations on Integers",
-          code: "M7NS-Ic",
-        },
-        {
-          grade: 7,
-          q: "Q1",
-          strand: "Numbers & Number Sense",
-          topic: "Rational Numbers and the Number Line",
-          code: "M7NS-Ie",
-        },
-        {
-          grade: 7,
-          q: "Q1",
-          strand: "Numbers & Number Sense",
-          topic: "Square Roots and Irrational Numbers",
-          code: "M7NS-Ig",
-        },
-        {
-          grade: 7,
-          q: "Q1",
-          strand: "Numbers & Number Sense",
-          topic: "Real Numbers in Real Life",
-          code: "M7NS-Ii",
-        },
-        {
-          grade: 7,
-          q: "Q2",
-          strand: "Measurement",
-          topic: "Precision, Accuracy and Significant Figures",
-          code: "M7ME-IIa",
-        },
-        {
-          grade: 7,
-          q: "Q2",
-          strand: "Measurement",
-          topic: "Conversion of Units (Metric & English)",
-          code: "M7ME-IIb",
-        },
-        {
-          grade: 7,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Algebraic Expressions and Polynomials",
-          code: "M7AL-IIc",
-        },
-        {
-          grade: 7,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Laws of Exponents and Polynomial Operations",
-          code: "M7AL-IId",
-        },
-        {
-          grade: 7,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Special Products",
-          code: "M7AL-IIe",
-        },
-        {
-          grade: 7,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Linear Equations and Inequalities in One Variable",
-          code: "M7AL-IIh",
-        },
-        {
-          grade: 7,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Solving Problems on Equations and Inequalities",
-          code: "M7AL-IIj",
-        },
-        {
-          grade: 7,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Points, Lines, and Planes",
-          code: "M7GE-IIIa",
-        },
-        {
-          grade: 7,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Angles: Kinds and Relationships",
-          code: "M7GE-IIIb",
-        },
-        {
-          grade: 7,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Parallel Lines and Transversals",
-          code: "M7GE-IIIc",
-        },
-        {
-          grade: 7,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Polygons: Angles and Sides",
-          code: "M7GE-IIIe",
-        },
-        {
-          grade: 7,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Circles and Related Terms",
-          code: "M7GE-IIIg",
-        },
-        {
-          grade: 7,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Constructing Geometric Figures",
-          code: "M7GE-IIIh",
-        },
-        {
-          grade: 7,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Introduction to Statistics",
-          code: "M7SP-IVa",
-        },
-        {
-          grade: 7,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Data Collection and Frequency Distribution",
-          code: "M7SP-IVb",
-        },
-        {
-          grade: 7,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Graphs: Bar, Line, Pie, Histogram, Ogive",
-          code: "M7SP-IVd",
-        },
-        {
-          grade: 7,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Measures of Central Tendency",
-          code: "M7SP-IVf",
-        },
-        {
-          grade: 7,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Measures of Variability",
-          code: "M7SP-IVh",
-        },
-        {
-          grade: 7,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Interpreting Data and Drawing Conclusions",
-          code: "M7SP-IVj",
-        },
+    /* ══════ CURRICULUM DATA ══════ */
+    const CURRICULUM=[
+      {grade:7,q:"Q1",strand:"Numbers & Number Sense",topic:"Sets and the Real Number System",code:"M7NS-Ia"},
+      {grade:7,q:"Q1",strand:"Numbers & Number Sense",topic:"Absolute Value and Operations on Integers",code:"M7NS-Ic"},
+      {grade:7,q:"Q1",strand:"Numbers & Number Sense",topic:"Rational Numbers and the Number Line",code:"M7NS-Ie"},
+      {grade:7,q:"Q1",strand:"Numbers & Number Sense",topic:"Square Roots and Irrational Numbers",code:"M7NS-Ig"},
+      {grade:7,q:"Q1",strand:"Numbers & Number Sense",topic:"Real Numbers in Real Life",code:"M7NS-Ii"},
+      {grade:7,q:"Q2",strand:"Measurement",topic:"Precision, Accuracy and Significant Figures",code:"M7ME-IIa"},
+      {grade:7,q:"Q2",strand:"Measurement",topic:"Conversion of Units (Metric & English)",code:"M7ME-IIb"},
+      {grade:7,q:"Q2",strand:"Patterns & Algebra",topic:"Algebraic Expressions and Polynomials",code:"M7AL-IIc"},
+      {grade:7,q:"Q2",strand:"Patterns & Algebra",topic:"Laws of Exponents and Polynomial Operations",code:"M7AL-IId"},
+      {grade:7,q:"Q2",strand:"Patterns & Algebra",topic:"Special Products",code:"M7AL-IIe"},
+      {grade:7,q:"Q2",strand:"Patterns & Algebra",topic:"Linear Equations and Inequalities in One Variable",code:"M7AL-IIh"},
+      {grade:7,q:"Q2",strand:"Patterns & Algebra",topic:"Solving Problems on Equations and Inequalities",code:"M7AL-IIj"},
+      {grade:7,q:"Q3",strand:"Geometry",topic:"Points, Lines, and Planes",code:"M7GE-IIIa"},
+      {grade:7,q:"Q3",strand:"Geometry",topic:"Angles: Kinds and Relationships",code:"M7GE-IIIb"},
+      {grade:7,q:"Q3",strand:"Geometry",topic:"Parallel Lines and Transversals",code:"M7GE-IIIc"},
+      {grade:7,q:"Q3",strand:"Geometry",topic:"Polygons: Angles and Sides",code:"M7GE-IIIe"},
+      {grade:7,q:"Q3",strand:"Geometry",topic:"Circles and Related Terms",code:"M7GE-IIIg"},
+      {grade:7,q:"Q3",strand:"Geometry",topic:"Constructing Geometric Figures",code:"M7GE-IIIh"},
+      {grade:7,q:"Q4",strand:"Statistics & Probability",topic:"Introduction to Statistics",code:"M7SP-IVa"},
+      {grade:7,q:"Q4",strand:"Statistics & Probability",topic:"Data Collection and Frequency Distribution",code:"M7SP-IVb"},
+      {grade:7,q:"Q4",strand:"Statistics & Probability",topic:"Graphs: Bar, Line, Pie, Histogram, Ogive",code:"M7SP-IVd"},
+      {grade:7,q:"Q4",strand:"Statistics & Probability",topic:"Measures of Central Tendency",code:"M7SP-IVf"},
+      {grade:7,q:"Q4",strand:"Statistics & Probability",topic:"Measures of Variability",code:"M7SP-IVh"},
+      {grade:7,q:"Q4",strand:"Statistics & Probability",topic:"Interpreting Data and Drawing Conclusions",code:"M7SP-IVj"},
+      {grade:8,q:"Q1",strand:"Patterns & Algebra",topic:"Factoring Polynomials",code:"M8AL-Ia"},
+      {grade:8,q:"Q1",strand:"Patterns & Algebra",topic:"Rational Algebraic Expressions",code:"M8AL-Ic"},
+      {grade:8,q:"Q1",strand:"Patterns & Algebra",topic:"The Rectangular Coordinate System",code:"M8AL-Ie-1"},
+      {grade:8,q:"Q1",strand:"Patterns & Algebra",topic:"Slope of a Line",code:"M8AL-Ie-4"},
+      {grade:8,q:"Q1",strand:"Patterns & Algebra",topic:"Graphing Linear Equations in Two Variables",code:"M8AL-If"},
+      {grade:8,q:"Q1",strand:"Patterns & Algebra",topic:"Finding the Equation of a Line",code:"M8AL-Ig-1"},
+      {grade:8,q:"Q1",strand:"Patterns & Algebra",topic:"Systems of Linear Equations",code:"M8AL-Ih"},
+      {grade:8,q:"Q1",strand:"Patterns & Algebra",topic:"Solving Systems: Graphing, Substitution, Elimination, Cramer's Rule",code:"M8AL-Ii"},
+      {grade:8,q:"Q2",strand:"Patterns & Algebra",topic:"Linear Inequalities in Two Variables",code:"M8AL-IIa"},
+      {grade:8,q:"Q2",strand:"Patterns & Algebra",topic:"Systems of Linear Inequalities",code:"M8AL-IIb"},
+      {grade:8,q:"Q2",strand:"Patterns & Algebra",topic:"Linear Programming (Simple)",code:"M8AL-IIc-1"},
+      {grade:8,q:"Q2",strand:"Patterns & Algebra",topic:"Relations and Functions",code:"M8AL-IIc-2"},
+      {grade:8,q:"Q2",strand:"Patterns & Algebra",topic:"Linear Functions and Their Graphs",code:"M8AL-IId"},
+      {grade:8,q:"Q3",strand:"Geometry",topic:"If-Then Statements: Hypothesis and Conclusion",code:"M8GE-IIf"},
+      {grade:8,q:"Q3",strand:"Geometry",topic:"Inverse, Converse, and Contrapositive",code:"M8GE-IIg"},
+      {grade:8,q:"Q3",strand:"Geometry",topic:"Inductive and Deductive Reasoning; Proofs",code:"M8GE-IIh"},
+      {grade:8,q:"Q3",strand:"Geometry",topic:"Axiomatic Structure of Geometry",code:"M8GE-IIIa"},
+      {grade:8,q:"Q3",strand:"Geometry",topic:"Triangle Congruence: SAS, ASA, SSS",code:"M8GE-IIId"},
+      {grade:8,q:"Q3",strand:"Geometry",topic:"Proving Triangle Congruence",code:"M8GE-IIIg"},
+      {grade:8,q:"Q4",strand:"Geometry",topic:"Triangle Inequality Theorems",code:"M8GE-IVa"},
+      {grade:8,q:"Q4",strand:"Geometry",topic:"Parallel and Perpendicular Lines",code:"M8GE-IVd"},
+      {grade:8,q:"Q4",strand:"Statistics & Probability",topic:"Experiments, Outcomes, Sample Space, Events",code:"M8SP-IVf"},
+      {grade:8,q:"Q4",strand:"Statistics & Probability",topic:"Probability of Simple Events",code:"M8SP-IVh"},
+      {grade:8,q:"Q4",strand:"Statistics & Probability",topic:"Experimental vs Theoretical Probability",code:"M8SP-IVi"},
+      {grade:8,q:"Q4",strand:"Statistics & Probability",topic:"Linear Correlation and Regression",code:"M8SP-IVj"},
+      {grade:9,q:"Q1",strand:"Patterns & Algebra",topic:"Quadratic Equations: Extracting Roots, Factoring",code:"M9AL-Ia"},
+      {grade:9,q:"Q1",strand:"Patterns & Algebra",topic:"Quadratic Equations: Completing the Square",code:"M9AL-Ib"},
+      {grade:9,q:"Q1",strand:"Patterns & Algebra",topic:"Quadratic Formula and the Discriminant",code:"M9AL-Ic"},
+      {grade:9,q:"Q1",strand:"Patterns & Algebra",topic:"Sum and Product of Roots",code:"M9AL-Id"},
+      {grade:9,q:"Q1",strand:"Patterns & Algebra",topic:"Equations Transformable into Quadratic",code:"M9AL-Ie"},
+      {grade:9,q:"Q1",strand:"Patterns & Algebra",topic:"Solving Problems Involving Quadratic Equations",code:"M9AL-If"},
+      {grade:9,q:"Q2",strand:"Patterns & Algebra",topic:"Quadratic Inequalities",code:"M9AL-IIa"},
+      {grade:9,q:"Q2",strand:"Patterns & Algebra",topic:"Quadratic Functions: Graphs and Transformations",code:"M9AL-IIb"},
+      {grade:9,q:"Q2",strand:"Patterns & Algebra",topic:"Quadratic Functions: Vertex, Axis, Intercepts",code:"M9AL-IIc"},
+      {grade:9,q:"Q2",strand:"Patterns & Algebra",topic:"Rational Algebraic Equations",code:"M9AL-IId"},
+      {grade:9,q:"Q2",strand:"Patterns & Algebra",topic:"Variations: Direct, Inverse, Joint, Combined",code:"M9AL-IIe"},
+      {grade:9,q:"Q2",strand:"Patterns & Algebra",topic:"Radicals: Simplifying and Operations",code:"M9AL-IIf"},
+      {grade:9,q:"Q3",strand:"Geometry",topic:"Parallelograms: Properties and Theorems",code:"M9GE-IIIa"},
+      {grade:9,q:"Q3",strand:"Geometry",topic:"Special Parallelograms: Rectangle, Rhombus, Square",code:"M9GE-IIIb"},
+      {grade:9,q:"Q3",strand:"Geometry",topic:"Trapezoids and Kites",code:"M9GE-IIIc"},
+      {grade:9,q:"Q3",strand:"Geometry",topic:"Triangle Similarity: AA, SAS, SSS",code:"M9GE-IIId"},
+      {grade:9,q:"Q3",strand:"Geometry",topic:"Right Triangle Similarity and Special Triangles",code:"M9GE-IIIe"},
+      {grade:9,q:"Q3",strand:"Geometry",topic:"Applying Triangle Similarity",code:"M9GE-IIIf"},
+      {grade:9,q:"Q4",strand:"Geometry",topic:"Six Trigonometric Ratios",code:"M9GE-IVa"},
+      {grade:9,q:"Q4",strand:"Geometry",topic:"Trigonometric Ratios of Special Angles",code:"M9GE-IVb"},
+      {grade:9,q:"Q4",strand:"Geometry",topic:"Angles of Elevation and Depression",code:"M9GE-IVc"},
+      {grade:9,q:"Q4",strand:"Geometry",topic:"Solving Right Triangles in Real Life",code:"M9GE-IVd"},
+      {grade:9,q:"Q4",strand:"Geometry",topic:"Law of Sines and Law of Cosines",code:"M9GE-IVf"},
+      {grade:9,q:"Q4",strand:"Geometry",topic:"Solving Oblique Triangles",code:"M9GE-IVh"},
+      {grade:9,q:"Q4",strand:"Statistics & Probability",topic:"Normal Standard Distribution",code:"M9SP-IVj"},
+      {grade:10,q:"Q1",strand:"Patterns & Algebra",topic:"Arithmetic Sequences",code:"M10AL-Ib"},
+      {grade:10,q:"Q1",strand:"Patterns & Algebra",topic:"Geometric Sequences",code:"M10AL-Id"},
+      {grade:10,q:"Q1",strand:"Patterns & Algebra",topic:"Other Sequences: Harmonic and Fibonacci",code:"M10AL-If-1"},
+      {grade:10,q:"Q1",strand:"Patterns & Algebra",topic:"Solving Problems on Sequences and Series",code:"M10AL-If-2"},
+      {grade:10,q:"Q1",strand:"Patterns & Algebra",topic:"Polynomial Division: Long and Synthetic",code:"M10AL-Ig"},
+      {grade:10,q:"Q1",strand:"Patterns & Algebra",topic:"Remainder Theorem and Factor Theorem",code:"M10AL-Ig-2"},
+      {grade:10,q:"Q1",strand:"Patterns & Algebra",topic:"Factoring Polynomials",code:"M10AL-Ih"},
+      {grade:10,q:"Q1",strand:"Patterns & Algebra",topic:"Solving Polynomial Equations",code:"M10AL-Ii"},
+      {grade:10,q:"Q2",strand:"Patterns & Algebra",topic:"Polynomial Functions and Their Graphs",code:"M10AL-IIa"},
+      {grade:10,q:"Q2",strand:"Patterns & Algebra",topic:"Descartes' Rule of Signs",code:"M10AL-IIb-1"},
+      {grade:10,q:"Q2",strand:"Patterns & Algebra",topic:"Rational Root Theorem",code:"M10AL-IIb-2"},
+      {grade:10,q:"Q2",strand:"Geometry",topic:"Chords, Arcs, and Central Angles",code:"M10GE-IId"},
+      {grade:10,q:"Q2",strand:"Geometry",topic:"Inscribed Angles and Their Theorems",code:"M10GE-IId-2"},
+      {grade:10,q:"Q2",strand:"Geometry",topic:"Secants, Tangents, and Segments",code:"M10GE-IIe"},
+      {grade:10,q:"Q2",strand:"Geometry",topic:"Solving Problems on Circles",code:"M10GE-IIf"},
+      {grade:10,q:"Q2",strand:"Geometry",topic:"Distance Formula and Its Applications",code:"M10GE-IIg"},
+      {grade:10,q:"Q2",strand:"Geometry",topic:"Equation of a Circle",code:"M10GE-IIh"},
+      {grade:10,q:"Q3",strand:"Statistics & Probability",topic:"Permutations of Objects",code:"M10SP-IIIa"},
+      {grade:10,q:"Q3",strand:"Statistics & Probability",topic:"Circular Permutations",code:"M10SP-IIIb-1"},
+      {grade:10,q:"Q3",strand:"Statistics & Probability",topic:"Permutations with Repetition",code:"M10SP-IIIb-2"},
+      {grade:10,q:"Q3",strand:"Statistics & Probability",topic:"Combinations",code:"M10SP-IIIc"},
+      {grade:10,q:"Q3",strand:"Statistics & Probability",topic:"Solving Problems on Permutations and Combinations",code:"M10SP-IIIf"},
+      {grade:10,q:"Q3",strand:"Statistics & Probability",topic:"Probability of Union and Intersection of Events",code:"M10SP-IIIg"},
+      {grade:10,q:"Q3",strand:"Statistics & Probability",topic:"Conditional Probability",code:"M10SP-IIIh"},
+      {grade:10,q:"Q4",strand:"Statistics & Probability",topic:"Measures of Position: Quartiles",code:"M10SP-IVa"},
+      {grade:10,q:"Q4",strand:"Statistics & Probability",topic:"Deciles and Percentiles",code:"M10SP-IVb"},
+      {grade:10,q:"Q4",strand:"Statistics & Probability",topic:"Interpreting a Box-and-Whisker Plot",code:"M10SP-IVd"},
+      {grade:10,q:"Q4",strand:"Statistics & Probability",topic:"Statistical Mini-Research Methods",code:"M10SP-IVf"},
+    ];
 
-        // ── GRADE 8 ──
-        {
-          grade: 8,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Factoring Polynomials",
-          code: "M8AL-Ia",
-        },
-        {
-          grade: 8,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Rational Algebraic Expressions",
-          code: "M8AL-Ic",
-        },
-        {
-          grade: 8,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "The Rectangular Coordinate System",
-          code: "M8AL-Ie-1",
-        },
-        {
-          grade: 8,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Slope of a Line",
-          code: "M8AL-Ie-4",
-        },
-        {
-          grade: 8,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Graphing Linear Equations in Two Variables",
-          code: "M8AL-If",
-        },
-        {
-          grade: 8,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Finding the Equation of a Line",
-          code: "M8AL-Ig-1",
-        },
-        {
-          grade: 8,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Systems of Linear Equations",
-          code: "M8AL-Ih",
-        },
-        {
-          grade: 8,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic:
-            "Solving Systems: Graphing, Substitution, Elimination, Cramer's Rule",
-          code: "M8AL-Ii",
-        },
-        {
-          grade: 8,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Linear Inequalities in Two Variables",
-          code: "M8AL-IIa",
-        },
-        {
-          grade: 8,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Systems of Linear Inequalities",
-          code: "M8AL-IIb",
-        },
-        {
-          grade: 8,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Linear Programming (Simple)",
-          code: "M8AL-IIc-1",
-        },
-        {
-          grade: 8,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Relations and Functions",
-          code: "M8AL-IIc-2",
-        },
-        {
-          grade: 8,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Linear Functions and Their Graphs",
-          code: "M8AL-IId",
-        },
-        {
-          grade: 8,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "If-Then Statements: Hypothesis and Conclusion",
-          code: "M8GE-IIf",
-        },
-        {
-          grade: 8,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Inverse, Converse, and Contrapositive",
-          code: "M8GE-IIg",
-        },
-        {
-          grade: 8,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Inductive and Deductive Reasoning; Proofs",
-          code: "M8GE-IIh",
-        },
-        {
-          grade: 8,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Axiomatic Structure of Geometry",
-          code: "M8GE-IIIa",
-        },
-        {
-          grade: 8,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Triangle Congruence: SAS, ASA, SSS",
-          code: "M8GE-IIId",
-        },
-        {
-          grade: 8,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Proving Triangle Congruence",
-          code: "M8GE-IIIg",
-        },
-        {
-          grade: 8,
-          q: "Q4",
-          strand: "Geometry",
-          topic: "Triangle Inequality Theorems",
-          code: "M8GE-IVa",
-        },
-        {
-          grade: 8,
-          q: "Q4",
-          strand: "Geometry",
-          topic: "Parallel and Perpendicular Lines",
-          code: "M8GE-IVd",
-        },
-        {
-          grade: 8,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Experiments, Outcomes, Sample Space, Events",
-          code: "M8SP-IVf",
-        },
-        {
-          grade: 8,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Probability of Simple Events",
-          code: "M8SP-IVh",
-        },
-        {
-          grade: 8,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Experimental vs Theoretical Probability",
-          code: "M8SP-IVi",
-        },
-        {
-          grade: 8,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Linear Correlation and Regression",
-          code: "M8SP-IVj",
-        },
+    /* ══════ IN-MEMORY STATE (no localStorage — ready for Supabase) ══════ */
+    const ADMIN_PW = "mathkit2025";
+    // uploads[lessonKey] = { ppt: File|null, lp: File|null, activity: File|null }
+    let uploads = {};
+    // userFreeLesson: null | lessonKey string (one claim per session)
+    let userFreeLesson = null;
+    let pendingClaimKey = null;
 
-        // ── GRADE 9 ──
-        {
-          grade: 9,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Quadratic Equations: Extracting Roots, Factoring",
-          code: "M9AL-Ia",
-        },
-        {
-          grade: 9,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Quadratic Equations: Completing the Square",
-          code: "M9AL-Ib",
-        },
-        {
-          grade: 9,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Quadratic Formula and the Discriminant",
-          code: "M9AL-Ic",
-        },
-        {
-          grade: 9,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Sum and Product of Roots",
-          code: "M9AL-Id",
-        },
-        {
-          grade: 9,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Equations Transformable into Quadratic",
-          code: "M9AL-Ie",
-        },
-        {
-          grade: 9,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Solving Problems Involving Quadratic Equations",
-          code: "M9AL-If",
-        },
-        {
-          grade: 9,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Quadratic Inequalities",
-          code: "M9AL-IIa",
-        },
-        {
-          grade: 9,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Quadratic Functions: Graphs and Transformations",
-          code: "M9AL-IIb",
-        },
-        {
-          grade: 9,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Quadratic Functions: Vertex, Axis, Intercepts",
-          code: "M9AL-IIc",
-        },
-        {
-          grade: 9,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Rational Algebraic Equations",
-          code: "M9AL-IId",
-        },
-        {
-          grade: 9,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Variations: Direct, Inverse, Joint, Combined",
-          code: "M9AL-IIe",
-        },
-        {
-          grade: 9,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Radicals: Simplifying and Operations",
-          code: "M9AL-IIf",
-        },
-        {
-          grade: 9,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Parallelograms: Properties and Theorems",
-          code: "M9GE-IIIa",
-        },
-        {
-          grade: 9,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Special Parallelograms: Rectangle, Rhombus, Square",
-          code: "M9GE-IIIb",
-        },
-        {
-          grade: 9,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Trapezoids and Kites",
-          code: "M9GE-IIIc",
-        },
-        {
-          grade: 9,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Triangle Similarity: AA, SAS, SSS",
-          code: "M9GE-IIId",
-        },
-        {
-          grade: 9,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Right Triangle Similarity and Special Triangles",
-          code: "M9GE-IIIe",
-        },
-        {
-          grade: 9,
-          q: "Q3",
-          strand: "Geometry",
-          topic: "Applying Triangle Similarity",
-          code: "M9GE-IIIf",
-        },
-        {
-          grade: 9,
-          q: "Q4",
-          strand: "Geometry",
-          topic: "Six Trigonometric Ratios",
-          code: "M9GE-IVa",
-        },
-        {
-          grade: 9,
-          q: "Q4",
-          strand: "Geometry",
-          topic: "Trigonometric Ratios of Special Angles",
-          code: "M9GE-IVb",
-        },
-        {
-          grade: 9,
-          q: "Q4",
-          strand: "Geometry",
-          topic: "Angles of Elevation and Depression",
-          code: "M9GE-IVc",
-        },
-        {
-          grade: 9,
-          q: "Q4",
-          strand: "Geometry",
-          topic: "Solving Right Triangles in Real Life",
-          code: "M9GE-IVd",
-        },
-        {
-          grade: 9,
-          q: "Q4",
-          strand: "Geometry",
-          topic: "Law of Sines and Law of Cosines",
-          code: "M9GE-IVf",
-        },
-        {
-          grade: 9,
-          q: "Q4",
-          strand: "Geometry",
-          topic: "Solving Oblique Triangles",
-          code: "M9GE-IVh",
-        },
-        {
-          grade: 9,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Normal Standard Distribution",
-          code: "M9SP-IVj",
-        },
+    function lessonKey(l){ return l.code+"_"+l.grade+"_"+l.q; }
+    function getU(key){ return uploads[key]||{}; }
+    function getStatus(key){
+      const u=getU(key);
+      const n=[u.ppt,u.lp,u.activity].filter(Boolean).length;
+      if(n===3)return"live"; if(n>0)return"partial"; return"empty";
+    }
 
-        // ── GRADE 10 ──
-        {
-          grade: 10,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Arithmetic Sequences",
-          code: "M10AL-Ib",
-        },
-        {
-          grade: 10,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Geometric Sequences",
-          code: "M10AL-Id",
-        },
-        {
-          grade: 10,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Other Sequences: Harmonic and Fibonacci",
-          code: "M10AL-If-1",
-        },
-        {
-          grade: 10,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Solving Problems on Sequences and Series",
-          code: "M10AL-If-2",
-        },
-        {
-          grade: 10,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Polynomial Division: Long and Synthetic",
-          code: "M10AL-Ig",
-        },
-        {
-          grade: 10,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Remainder Theorem and Factor Theorem",
-          code: "M10AL-Ig-2",
-        },
-        {
-          grade: 10,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Factoring Polynomials",
-          code: "M10AL-Ih",
-        },
-        {
-          grade: 10,
-          q: "Q1",
-          strand: "Patterns & Algebra",
-          topic: "Solving Polynomial Equations",
-          code: "M10AL-Ii",
-        },
-        {
-          grade: 10,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Polynomial Functions and Their Graphs",
-          code: "M10AL-IIa",
-        },
-        {
-          grade: 10,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Descartes' Rule of Signs",
-          code: "M10AL-IIb-1",
-        },
-        {
-          grade: 10,
-          q: "Q2",
-          strand: "Patterns & Algebra",
-          topic: "Rational Root Theorem",
-          code: "M10AL-IIb-2",
-        },
-        {
-          grade: 10,
-          q: "Q2",
-          strand: "Geometry",
-          topic: "Chords, Arcs, and Central Angles",
-          code: "M10GE-IId",
-        },
-        {
-          grade: 10,
-          q: "Q2",
-          strand: "Geometry",
-          topic: "Inscribed Angles and Their Theorems",
-          code: "M10GE-IId-2",
-        },
-        {
-          grade: 10,
-          q: "Q2",
-          strand: "Geometry",
-          topic: "Secants, Tangents, and Segments",
-          code: "M10GE-IIe",
-        },
-        {
-          grade: 10,
-          q: "Q2",
-          strand: "Geometry",
-          topic: "Solving Problems on Circles",
-          code: "M10GE-IIf",
-        },
-        {
-          grade: 10,
-          q: "Q2",
-          strand: "Geometry",
-          topic: "Distance Formula and Its Applications",
-          code: "M10GE-IIg",
-        },
-        {
-          grade: 10,
-          q: "Q2",
-          strand: "Geometry",
-          topic: "Equation of a Circle",
-          code: "M10GE-IIh",
-        },
-        {
-          grade: 10,
-          q: "Q3",
-          strand: "Statistics & Probability",
-          topic: "Permutations of Objects",
-          code: "M10SP-IIIa",
-        },
-        {
-          grade: 10,
-          q: "Q3",
-          strand: "Statistics & Probability",
-          topic: "Circular Permutations",
-          code: "M10SP-IIIb-1",
-        },
-        {
-          grade: 10,
-          q: "Q3",
-          strand: "Statistics & Probability",
-          topic: "Permutations with Repetition",
-          code: "M10SP-IIIb-2",
-        },
-        {
-          grade: 10,
-          q: "Q3",
-          strand: "Statistics & Probability",
-          topic: "Combinations",
-          code: "M10SP-IIIc",
-        },
-        {
-          grade: 10,
-          q: "Q3",
-          strand: "Statistics & Probability",
-          topic: "Solving Problems on Permutations and Combinations",
-          code: "M10SP-IIIf",
-        },
-        {
-          grade: 10,
-          q: "Q3",
-          strand: "Statistics & Probability",
-          topic: "Probability of Union and Intersection of Events",
-          code: "M10SP-IIIg",
-        },
-        {
-          grade: 10,
-          q: "Q3",
-          strand: "Statistics & Probability",
-          topic: "Conditional Probability",
-          code: "M10SP-IIIh",
-          free: true,
-        },
-        {
-          grade: 10,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Measures of Position: Quartiles",
-          code: "M10SP-IVa",
-        },
-        {
-          grade: 10,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Deciles and Percentiles",
-          code: "M10SP-IVb",
-        },
-        {
-          grade: 10,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Interpreting a Box-and-Whisker Plot",
-          code: "M10SP-IVd",
-        },
-        {
-          grade: 10,
-          q: "Q4",
-          strand: "Statistics & Probability",
-          topic: "Statistical Mini-Research Methods",
-          code: "M10SP-IVf",
-        },
-      ];
-
-      /* ══════════════════════════════════
-   STATE — persisted in localStorage
-══════════════════════════════════ */
-      const ADMIN_PW = "mathkit2025";
-
-      function getUploads() {
-        try {
-          return JSON.parse(localStorage.getItem("mk_uploads") || "{}");
-        } catch (e) {
-          return {};
-        }
-      }
-      function saveUploads(u) {
-        localStorage.setItem("mk_uploads", JSON.stringify(u));
-      }
-      function lessonKey(l) {
-        return l.code + "_" + l.grade + "_" + l.q;
-      }
-
-      function getLessonStatus(l) {
-        // ALL lessons — including free — require uploads
-        const u = getUploads()[lessonKey(l)] || {};
-        const has = ["ppt", "dlp", "activity"].filter((k) => u[k]);
-        if (has.length === 3) return "live";
-        if (has.length > 0) return "partial";
-        return "empty";
-      }
-
-      /* ══════════════════════════════════
-   FILTERS
-══════════════════════════════════ */
-      let filters = { grade: "all", status: "all" };
-
-      function setFilter(type, val, btn) {
-        filters[type] = val;
-        document.querySelectorAll(".ftab").forEach((b) => {
-          if (
-            (type === "grade" &&
-              b.getAttribute("onclick") &&
-              b.getAttribute("onclick").includes("'grade'")) ||
-            (type === "status" &&
-              b.getAttribute("onclick") &&
-              b.getAttribute("onclick").includes("'status'"))
-          ) {
-            b.classList.remove("active");
-          }
-        });
-        btn.classList.add("active");
-        renderPublic();
-      }
-
-      /* ══════════════════════════════════
-   PUBLIC RENDER
-══════════════════════════════════ */
-      function renderPublic() {
-        const uploads = getUploads();
-
-        // Progress bars
-        const pg = document.getElementById("progressWrap");
-        const grades = [7, 8, 9, 10];
-        let pgHtml = '<div style="display:flex;gap:2rem;flex-wrap:wrap;">';
-        grades.forEach((g) => {
-          const gl = CURRICULUM.filter((l) => l.grade === g);
-          const done = gl.filter((l) => getLessonStatus(l) === "live").length;
-          pgHtml += `<div style="flex:1;min-width:180px;">
-            <div class="progress-row">
-              <span class="progress-label">Grade ${g}</span>
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.round((done / gl.length) * 100)}%"></div></div>
-              <span class="progress-count">${done}/${gl.length}</span>
-            </div>
-          </div>`;
-        });
-        pgHtml += "</div>";
-        pg.innerHTML = pgHtml;
-
-        // Catalog
-        const cat = document.getElementById("publicCatalog");
-        let filtered = CURRICULUM.filter((l) => {
-          const gMatch =
-            filters.grade === "all" || String(l.grade) === filters.grade;
-          const st = getLessonStatus(l) === "live" ? "live" : "coming";
-          const sMatch = filters.status === "all" || filters.status === st;
-          return gMatch && sMatch;
-        });
-
-        if (!filtered.length) {
-          cat.innerHTML =
-            '<div style="text-align:center;padding:4rem;color:var(--text3);font-size:13px;">No lessons match this filter yet.</div>';
-          return;
-        }
-
-        const byGrade = {};
-        filtered.forEach((l) => {
-          if (!byGrade[l.grade]) byGrade[l.grade] = [];
-          byGrade[l.grade].push(l);
-        });
-
-        let html = "";
-        Object.keys(byGrade)
-          .sort((a, b) => a - b)
-          .forEach((g) => {
-            const byQ = {};
-            byGrade[g].forEach((l) => {
-              if (!byQ[l.q]) byQ[l.q] = [];
-              byQ[l.q].push(l);
-            });
-            html += `<div class="grade-block"><div class="grade-heading">Grade ${g}</div>`;
-            ["Q1", "Q2", "Q3", "Q4"].forEach((q) => {
-              if (!byQ[q]) return;
-              html += `<div class="quarter-block"><div class="quarter-label">Quarter ${q.replace("Q", "")}</div><div class="lessons-grid">`;
-              byQ[q].forEach((l) => {
-                const st = getLessonStatus(l);
-                const isLive = st === "live";
-                const isFree = !!l.free;
-                // Chips: free lessons show as "preview" (eye icon), paid live = download
-                const dlpChip = !isLive
-                  ? `<div class="chip disabled" title="Not available yet">📄 DLP</div>`
-                  : isFree
-                    ? `<div class="chip preview" title="Preview only — purchase to download">👁 DLP</div>`
-                    : `<div class="chip" title="Download DLP">📄 DLP</div>`;
-                const pptChip = !isLive
-                  ? `<div class="chip disabled" title="Not available yet">📊 PPT</div>`
-                  : isFree
-                    ? `<div class="chip preview" title="Preview only — purchase to download">👁 PPT</div>`
-                    : `<div class="chip" title="Download PPT">📊 PPT</div>`;
-                const actChip = !isLive
-                  ? `<div class="chip disabled" title="Not available yet">🎮 Activity</div>`
-                  : `<div class="chip" title="Launch Activity">🎮 Activity</div>`;
-
-                html += `<div class="lcard ${isLive ? "live" : "coming"} ${isFree && isLive ? "free-card" : ""}">
-                <div class="card-top">
-                  <div style="display:flex;gap:5px;flex-wrap:wrap;">
-                    <span class="badge b-grade">G${l.grade}</span>
-                    <span class="badge b-q">${l.q}</span>
-                  </div>
-                  <span class="badge ${isFree && isLive ? "b-free" : isLive ? "b-live" : "b-soon"}">${isFree && isLive ? "Free Preview" : isLive ? "Available" : "Coming Soon"}</span>
-                </div>
-                <div class="card-topic">${l.topic}</div>
-                <div class="card-code">${l.code} · ${l.strand}</div>
-                <div class="card-chips">${dlpChip}${pptChip}${actChip}</div>
-              </div>`;
-              });
-              html += "</div></div>";
-            });
-            html += "</div>";
-          });
-        cat.innerHTML = html;
-      }
-
-      /* ══════════════════════════════════
-   ADMIN RENDER
-══════════════════════════════════ */
-      function renderAdmin() {
-        const uploads = getUploads();
-        const total = CURRICULUM.length;
-        const live = CURRICULUM.filter(
-          (l) => getLessonStatus(l) === "live",
-        ).length;
-        const partial = CURRICULUM.filter(
-          (l) => getLessonStatus(l) === "partial",
-        ).length;
-        const empty = CURRICULUM.filter(
-          (l) => getLessonStatus(l) === "empty",
-        ).length;
-
-        document.getElementById("adminStats").innerHTML = `
-          <div class="astat"><div class="astat-num" style="color:var(--accent)">${total}</div><div class="astat-label">Total Lessons</div></div>
-          <div class="astat"><div class="astat-num" style="color:var(--green)">${live}</div><div class="astat-label">Live</div></div>
-          <div class="astat"><div class="astat-num" style="color:var(--accent)">${partial}</div><div class="astat-label">Partial</div></div>
-          <div class="astat"><div class="astat-num" style="color:var(--text3)">${empty}</div><div class="astat-label">Not Started</div></div>
-        `;
-
-        const byGrade = {};
-        CURRICULUM.forEach((l) => {
-          if (!byGrade[l.grade]) byGrade[l.grade] = [];
-          byGrade[l.grade].push(l);
-        });
-
-        let html = "";
-        Object.keys(byGrade)
-          .sort((a, b) => a - b)
-          .forEach((g) => {
-            const gl = byGrade[g];
-            const gdone = gl.filter(
-              (l) => getLessonStatus(l) === "live",
-            ).length;
-            html += `<div class="admin-grade-block">
-            <div class="admin-grade-title">
-              Grade ${g}
-              <span style="font-family:'Sora',sans-serif;font-size:12px;color:var(--text3);font-weight:400;">${gdone}/${gl.length} live</span>
-            </div>`;
-
-            ["Q1", "Q2", "Q3", "Q4"].forEach((q) => {
-              const ql = gl.filter((l) => l.q === q);
-              if (!ql.length) return;
-              html += `<div style="margin-bottom:1rem;"><div class="quarter-label" style="margin-bottom:.5rem;">Quarter ${q.replace("Q", "")}</div>`;
-              ql.forEach((l) => {
-                const key = lessonKey(l);
-                const u = uploads[key] || {};
-                const st = getLessonStatus(l);
-                const pillClass =
-                  { live: "sp-live", partial: "sp-partial", empty: "sp-empty" }[
-                    st
-                  ] || "sp-empty";
-                const pillLabel =
-                  { live: "Live", partial: "Partial", empty: "Empty" }[st] ||
-                  "Empty";
-                // Free badge shown separately from status
-                const freeBadge = l.free
-                  ? `<span class="status-pill sp-free" style="margin-right:4px;">Free</span>`
-                  : "";
-
-                const slot = (
-                  type,
-                  label,
-                ) => `<div class="uslot ${l.free ? "free-slot" : ""} ${u[type] ? "uploaded" : ""}" id="slot_${key}_${type}" title="${u[type] ? u[type] : "Upload " + label}">
-                <input type="file" onchange="handleUpload('${key}','${type}',this)" accept="${type === "activity" ? ".html,.htm,.zip" : ".pptx,.ppt,.pdf,.docx"}"/>
-                ${u[type] ? "✓" : "+"} ${label}
-              </div>`;
-
-                html += `<div class="admin-lesson-row">
-                <div class="alr-q">${l.q}</div>
-                <div class="alr-code">${l.code}</div>
-                <div class="alr-topic">${l.topic}${l.free ? ' <span style="font-size:10px;color:#60a5fa;">(preview)</span>' : ""}</div>
-                <div class="upload-slots">
-                  ${slot("ppt", "PPT")}${slot("dlp", "DLP")}${slot("activity", "Activity")}
-                </div>
-                <div class="alr-status">${freeBadge}<span class="status-pill ${pillClass}">${pillLabel}</span></div>
-              </div>`;
-              });
-              html += "</div>";
-            });
-            html += "</div>";
-          });
-        document.getElementById("adminCatalog").innerHTML = html;
-      }
-
-      function handleUpload(key, type, input) {
-        if (!input.files[0]) return;
-        const fname = input.files[0].name;
-        const uploads = getUploads();
-        if (!uploads[key]) uploads[key] = {};
-        uploads[key][type] = fname;
-        saveUploads(uploads);
-
-        const slot = document.getElementById("slot_" + key + "_" + type);
-        if (slot) {
-          slot.classList.add("uploaded");
-          slot.title = fname;
-          // Update just the text node, preserving the hidden file input
-          const textNode = [...slot.childNodes].find((n) => n.nodeType === 3);
-          if (textNode) textNode.textContent = `✓ ${type.toUpperCase()} `;
-        }
-
-        const u = uploads[key];
-        if (u.ppt && u.dlp && u.activity)
-          showToast("🎉 Lesson is now live!", "success");
-        else showToast("✓ " + fname + " saved", "success");
-
-        // Refresh stats
-        const total = CURRICULUM.length;
-        const live = CURRICULUM.filter(
-          (l) => getLessonStatus(l) === "live",
-        ).length;
-        const partial = CURRICULUM.filter(
-          (l) => getLessonStatus(l) === "partial",
-        ).length;
-        const empty = CURRICULUM.filter(
-          (l) => getLessonStatus(l) === "empty",
-        ).length;
-        const nums = document.querySelectorAll(".astat-num");
-        if (nums[0]) nums[0].textContent = total;
-        if (nums[1]) nums[1].textContent = live;
-        if (nums[2]) nums[2].textContent = partial;
-        if (nums[3]) nums[3].textContent = empty;
-      }
-
-      /* ══════════════════════════════════
-   NAV / LOGIN
-══════════════════════════════════ */
-      let isAdmin = false;
-
-      function showPublic() {
-        document.getElementById("publicView").classList.add("active");
-        document.getElementById("adminView").classList.remove("active");
-        document.getElementById("loginView").classList.remove("active");
-        document.getElementById("publicExtra").style.display = "block";
-        document.getElementById("navLinks").style.display = "flex";
-        document.getElementById("adminNavBtn").textContent = isAdmin
-          ? "Admin ✓"
-          : "Admin";
-        renderPublic();
-      }
-
-      function showAdmin() {
-        if (isAdmin) {
-          document.getElementById("adminView").classList.add("active");
-          document.getElementById("publicView").classList.remove("active");
-          document.getElementById("loginView").classList.remove("active");
-          document.getElementById("publicExtra").style.display = "none";
-          document.getElementById("navLinks").style.display = "none";
-          renderAdmin();
-        } else {
-          document.getElementById("loginView").classList.add("active");
-          document.getElementById("publicView").classList.remove("active");
-          document.getElementById("adminView").classList.remove("active");
-          document.getElementById("publicExtra").style.display = "none";
-          document.getElementById("navLinks").style.display = "none";
-          setTimeout(() => document.getElementById("pwInput").focus(), 100);
-        }
-      }
-
-      function doLogin() {
-        const pw = document.getElementById("pwInput").value;
-        if (pw === ADMIN_PW) {
-          isAdmin = true;
-          document.getElementById("loginErr").style.display = "none";
-          document.getElementById("pwInput").value = "";
-          document.getElementById("adminNavBtn").textContent = "Admin ✓";
-          showAdmin();
-        } else {
-          document.getElementById("loginErr").style.display = "block";
-        }
-      }
-
-      function toggleTheme() {
-        const h = document.documentElement;
-        const btn = document.getElementById("themeBtn");
-        if (h.getAttribute("data-theme") === "dark") {
-          h.setAttribute("data-theme", "light");
-          btn.textContent = "☀️";
-        } else {
-          h.setAttribute("data-theme", "dark");
-          btn.textContent = "🌙";
-        }
-      }
-
-      /* ══════════════════════════════════
-   TOAST
-══════════════════════════════════ */
-      let toastTimer;
-      function showToast(msg, type = "") {
-        const t = document.getElementById("toast");
-        t.textContent = msg;
-        t.className = "toast show " + (type || "");
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => (t.className = "toast"), 2800);
-      }
-
-      /* ══════════════════════════════════
-   TYPEWRITER
-══════════════════════════════════ */
-      const TW_WORDS = [
-        "engage",
-        "excite",
-        "challenge",
-        "motivate",
-        "captivate",
-        "inspire",
-        "empower",
-      ];
-      let twI = 0,
-        twC = 0,
-        twDel = false;
-      const twEl = document.getElementById("typewriter-word");
-      function twType() {
-        const word = TW_WORDS[twI];
-        if (!twDel) {
-          twEl.textContent = word.slice(0, twC + 1);
-          twC++;
-          if (twC === word.length) {
-            setTimeout(() => {
-              twDel = true;
-              twTick();
-            }, 1800);
-            return;
-          }
-        } else {
-          twEl.textContent = word.slice(0, twC - 1);
-          twC--;
-          if (twC === 0) {
-            twDel = false;
-            twI = (twI + 1) % TW_WORDS.length;
-          }
-        }
-        setTimeout(twType, twDel ? 60 : 90);
-      }
-      function twTick() {
-        setTimeout(twType, 60);
-      }
-      setTimeout(twType, 800);
-
-      /* INIT */
+    /* ══════ FREE CLAIM ══════ */
+    function tryClaimFree(key,topic,code,strand,grade,q){
+      if(userFreeLesson)return;
+      pendingClaimKey=key;
+      document.getElementById("claimPreviewTopic").textContent=topic;
+      document.getElementById("claimPreviewMeta").textContent=code+" · Grade "+grade+" "+q+" · "+strand;
+      document.getElementById("claimModal").classList.add("open");
+    }
+    function confirmClaim(){
+      if(!pendingClaimKey)return;
+      userFreeLesson=pendingClaimKey;
+      pendingClaimKey=null;
+      closeModal();
+      showToast("🎉 Lesson claimed! Download your free bundle below.","success");
       renderPublic();
+    }
+    function closeModal(){
+      pendingClaimKey=null;
+      document.getElementById("claimModal").classList.remove("open");
+    }
+    document.getElementById("claimModal").addEventListener("click",function(e){if(e.target===this)closeModal();});
+
+    /* ══════ ZIP DOWNLOAD ══════ */
+    async function downloadBundle(key,topic){
+      const u=getU(key);
+      const files=[u.ppt,u.lp,u.activity].filter(Boolean);
+      if(!files.length){showToast("No files uploaded yet.","error");return;}
+      showToast("⏳ Packing your bundle…","");
+      try{
+        const zip=new JSZip();
+        const folder=zip.folder(topic.replace(/[^a-zA-Z0-9 ]/g,"").trim()||"lesson");
+        const addF=async(f)=>{if(!f)return;const b=await f.arrayBuffer();folder.file(f.name,b);};
+        await addF(u.ppt); await addF(u.lp); await addF(u.activity);
+        const blob=await zip.generateAsync({type:"blob"});
+        const a=document.createElement("a");
+        a.href=URL.createObjectURL(blob);
+        a.download=(topic.replace(/[^a-zA-Z0-9 ]/g,"").trim()||"lesson")+".zip";
+        a.click(); URL.revokeObjectURL(a.href);
+        showToast("✅ Bundle downloaded!","success");
+      }catch(err){console.error(err);showToast("Download failed. Try again.","error");}
+    }
+
+    /* ══════ FILTERS ══════ */
+    let filters={grade:"all",status:"all"};
+    function setFilter(type,val,btn){
+      filters[type]=val;
+      document.querySelectorAll(".ftab").forEach(b=>{
+        const oc=b.getAttribute("onclick")||"";
+        if(oc.includes("'"+type+"'"))b.classList.remove("active");
+      });
+      btn.classList.add("active");
+      renderPublic();
+    }
+
+    /* ══════ PUBLIC RENDER ══════ */
+    function renderPublic(){
+      // Banner
+      const banner=document.getElementById("freeClaimBanner");
+      if(!userFreeLesson){
+        banner.innerHTML=`<div class="fcb-inner">
+          <div class="fcb-icon">🎁</div>
+          <div class="fcb-text">
+            <div class="fcb-title">You have 1 free lesson to claim!</div>
+            <div class="fcb-sub">Pick any available lesson and click <strong>"Claim Free"</strong> on its card. You'll get the full LP, PPT &amp; activity as a zip download — yours forever.</div>
+          </div>
+        </div>`;
+      } else {
+        const cl=CURRICULUM.find(l=>lessonKey(l)===userFreeLesson);
+        banner.innerHTML=`<div class="fcb-inner fcb-claimed">
+          <div class="fcb-icon">✅</div>
+          <div class="fcb-text">
+            <div class="fcb-title">Free lesson claimed: ${cl?cl.topic:"—"}</div>
+            <div class="fcb-sub">Download your bundle anytime from the card below. Full LP, PPT &amp; activity included.</div>
+          </div>
+        </div>`;
+      }
+
+      // Progress
+      const pg=document.getElementById("progressWrap");
+      let pgHtml='<div style="display:flex;gap:2rem;flex-wrap:wrap;">';
+      [7,8,9,10].forEach(g=>{
+        const gl=CURRICULUM.filter(l=>l.grade===g);
+        const done=gl.filter(l=>getStatus(lessonKey(l))==="live").length;
+        pgHtml+=`<div style="flex:1;min-width:180px;"><div class="progress-row">
+          <span class="progress-label">Grade ${g}</span>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.round((done/gl.length)*100)}%"></div></div>
+          <span class="progress-count">${done}/${gl.length}</span>
+        </div></div>`;
+      });
+      pg.innerHTML=pgHtml+"</div>";
+
+      // Catalog
+      const cat=document.getElementById("publicCatalog");
+      let filtered=CURRICULUM.filter(l=>{
+        const gm=filters.grade==="all"||String(l.grade)===filters.grade;
+        const st=getStatus(lessonKey(l))==="live"?"live":"coming";
+        const sm=filters.status==="all"||filters.status===st;
+        return gm&&sm;
+      });
+
+      if(!filtered.length){
+        cat.innerHTML='<div style="text-align:center;padding:4rem;color:var(--text3);font-size:13px;">No lessons match this filter yet.</div>';
+        return;
+      }
+
+      const byGrade={};
+      filtered.forEach(l=>{if(!byGrade[l.grade])byGrade[l.grade]=[];byGrade[l.grade].push(l);});
+
+      let html="";
+      Object.keys(byGrade).sort((a,b)=>a-b).forEach(g=>{
+        const byQ={};
+        byGrade[g].forEach(l=>{if(!byQ[l.q])byQ[l.q]=[];byQ[l.q].push(l);});
+        html+=`<div class="grade-block"><div class="grade-heading">Grade ${g}</div>`;
+        ["Q1","Q2","Q3","Q4"].forEach(q=>{
+          if(!byQ[q])return;
+          html+=`<div class="quarter-block"><div class="quarter-label">Quarter ${q.replace("Q","")}</div><div class="lessons-grid">`;
+          byQ[q].forEach(l=>{
+            const key=lessonKey(l);
+            const isLive=getStatus(key)==="live";
+            const isMyFree=userFreeLesson===key;
+            const hasClaimed=!!userFreeLesson;
+            // escape topic for inline onclick
+            const topicSafe=l.topic.replace(/'/g,"\\'").replace(/"/g,"&quot;");
+            const strandSafe=l.strand.replace(/'/g,"\\'");
+
+            let chips="";
+            if(!isLive){
+              chips=`<div class="chip disabled">📄 LP</div><div class="chip disabled">📊 PPT</div><div class="chip disabled">🎮 Activity</div>`;
+            } else if(isMyFree){
+              chips=`<div class="chip dl-bundle" onclick="downloadBundle('${key}','${topicSafe}')">📦 Download Bundle (Free)</div>`;
+            } else if(!hasClaimed){
+              chips=`<div class="chip claim-chip" onclick="tryClaimFree('${key}','${topicSafe}','${l.code}','${strandSafe}',${l.grade},'${l.q}')">🎁 Claim Free</div>
+                     <div class="chip disabled" title="Purchase to unlock">📄 LP</div>
+                     <div class="chip disabled" title="Purchase to unlock">📊 PPT</div>
+                     <div class="chip disabled" title="Purchase to unlock">🎮 Activity</div>`;
+            } else {
+              chips=`<div class="chip disabled" title="Purchase to unlock">📄 LP</div>
+                     <div class="chip disabled" title="Purchase to unlock">📊 PPT</div>
+                     <div class="chip disabled" title="Purchase to unlock">🎮 Activity</div>`;
+            }
+
+            html+=`<div class="lcard ${isLive?"live":"coming"} ${isMyFree?"user-free-card":""}">
+              <div class="card-top">
+                <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                  <span class="badge b-grade">G${l.grade}</span>
+                  <span class="badge b-q">${l.q}</span>
+                </div>
+                <span class="badge ${isMyFree?"b-free":isLive?"b-live":"b-soon"}">${isMyFree?"Your Free":isLive?"Available":"Coming Soon"}</span>
+              </div>
+              <div class="card-topic">${l.topic}</div>
+              <div class="card-code">${l.code} · ${l.strand}</div>
+              <div class="card-chips">${chips}</div>
+            </div>`;
+          });
+          html+="</div></div>";
+        });
+        html+="</div>";
+      });
+      cat.innerHTML=html;
+    }
+
+    /* ══════ ADMIN RENDER ══════ */
+    function renderAdmin(){
+      const total=CURRICULUM.length;
+      const live=CURRICULUM.filter(l=>getStatus(lessonKey(l))==="live").length;
+      const partial=CURRICULUM.filter(l=>getStatus(lessonKey(l))==="partial").length;
+      const empty=CURRICULUM.filter(l=>getStatus(lessonKey(l))==="empty").length;
+      document.getElementById("adminStats").innerHTML=`
+        <div class="astat"><div class="astat-num" style="color:var(--accent)">${total}</div><div class="astat-label">Total Lessons</div></div>
+        <div class="astat"><div class="astat-num" style="color:var(--green)">${live}</div><div class="astat-label">Live</div></div>
+        <div class="astat"><div class="astat-num" style="color:var(--accent)">${partial}</div><div class="astat-label">Partial</div></div>
+        <div class="astat"><div class="astat-num" style="color:var(--text3)">${empty}</div><div class="astat-label">Not Started</div></div>`;
+
+      const byGrade={};
+      CURRICULUM.forEach(l=>{if(!byGrade[l.grade])byGrade[l.grade]=[];byGrade[l.grade].push(l);});
+
+      let html="";
+      Object.keys(byGrade).sort((a,b)=>a-b).forEach(g=>{
+        const gl=byGrade[g];
+        const gdone=gl.filter(l=>getStatus(lessonKey(l))==="live").length;
+        html+=`<div class="admin-grade-block">
+          <div class="admin-grade-title">Grade ${g} <span style="font-family:'Sora',sans-serif;font-size:12px;color:var(--text3);font-weight:400;">${gdone}/${gl.length} live</span></div>`;
+        ["Q1","Q2","Q3","Q4"].forEach(q=>{
+          const ql=gl.filter(l=>l.q===q);
+          if(!ql.length)return;
+          html+=`<div style="margin-bottom:1rem;"><div class="quarter-label" style="margin-bottom:.5rem;">Quarter ${q.replace("Q","")}</div>`;
+          ql.forEach(l=>{
+            const key=lessonKey(l);
+            const u=getU(key);
+            const st=getStatus(key);
+            const pillClass={live:"sp-live",partial:"sp-partial",empty:"sp-empty"}[st]||"sp-empty";
+            const pillLabel={live:"Live",partial:"Partial",empty:"Empty"}[st]||"Empty";
+
+            const slotHtml=(type,label,icon)=>{
+              const file=u[type];
+              const keyEsc=key.replace(/'/g,"\\'");
+              const id=`slot_${key}_${type}`;
+              if(file){
+                const fname=file.name.length>14?file.name.slice(0,12)+"…":file.name;
+                return `<div class="uslot-wrap">
+                  <div class="uslot uploaded" id="${id}" title="${file.name}">
+                    <input type="file" onchange="handleUpload('${keyEsc}','${type}',this)" accept="${type==='activity'?'.html,.htm,.zip':'.pptx,.ppt,.pdf,.docx'}" style="z-index:2;"/>
+                    <span class="slot-label">✓ ${fname}</span>
+                  </div>
+                  <button class="del-file-btn" onclick="event.stopPropagation();deleteUpload('${keyEsc}','${type}')" title="Remove file">✕</button>
+                </div>`;
+              } else {
+                return `<div class="uslot-wrap">
+                  <div class="uslot" id="${id}" title="Upload ${label}">
+                    <input type="file" onchange="handleUpload('${keyEsc}','${type}',this)" accept="${type==='activity'?'.html,.htm,.zip':'.pptx,.ppt,.pdf,.docx'}"/>
+                    <span class="slot-label">${icon} ${label}</span>
+                  </div>
+                </div>`;
+              }
+            };
+
+            html+=`<div class="admin-lesson-row">
+              <div class="alr-q">${l.q}</div>
+              <div class="alr-code">${l.code}</div>
+              <div class="alr-topic">${l.topic}</div>
+              <div class="upload-slots">
+                ${slotHtml("ppt","PPT","📊")}${slotHtml("lp","LP","📄")}${slotHtml("activity","Activity","🎮")}
+              </div>
+              <div class="alr-status"><span class="status-pill ${pillClass}">${pillLabel}</span></div>
+            </div>`;
+          });
+          html+="</div>";
+        });
+        html+="</div>";
+      });
+      document.getElementById("adminCatalog").innerHTML=html;
+    }
+
+    function handleUpload(key,type,input){
+      if(!input.files[0])return;
+      const file=input.files[0];
+      if(!uploads[key])uploads[key]={};
+      uploads[key][type]=file;
+      renderAdmin();
+      const u=getU(key);
+      if(u.ppt&&u.lp&&u.activity)showToast("🎉 Lesson is now live!","success");
+      else showToast("✓ "+file.name+" saved","success");
+    }
+
+    function deleteUpload(key,type){
+      if(uploads[key]){
+        uploads[key][type]=null;
+        if(!uploads[key].ppt&&!uploads[key].lp&&!uploads[key].activity)delete uploads[key];
+      }
+      renderAdmin();
+      showToast("File removed.","");
+    }
+
+    /* ══════ NAV / LOGIN ══════ */
+    let isAdmin=false;
+    function showPublic(){
+      document.getElementById("publicView").classList.add("active");
+      document.getElementById("adminView").classList.remove("active");
+      document.getElementById("loginView").classList.remove("active");
+      document.getElementById("publicExtra").style.display="block";
+      document.getElementById("navLinks").style.display="flex";
+      document.getElementById("adminNavBtn").textContent=isAdmin?"Admin ✓":"Admin";
+      renderPublic();
+    }
+    function showAdmin(){
+      if(isAdmin){
+        document.getElementById("adminView").classList.add("active");
+        document.getElementById("publicView").classList.remove("active");
+        document.getElementById("loginView").classList.remove("active");
+        document.getElementById("publicExtra").style.display="none";
+        document.getElementById("navLinks").style.display="none";
+        renderAdmin();
+      } else {
+        document.getElementById("loginView").classList.add("active");
+        document.getElementById("publicView").classList.remove("active");
+        document.getElementById("adminView").classList.remove("active");
+        document.getElementById("publicExtra").style.display="none";
+        document.getElementById("navLinks").style.display="none";
+        setTimeout(()=>document.getElementById("pwInput").focus(),100);
+      }
+    }
+    function doLogin(){
+      const pw=document.getElementById("pwInput").value;
+      if(pw===ADMIN_PW){
+        isAdmin=true;
+        document.getElementById("loginErr").style.display="none";
+        document.getElementById("pwInput").value="";
+        document.getElementById("adminNavBtn").textContent="Admin ✓";
+        showAdmin();
+      } else {
+        document.getElementById("loginErr").style.display="block";
+      }
+    }
+    function toggleTheme(){
+      const h=document.documentElement,btn=document.getElementById("themeBtn");
+      if(h.getAttribute("data-theme")==="dark"){h.setAttribute("data-theme","light");btn.textContent="☀️";}
+      else{h.setAttribute("data-theme","dark");btn.textContent="🌙";}
+    }
+
+    /* ══════ TOAST ══════ */
+    let toastTimer;
+    function showToast(msg,type=""){
+      const t=document.getElementById("toast");
+      t.textContent=msg; t.className="toast show "+(type||"");
+      clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.className="toast",2800);
+    }
+
+    /* ══════ TYPEWRITER ══════ */
+    const TW_WORDS=["engage","excite","challenge","motivate","captivate","inspire","empower"];
+    let twI=0,twC=0,twDel=false;
+    const twEl=document.getElementById("typewriter-word");
+    function twType(){
+      const word=TW_WORDS[twI];
+      if(!twDel){twEl.textContent=word.slice(0,twC+1);twC++;if(twC===word.length){setTimeout(()=>{twDel=true;setTimeout(twType,60);},1800);return;}}
+      else{twEl.textContent=word.slice(0,twC-1);twC--;if(twC===0){twDel=false;twI=(twI+1)%TW_WORDS.length;}}
+      setTimeout(twType,twDel?60:90);
+    }
+    setTimeout(twType,800);
+
+    /* INIT */
+    renderPublic();
     </script>
   </body>
 </html>

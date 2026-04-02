@@ -353,12 +353,6 @@
         text-decoration: underline;
         text-underline-offset: 2px;
       }
-      .divider {
-        border: none;
-        border-top: 1px solid var(--border);
-        max-width: 1100px;
-        margin: 0 auto;
-      }
 
       /* FOOTER */
       .site-footer {
@@ -584,6 +578,18 @@
         color: var(--accent);
         background: var(--accent-bg);
       }
+      /* Preview chip — green tint, no download */
+      .chip.preview {
+        border-color: var(--green-border);
+        color: var(--green);
+        background: var(--green-bg);
+        cursor: default;
+      }
+      .chip.preview:hover {
+        border-color: var(--green-border);
+        color: var(--green);
+        background: var(--green-bg);
+      }
       .chip.disabled {
         cursor: not-allowed;
         opacity: 0.4;
@@ -756,6 +762,14 @@
       }
       .uslot.uploaded:hover {
         border-color: var(--green);
+      }
+      /* Free lesson upload slot — blue tint to distinguish */
+      .uslot.free-slot {
+        border-color: rgba(59, 130, 246, 0.3);
+        color: #60a5fa;
+      }
+      .uslot.free-slot:hover {
+        border-color: #60a5fa;
       }
       .alr-status {
         min-width: 70px;
@@ -983,10 +997,33 @@
     <div class="view" id="adminView">
       <div class="admin-wrap">
         <div class="admin-header">
-          <h2>Lesson Manager</h2>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              flex-wrap: wrap;
+              gap: 1rem;
+              margin-bottom: 0.75rem;
+            "
+          >
+            <h2 style="margin-bottom: 0">Lesson Manager</h2>
+            <!-- BACK BUTTON -->
+            <button
+              class="btn-sm"
+              onclick="showPublic()"
+              style="display: flex; align-items: center; gap: 6px"
+            >
+              ← Back to Catalog
+            </button>
+          </div>
           <p>
-            Upload PPT, DLP, and Activity link for each lesson. A lesson goes
-            live automatically once all three are set.
+            Upload PPT, DLP, and Activity for each lesson. A lesson goes live
+            once all three are set.<br />
+            <span style="color: #60a5fa; font-size: 12px"
+              >ⓘ Free-preview lessons still require all three uploads — they
+              just show as preview-only (no download) to students.</span
+            >
           </p>
         </div>
         <div class="admin-stats" id="adminStats"></div>
@@ -1052,7 +1089,7 @@
       <div class="catalog" id="publicCatalog"></div>
     </div>
 
-    <!-- PRICING + FOOTER — outside .view so always visible -->
+    <!-- PRICING + FOOTER -->
     <div id="publicExtra">
       <hr class="divider" style="margin-top: 0" />
       <section class="pricing-section" id="pricing" style="padding-top: 80px">
@@ -1065,7 +1102,7 @@
             <div class="pricing-per">forever</div>
             <ul class="pricing-features">
               <li><span class="chk">✓</span> 1 free lesson per grade level</li>
-              <li><span class="chk">✓</span> DLP + PPT download</li>
+              <li><span class="chk">✓</span> DLP + PPT preview</li>
               <li><span class="chk">✓</span> Full activity access</li>
               <li><span class="chk">✓</span> Live leaderboard</li>
             </ul>
@@ -1875,13 +1912,12 @@
       function saveUploads(u) {
         localStorage.setItem("mk_uploads", JSON.stringify(u));
       }
-
       function lessonKey(l) {
         return l.code + "_" + l.grade + "_" + l.q;
       }
 
       function getLessonStatus(l) {
-        if (l.free) return "free";
+        // ALL lessons — including free — require uploads
         const u = getUploads()[lessonKey(l)] || {};
         const has = ["ppt", "dlp", "activity"].filter((k) => u[k]);
         if (has.length === 3) return "live";
@@ -1896,10 +1932,6 @@
 
       function setFilter(type, val, btn) {
         filters[type] = val;
-        const scope =
-          type === "grade"
-            ? '[onclick*="grade"]'
-            : '[data-ftype="status"],[onclick*="status"]';
         document.querySelectorAll(".ftab").forEach((b) => {
           if (
             (type === "grade" &&
@@ -1928,16 +1960,14 @@
         let pgHtml = '<div style="display:flex;gap:2rem;flex-wrap:wrap;">';
         grades.forEach((g) => {
           const gl = CURRICULUM.filter((l) => l.grade === g);
-          const done = gl.filter(
-            (l) => l.free || getLessonStatus(l) === "live",
-          ).length;
+          const done = gl.filter((l) => getLessonStatus(l) === "live").length;
           pgHtml += `<div style="flex:1;min-width:180px;">
-      <div class="progress-row">
-        <span class="progress-label">Grade ${g}</span>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.round((done / gl.length) * 100)}%"></div></div>
-        <span class="progress-count">${done}/${gl.length}</span>
-      </div>
-    </div>`;
+            <div class="progress-row">
+              <span class="progress-label">Grade ${g}</span>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.round((done / gl.length) * 100)}%"></div></div>
+              <span class="progress-count">${done}/${gl.length}</span>
+            </div>
+          </div>`;
         });
         pgHtml += "</div>";
         pg.innerHTML = pgHtml;
@@ -1947,11 +1977,7 @@
         let filtered = CURRICULUM.filter((l) => {
           const gMatch =
             filters.grade === "all" || String(l.grade) === filters.grade;
-          const st = l.free
-            ? "live"
-            : getLessonStatus(l) === "live"
-              ? "live"
-              : "coming";
+          const st = getLessonStatus(l) === "live" ? "live" : "coming";
           const sMatch = filters.status === "all" || filters.status === st;
           return gMatch && sMatch;
         });
@@ -1962,7 +1988,6 @@
           return;
         }
 
-        // Group by grade then quarter
         const byGrade = {};
         filtered.forEach((l) => {
           if (!byGrade[l.grade]) byGrade[l.grade] = [];
@@ -1983,29 +2008,36 @@
               if (!byQ[q]) return;
               html += `<div class="quarter-block"><div class="quarter-label">Quarter ${q.replace("Q", "")}</div><div class="lessons-grid">`;
               byQ[q].forEach((l) => {
-                const st = l.free
-                  ? "live"
-                  : getLessonStatus(l) === "live"
-                    ? "live"
-                    : "coming";
-                const u = uploads[lessonKey(l)] || {};
+                const st = getLessonStatus(l);
                 const isLive = st === "live";
-                html += `<div class="lcard ${isLive ? "live" : "coming"} ${l.free ? "free-card" : ""}">
-          <div class="card-top">
-            <div style="display:flex;gap:5px;flex-wrap:wrap;">
-              <span class="badge b-grade">G${l.grade}</span>
-              <span class="badge b-q">${l.q}</span>
-            </div>
-            <span class="badge ${l.free ? "b-free" : isLive ? "b-live" : "b-soon"}">${l.free ? "Free" : isLive ? "Available" : "Coming Soon"}</span>
-          </div>
-          <div class="card-topic">${l.topic}</div>
-          <div class="card-code">${l.code} · ${l.strand}</div>
-          <div class="card-chips">
-            <div class="chip ${(!isLive && !l.free) || (!u.dlp && !l.free) ? "disabled" : ""}" title="Download DLP">📄 DLP</div>
-            <div class="chip ${(!isLive && !l.free) || (!u.ppt && !l.free) ? "disabled" : ""}" title="Download PPT">📊 PPT</div>
-            <div class="chip ${(!isLive && !l.free) || (!u.activity && !l.free) ? "disabled" : ""}" title="Launch Activity">🎮 Activity</div>
-          </div>
-        </div>`;
+                const isFree = !!l.free;
+                // Chips: free lessons show as "preview" (eye icon), paid live = download
+                const dlpChip = !isLive
+                  ? `<div class="chip disabled" title="Not available yet">📄 DLP</div>`
+                  : isFree
+                    ? `<div class="chip preview" title="Preview only — purchase to download">👁 DLP</div>`
+                    : `<div class="chip" title="Download DLP">📄 DLP</div>`;
+                const pptChip = !isLive
+                  ? `<div class="chip disabled" title="Not available yet">📊 PPT</div>`
+                  : isFree
+                    ? `<div class="chip preview" title="Preview only — purchase to download">👁 PPT</div>`
+                    : `<div class="chip" title="Download PPT">📊 PPT</div>`;
+                const actChip = !isLive
+                  ? `<div class="chip disabled" title="Not available yet">🎮 Activity</div>`
+                  : `<div class="chip" title="Launch Activity">🎮 Activity</div>`;
+
+                html += `<div class="lcard ${isLive ? "live" : "coming"} ${isFree && isLive ? "free-card" : ""}">
+                <div class="card-top">
+                  <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                    <span class="badge b-grade">G${l.grade}</span>
+                    <span class="badge b-q">${l.q}</span>
+                  </div>
+                  <span class="badge ${isFree && isLive ? "b-free" : isLive ? "b-live" : "b-soon"}">${isFree && isLive ? "Free Preview" : isLive ? "Available" : "Coming Soon"}</span>
+                </div>
+                <div class="card-topic">${l.topic}</div>
+                <div class="card-code">${l.code} · ${l.strand}</div>
+                <div class="card-chips">${dlpChip}${pptChip}${actChip}</div>
+              </div>`;
               });
               html += "</div></div>";
             });
@@ -2021,23 +2053,22 @@
         const uploads = getUploads();
         const total = CURRICULUM.length;
         const live = CURRICULUM.filter(
-          (l) => l.free || getLessonStatus(l) === "live",
+          (l) => getLessonStatus(l) === "live",
         ).length;
         const partial = CURRICULUM.filter(
-          (l) => !l.free && getLessonStatus(l) === "partial",
+          (l) => getLessonStatus(l) === "partial",
         ).length;
         const empty = CURRICULUM.filter(
-          (l) => !l.free && getLessonStatus(l) === "empty",
+          (l) => getLessonStatus(l) === "empty",
         ).length;
 
         document.getElementById("adminStats").innerHTML = `
-    <div class="astat"><div class="astat-num" style="color:var(--accent)">${total}</div><div class="astat-label">Total Lessons</div></div>
-    <div class="astat"><div class="astat-num" style="color:var(--green)">${live}</div><div class="astat-label">Live</div></div>
-    <div class="astat"><div class="astat-num" style="color:var(--accent)">${partial}</div><div class="astat-label">Partial</div></div>
-    <div class="astat"><div class="astat-num" style="color:var(--text3)">${empty}</div><div class="astat-label">Not Started</div></div>
-  `;
+          <div class="astat"><div class="astat-num" style="color:var(--accent)">${total}</div><div class="astat-label">Total Lessons</div></div>
+          <div class="astat"><div class="astat-num" style="color:var(--green)">${live}</div><div class="astat-label">Live</div></div>
+          <div class="astat"><div class="astat-num" style="color:var(--accent)">${partial}</div><div class="astat-label">Partial</div></div>
+          <div class="astat"><div class="astat-num" style="color:var(--text3)">${empty}</div><div class="astat-label">Not Started</div></div>
+        `;
 
-        // Group by grade
         const byGrade = {};
         CURRICULUM.forEach((l) => {
           if (!byGrade[l.grade]) byGrade[l.grade] = [];
@@ -2050,13 +2081,13 @@
           .forEach((g) => {
             const gl = byGrade[g];
             const gdone = gl.filter(
-              (l) => l.free || getLessonStatus(l) === "live",
+              (l) => getLessonStatus(l) === "live",
             ).length;
             html += `<div class="admin-grade-block">
-      <div class="admin-grade-title">
-        Grade ${g}
-        <span style="font-family:'Sora',sans-serif;font-size:12px;color:var(--text3);font-weight:400;">${gdone}/${gl.length} live</span>
-      </div>`;
+            <div class="admin-grade-title">
+              Grade ${g}
+              <span style="font-family:'Sora',sans-serif;font-size:12px;color:var(--text3);font-weight:400;">${gdone}/${gl.length} live</span>
+            </div>`;
 
             ["Q1", "Q2", "Q3", "Q4"].forEach((q) => {
               const ql = gl.filter((l) => l.q === q);
@@ -2065,45 +2096,36 @@
               ql.forEach((l) => {
                 const key = lessonKey(l);
                 const u = uploads[key] || {};
-                const st = l.free ? "free" : getLessonStatus(l);
+                const st = getLessonStatus(l);
                 const pillClass =
-                  {
-                    live: "sp-live",
-                    partial: "sp-partial",
-                    empty: "sp-empty",
-                    free: "sp-free",
-                  }[st] || "sp-empty";
+                  { live: "sp-live", partial: "sp-partial", empty: "sp-empty" }[
+                    st
+                  ] || "sp-empty";
                 const pillLabel =
-                  {
-                    live: "Live",
-                    partial: "Partial",
-                    empty: "Empty",
-                    free: "Free",
-                  }[st] || "Empty";
+                  { live: "Live", partial: "Partial", empty: "Empty" }[st] ||
+                  "Empty";
+                // Free badge shown separately from status
+                const freeBadge = l.free
+                  ? `<span class="status-pill sp-free" style="margin-right:4px;">Free</span>`
+                  : "";
 
                 const slot = (
                   type,
                   label,
-                ) => `<div class="uslot ${u[type] ? "uploaded" : ""}" id="slot_${key}_${type}" title="${u[type] ? u[type] : "Upload " + label}">
-          <input type="file" onchange="handleUpload('${key}','${type}',this)" ${l.free ? "disabled" : ""} accept="${type === "activity" ? ".html,.htm,.zip" : ".pptx,.ppt,.pdf,.docx"}"/>
-          ${u[type] ? "✓" : "+"} ${label}
-        </div>`;
+                ) => `<div class="uslot ${l.free ? "free-slot" : ""} ${u[type] ? "uploaded" : ""}" id="slot_${key}_${type}" title="${u[type] ? u[type] : "Upload " + label}">
+                <input type="file" onchange="handleUpload('${key}','${type}',this)" accept="${type === "activity" ? ".html,.htm,.zip" : ".pptx,.ppt,.pdf,.docx"}"/>
+                ${u[type] ? "✓" : "+"} ${label}
+              </div>`;
 
                 html += `<div class="admin-lesson-row">
-          <div class="alr-q">${l.q}</div>
-          <div class="alr-code">${l.code}</div>
-          <div class="alr-topic">${l.topic}</div>
-          <div class="upload-slots">
-            ${
-              l.free
-                ? '<span style="font-size:11px;color:var(--green);padding:4px 8px;">Free preview — no upload needed</span>'
-                : slot("ppt", "PPT") +
-                  slot("dlp", "DLP") +
-                  slot("activity", "Activity")
-            }
-          </div>
-          <div class="alr-status"><span class="status-pill ${pillClass}">${pillLabel}</span></div>
-        </div>`;
+                <div class="alr-q">${l.q}</div>
+                <div class="alr-code">${l.code}</div>
+                <div class="alr-topic">${l.topic}${l.free ? ' <span style="font-size:10px;color:#60a5fa;">(preview)</span>' : ""}</div>
+                <div class="upload-slots">
+                  ${slot("ppt", "PPT")}${slot("dlp", "DLP")}${slot("activity", "Activity")}
+                </div>
+                <div class="alr-status">${freeBadge}<span class="status-pill ${pillClass}">${pillLabel}</span></div>
+              </div>`;
               });
               html += "</div>";
             });
@@ -2120,55 +2142,42 @@
         uploads[key][type] = fname;
         saveUploads(uploads);
 
-        // Update slot UI immediately
         const slot = document.getElementById("slot_" + key + "_" + type);
         if (slot) {
           slot.classList.add("uploaded");
           slot.title = fname;
-          slot.childNodes[1].textContent = "✓ " + type.toUpperCase();
+          // Update just the text node, preserving the hidden file input
+          const textNode = [...slot.childNodes].find((n) => n.nodeType === 3);
+          if (textNode) textNode.textContent = `✓ ${type.toUpperCase()} `;
         }
 
-        // Check if now live
         const u = uploads[key];
         if (u.ppt && u.dlp && u.activity)
           showToast("🎉 Lesson is now live!", "success");
         else showToast("✓ " + fname + " saved", "success");
 
-        // Re-render stats
+        // Refresh stats
         const total = CURRICULUM.length;
         const live = CURRICULUM.filter(
-          (l) => l.free || getLessonStatus(l) === "live",
+          (l) => getLessonStatus(l) === "live",
         ).length;
         const partial = CURRICULUM.filter(
-          (l) => !l.free && getLessonStatus(l) === "partial",
+          (l) => getLessonStatus(l) === "partial",
         ).length;
         const empty = CURRICULUM.filter(
-          (l) => !l.free && getLessonStatus(l) === "empty",
+          (l) => getLessonStatus(l) === "empty",
         ).length;
-        document
-          .getElementById("adminStats")
-          .querySelector(".astat-num").textContent = total;
-        document.querySelectorAll(".astat-num")[1].textContent = live;
-        document.querySelectorAll(".astat-num")[2].textContent = partial;
-        document.querySelectorAll(".astat-num")[3].textContent = empty;
+        const nums = document.querySelectorAll(".astat-num");
+        if (nums[0]) nums[0].textContent = total;
+        if (nums[1]) nums[1].textContent = live;
+        if (nums[2]) nums[2].textContent = partial;
+        if (nums[3]) nums[3].textContent = empty;
       }
 
       /* ══════════════════════════════════
    NAV / LOGIN
 ══════════════════════════════════ */
       let isAdmin = false;
-
-      function doWaitlist() {
-        const e = document.getElementById("waitlistEmail");
-        if (!e.value || !e.value.includes("@")) {
-          e.style.borderColor = "#f87171";
-          setTimeout(() => (e.style.borderColor = ""), 1200);
-          return;
-        }
-        document.getElementById("waitlistSuccess").style.display = "block";
-        e.style.display = "none";
-        e.nextElementSibling.style.display = "none";
-      }
 
       function showPublic() {
         document.getElementById("publicView").classList.add("active");
@@ -2280,9 +2289,7 @@
       }
       setTimeout(twType, 800);
 
-      /* ══════════════════════════════════
-   INIT
-══════════════════════════════════ */
+      /* INIT */
       renderPublic();
     </script>
   </body>

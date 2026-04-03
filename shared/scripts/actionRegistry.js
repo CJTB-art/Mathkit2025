@@ -6,7 +6,7 @@ import { handleFreePlanButton } from "../../client/buttons/getStartedFree.js";
 import { handleGradePackButton } from "../../client/buttons/getGradePack.js";
 import { handleOpenGumroad } from "../../client/buttons/openGumroad.js";
 import { handleContactSupport } from "../../client/buttons/contactSupport.js";
-import { browseLessons, handleSetFilter } from "../../client/public.js";
+import { browseLessons, closeLessonDetails, handleSetFilter, openLessonDetails } from "../../client/public.js";
 import { toggleTheme } from "./helpers.js";
 
 const clickHandlers = {
@@ -17,8 +17,10 @@ const clickHandlers = {
   "show-pricing": () => showPricing(),
   "submit-login": () => submitLogin(),
   "close-claim-modal": () => closeClaimModal(),
+  "close-lesson-details": () => closeLessonDetails(),
   "confirm-claim": (button) => confirmClaim(button),
   "set-filter": (button) => handleSetFilter(button),
+  "open-lesson-details": (button) => openLessonDetails(button),
   "browse-lessons": () => browseLessons(),
   "claim-free": (button) => openClaimModal(button),
   "download-bundle": (button) => handleDownloadBundle(button),
@@ -83,6 +85,7 @@ export function bindActions() {
 
     if (event.key === "Escape") {
       closeClaimModal();
+      closeLessonDetails();
     }
   });
 
@@ -92,6 +95,16 @@ export function bindActions() {
     modal.addEventListener("click", (event) => {
       if (event.target === modal) {
         closeClaimModal();
+      }
+    });
+  }
+
+  const lessonPreviewModal = document.getElementById("lessonPreviewModal");
+
+  if (lessonPreviewModal) {
+    lessonPreviewModal.addEventListener("click", (event) => {
+      if (event.target === lessonPreviewModal) {
+        closeLessonDetails();
       }
     });
   }

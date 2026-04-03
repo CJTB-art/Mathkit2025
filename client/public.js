@@ -5,7 +5,13 @@ import {
   icon,
   refreshIcons,
 } from "../shared/scripts/helpers.js";
-import { getStatus, lessonKey, state } from "../shared/scripts/store.js";
+import {
+  getLessonProgress,
+  getSliceStatus,
+  lessonKey,
+  sliceKey,
+  state,
+} from "../shared/scripts/store.js";
 import { showLessons } from "../admin/admin.js";
 
 const GRADES = [7, 8, 9, 10];
@@ -26,10 +32,31 @@ export function browseLessons() {
   showLessons();
 }
 
+export function openLessonDetails(button) {
+  const key = button.dataset.lessonKey;
+
+  if (!key) {
+    return;
+  }
+
+  state.lessonPreviewKey = key;
+  renderPublic();
+}
+
+export function closeLessonDetails() {
+  if (!state.lessonPreviewKey) {
+    return;
+  }
+
+  state.lessonPreviewKey = null;
+  renderPublic();
+}
+
 export function renderPublic() {
   renderClaimBanner();
   syncFilterButtons();
   renderCatalog();
+  renderLessonDetailsModal();
   refreshIcons();
 }
 
@@ -47,7 +74,7 @@ function renderClaimBanner() {
         <div class="fcb-text">
           <div class="fcb-title">You have 1 free lesson to claim.</div>
           <div class="fcb-sub">
-            Pick any available lesson, claim it once, and get the full LP, PPT,
+            Pick any available micro-lesson, claim it once, and get the full LP, PPT,
             worksheet, and web-based game activity in one zip download.
           </div>
         </div>
@@ -56,19 +83,19 @@ function renderClaimBanner() {
     return;
   }
 
-  const claimedLesson = CURRICULUM.find((lesson) => {
-    return lessonKey(lesson) === state.userFreeLesson;
-  });
+  const claimed = findSliceByKey(state.userFreeLesson);
 
   banner.innerHTML = `
     <div class="fcb-inner fcb-claimed">
       <div class="fcb-icon">${icon("check", "icon icon-lg")}</div>
       <div class="fcb-text">
         <div class="fcb-title">
-          Free lesson claimed: ${escapeHtml(claimedLesson?.topic || "Current lesson")}
+          Free lesson claimed: ${escapeHtml(claimed?.slice.title || "Current lesson")}
         </div>
         <div class="fcb-sub">
-          Download your LP, PPT, worksheet, and web-based game activity bundle anytime from the matching lesson card below.
+          ${claimed
+            ? `Inside ${escapeHtml(claimed.lesson.topic)}. Download your LP, PPT, worksheet, and web-based game activity bundle anytime from the matching slice below.`
+            : "Download your LP, PPT, worksheet, and web-based game activity bundle anytime from the matching slice below."}
         </div>
       </div>
     </div>
@@ -101,7 +128,8 @@ function renderCatalog() {
     const gradeMatches =
       state.filters.grade === "all" ||
       String(lesson.grade) === state.filters.grade;
-    const status = getStatus(lessonKey(lesson)) === "live" ? "live" : "coming";
+    const progress = getLessonProgress(lesson);
+    const status = progress.liveCount > 0 ? "live" : "coming";
     const statusMatches =
       state.filters.status === "all" || state.filters.status === status;
 
@@ -165,15 +193,24 @@ function renderCatalog() {
 }
 
 function renderLessonCard(lesson) {
-  const key = lessonKey(lesson);
-  const isLive = getStatus(key) === "live";
-  const isMyFree = state.userFreeLesson === key;
-  const hasClaimed = Boolean(state.userFreeLesson);
-  const statusClass = isMyFree ? "b-free" : isLive ? "b-live" : "b-soon";
-  const statusLabel = isMyFree ? "Your Free" : isLive ? "Available" : "Coming Soon";
+  const progress = getLessonProgress(lesson);
+  const hasLiveSlices = progress.liveCount > 0;
+  const showSliceStructure = lesson.isCuratedSequence && lesson.sliceCount > 1;
+  const lessonId = lessonKey(lesson);
+  const isMyFreePack = lesson.microLessons.some((microLesson) => {
+    return sliceKey(lesson, microLesson) === state.userFreeLesson;
+  });
+  const statusClass = isMyFreePack ? "b-free" : hasLiveSlices ? "b-live" : "b-soon";
+  const statusLabel = isMyFreePack
+    ? (showSliceStructure ? "Your Free Inside" : "Your Free")
+    : showSliceStructure && hasLiveSlices
+      ? `${progress.liveCount}/${progress.totalCount} Available`
+      : hasLiveSlices
+        ? "Available"
+      : "Coming Soon";
 
   return `
-    <div class="lcard ${isLive ? "live" : "coming"} ${isMyFree ? "user-free-card" : ""}">
+    <div class="lcard ${hasLiveSlices ? "live" : "coming"} ${isMyFreePack ? "user-free-card" : ""}">
       <div class="card-top">
         <div class="card-top-left">
           <span class="badge b-grade">G${lesson.grade}</span>
@@ -183,34 +220,175 @@ function renderLessonCard(lesson) {
       </div>
       <div class="card-topic">${escapeHtml(lesson.topic)}</div>
       <div class="card-code">${escapeHtml(lesson.code)} &middot; ${escapeHtml(lesson.strand)}</div>
+      ${showSliceStructure ? `
+        <div class="card-meta-line">
+          <span class="card-meta-pill">${lesson.sliceCount} subtopics</span>
+          <span class="card-meta-pill">${lesson.durationMinutes} mins each</span>
+          <span class="card-meta-pill">${progress.liveCount}/${progress.totalCount} live</span>
+        </div>
+      ` : ""}
       <div class="card-summary">
-        ${renderLessonSummary(isLive, isMyFree, hasClaimed)}
+        ${renderLessonSummary(lesson, progress, isMyFreePack, showSliceStructure)}
       </div>
-      <div class="card-footer">
-        ${renderLessonFooter(lesson, key, isLive, isMyFree, hasClaimed)}
+      ${showSliceStructure ? `
+        <div class="card-footer">
+          <button
+            type="button"
+            class="lesson-toggle"
+            data-action="open-lesson-details"
+            data-lesson-key="${escapeAttr(lessonId)}"
+            aria-haspopup="dialog"
+          >
+            ${icon("sparkles", "icon icon-sm")}
+            Preview Subtopics
+          </button>
+        </div>
+      ` : `
+        <div class="card-footer">
+          ${renderSingleLessonFooter(lesson)}
+        </div>
+      `}
+    </div>
+  `;
+}
+
+function renderLessonSummary(lesson, progress, isMyFreePack, showSliceStructure) {
+  if (!showSliceStructure) {
+    if (progress.liveCount === 0) {
+      return "One focused lesson pack for this topic.";
+    }
+
+    if (isMyFreePack) {
+      return "Your claimed lesson is ready as one focused downloadable bundle.";
+    }
+
+    if (!state.userFreeLesson) {
+      return "Available as one focused lesson with LP, PPT, worksheet, and web game.";
+    }
+
+    return "Unlock this lesson through a grade pack or full bundle.";
+  }
+
+  if (progress.liveCount === 0) {
+    return `Broken into ${lesson.sliceCount} teachable subtopics so the topic stays manageable in class.`;
+  }
+
+  if (isMyFreePack) {
+    return `Your free lesson is inside this sequence. ${progress.liveCount} of ${progress.totalCount} subtopics are live.`;
+  }
+
+  if (!state.userFreeLesson) {
+    return `${progress.liveCount} of ${progress.totalCount} subtopics are live. Preview the sequence to browse the breakdown.`;
+  }
+
+  return `${progress.liveCount} of ${progress.totalCount} subtopics are live. Preview the sequence to see the full breakdown.`;
+}
+
+function renderLessonDetailsModal() {
+  const modal = document.getElementById("lessonPreviewModal");
+  const lesson = CURRICULUM.find((item) => lessonKey(item) === state.lessonPreviewKey);
+
+  if (!modal) {
+    return;
+  }
+
+  if (!lesson) {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    return;
+  }
+
+  const progress = getLessonProgress(lesson);
+  const isMyFreePack = lesson.microLessons.some((microLesson) => {
+    return sliceKey(lesson, microLesson) === state.userFreeLesson;
+  });
+  const title = document.getElementById("lessonPreviewTitle");
+  const meta = document.getElementById("lessonPreviewMeta");
+  const summary = document.getElementById("lessonPreviewSummary");
+  const list = document.getElementById("lessonPreviewList");
+
+  if (title) {
+    title.textContent = lesson.topic;
+  }
+
+  if (meta) {
+    meta.innerHTML = `
+      <span class="lesson-preview-chip">Grade ${lesson.grade}</span>
+      <span class="lesson-preview-chip">${escapeHtml(lesson.q)}</span>
+      <span class="lesson-preview-chip">${lesson.sliceCount} subtopics</span>
+      <span class="lesson-preview-chip">${lesson.durationMinutes} mins each</span>
+    `;
+  }
+
+  if (summary) {
+    summary.textContent = renderLessonPreviewSummary(lesson, progress, isMyFreePack);
+  }
+
+  if (list) {
+    list.innerHTML = lesson.microLessons.map((microLesson) => {
+      return renderLessonPreviewRow(lesson, microLesson);
+    }).join("");
+  }
+
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function renderLessonPreviewSummary(lesson, progress, isMyFreePack) {
+  if (progress.liveCount === 0) {
+    return `${lesson.packTitle} is structured as ${lesson.sliceCount} teachable subtopics so the topic stays manageable inside a class period.`;
+  }
+
+  if (isMyFreePack) {
+    return `Your free lesson is inside this sequence. ${progress.liveCount} of ${progress.totalCount} subtopics are already live.`;
+  }
+
+  if (!state.userFreeLesson) {
+    return `${progress.liveCount} of ${progress.totalCount} subtopics are already live. Claim one free or unlock the full pack.`;
+  }
+
+  return `${progress.liveCount} of ${progress.totalCount} subtopics are already live in this sequence.`;
+}
+
+function renderSingleLessonFooter(lesson) {
+  return renderSliceAction(
+    lesson,
+    lesson.microLessons[0],
+    sliceKey(lesson, lesson.microLessons[0]),
+    getSliceStatus(sliceKey(lesson, lesson.microLessons[0])),
+    state.userFreeLesson === sliceKey(lesson, lesson.microLessons[0]),
+    Boolean(state.userFreeLesson),
+  );
+}
+
+function renderLessonPreviewRow(lesson, microLesson) {
+  const key = sliceKey(lesson, microLesson);
+  const status = getSliceStatus(key);
+  const isMyFree = state.userFreeLesson === key;
+  const hasClaimed = Boolean(state.userFreeLesson);
+  const rowClass = isMyFree ? "my-free" : status === "live" ? "available" : "coming";
+
+  return `
+    <div class="lesson-preview-row ${rowClass}">
+      <div class="lesson-preview-step">0${microLesson.sequenceNo}</div>
+      <div class="lesson-preview-main">
+        <div class="lesson-preview-row-head">
+          <div class="lesson-preview-row-title">${escapeHtml(microLesson.title)}</div>
+          <span class="lesson-preview-state">${isMyFree ? "Free" : status === "live" ? "Ready" : "Soon"}</span>
+        </div>
+        <div class="lesson-preview-row-goal">${escapeHtml(microLesson.goal)}</div>
+      </div>
+      <div class="lesson-preview-row-action">
+        ${renderSliceAction(lesson, microLesson, key, status, isMyFree, hasClaimed)}
       </div>
     </div>
   `;
 }
 
-function renderLessonSummary(isLive, isMyFree, hasClaimed) {
-  if (!isLive) {
-    return "LP, PPT, printable worksheet, and web-based game activity will appear here once this lesson is published.";
-  }
+function renderSliceAction(lesson, microLesson, key, status, isMyFree, hasClaimed) {
+  const downloadTopic = `${lesson.topic} - ${microLesson.title}`;
 
-  if (isMyFree) {
-    return "Your claimed lesson is ready as one full downloadable teaching bundle.";
-  }
-
-  if (!hasClaimed) {
-    return "Claim this lesson once to unlock the LP, PPT, printable worksheet, and web-based game activity.";
-  }
-
-  return "This lesson is already prepared and unlocks through a grade pack or full bundle.";
-}
-
-function renderLessonFooter(lesson, key, isLive, isMyFree, hasClaimed) {
-  if (!isLive) {
+  if (status !== "live") {
     return `
       <div class="card-note">
         ${icon("clock-3", "icon icon-sm")}
@@ -221,51 +399,54 @@ function renderLessonFooter(lesson, key, isLive, isMyFree, hasClaimed) {
 
   if (isMyFree) {
     return `
-      <div class="card-action-block">
-        <button
-          type="button"
-          class="chip dl-bundle"
-          data-action="download-bundle"
-          data-key="${escapeAttr(key)}"
-          data-topic="${escapeAttr(lesson.topic)}"
-        >
-          ${icon("download", "icon icon-sm")}
-          Download Free Bundle
-        </button>
-        <div class="card-includes">Includes LP, PPT, worksheet, and web-based game activity</div>
-      </div>
+      <button
+        type="button"
+        class="chip dl-bundle"
+        data-action="download-bundle"
+        data-key="${escapeAttr(key)}"
+        data-topic="${escapeAttr(downloadTopic)}"
+      >
+        ${icon("download", "icon icon-sm")}
+        Download
+      </button>
     `;
   }
 
   if (!hasClaimed) {
     return `
-      <div class="card-action-block">
-        <button
-          type="button"
-          class="chip claim-chip"
-          data-action="claim-free"
-          data-key="${escapeAttr(key)}"
-          data-topic="${escapeAttr(lesson.topic)}"
-          data-code="${escapeAttr(lesson.code)}"
-          data-strand="${escapeAttr(lesson.strand)}"
-          data-grade="${lesson.grade}"
-          data-quarter="${escapeAttr(lesson.q)}"
-        >
-          ${icon("gift", "icon icon-sm")}
-          Claim Free
-        </button>
-        <div class="card-includes">One-click access to LP, PPT, worksheet, and web-based game activity</div>
-      </div>
+      <button
+        type="button"
+        class="chip claim-chip"
+        data-action="claim-free"
+        data-key="${escapeAttr(key)}"
+        data-topic="${escapeAttr(microLesson.title)}"
+        data-pack-topic="${escapeAttr(lesson.topic)}"
+        data-code="${escapeAttr(lesson.code)}"
+        data-strand="${escapeAttr(lesson.strand)}"
+        data-grade="${lesson.grade}"
+        data-quarter="${escapeAttr(lesson.q)}"
+      >
+        ${icon("gift", "icon icon-sm")}
+        Claim Free
+      </button>
     `;
   }
 
   return `
-    <div class="card-action-block">
-      <div class="card-note">
-        ${icon("lock", "icon icon-sm")}
-        Unlock through a pack or bundle
-      </div>
-      <div class="card-includes">LP, PPT, worksheet, and web-based game activity are already included once purchased</div>
+    <div class="card-note">
+      ${icon("lock", "icon icon-sm")}
+      Unlock in pack
     </div>
   `;
+}
+function findSliceByKey(targetKey) {
+  for (const lesson of CURRICULUM) {
+    for (const microLesson of lesson.microLessons) {
+      if (sliceKey(lesson, microLesson) === targetKey) {
+        return { lesson, slice: microLesson };
+      }
+    }
+  }
+
+  return null;
 }

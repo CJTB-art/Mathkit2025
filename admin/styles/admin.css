@@ -200,6 +200,50 @@
   margin-bottom: 0.5rem;
 }
 
+.admin-lesson-pack {
+  margin-bottom: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg2);
+  overflow: hidden;
+}
+
+.alr-pack-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 0.9rem 0.95rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.alr-pack-code {
+  min-width: 94px;
+  font-size: 10px;
+  color: var(--text3);
+  font-family: monospace;
+}
+
+.alr-pack-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.alr-pack-topic {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.alr-pack-meta {
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--text3);
+}
+
+.admin-slice-list {
+  padding: 0.75rem;
+}
+
 .admin-lesson-row {
   display: flex;
   align-items: center;
@@ -213,28 +257,59 @@
   flex-wrap: wrap;
 }
 
+.admin-lesson-row + .admin-lesson-row {
+  margin-top: 6px;
+}
+
 .admin-lesson-row:hover {
   background: var(--bg3);
 }
 
-.alr-q {
+.alr-seq {
+  min-width: 42px;
   font-size: 10px;
-  color: var(--text2);
-  min-width: 24px;
+  color: var(--accent);
+  font-weight: 700;
 }
 
-.alr-code {
-  font-size: 10px;
-  color: var(--text3);
-  font-family: monospace;
-  min-width: 100px;
+.alr-topic-block {
+  flex: 1;
+  min-width: 220px;
 }
 
 .alr-topic {
-  flex: 1;
-  min-width: 160px;
   font-size: 13px;
   font-weight: 500;
+}
+
+.alr-scope {
+  margin-top: 3px;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.02em;
+}
+
+.alr-slice-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.alr-slice-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 10px;
+  color: var(--text2);
+}
+
+.alr-slice-pill.muted {
+  color: var(--text3);
 }
 
 .upload-slots {

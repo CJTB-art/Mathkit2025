@@ -86,7 +86,7 @@ function createHomeDetailsSection() {
             Built for teachers who need clearer prep, steadier lessons, and less friction in class.
           </h2>
           <p class="home-details-sub">
-            MathKit PH is a classroom-first resource library designed to make daily teaching more practical, more consistent, and easier to sustain through lesson files, printable worksheets, and web-based game activities.
+            MathKit PH is a classroom-first resource library designed to make daily teaching more practical, more consistent, and easier to sustain through thin-sliced lesson packs, printable worksheets, and web-based game activities.
           </p>
         </div>
         <div class="home-details-grid">
@@ -111,7 +111,7 @@ function createHomeDetailsSection() {
           <article class="home-detail-card">
             <div class="home-detail-label">Mission</div>
             <p>
-              Help teachers spend less time assembling resources and more time teaching with confidence through complete lesson packs.
+              Help teachers spend less time assembling resources and more time teaching with confidence through complete lesson packs broken into realistic 45-minute slices.
             </p>
           </article>
         </div>
@@ -225,7 +225,7 @@ export function createAppShell() {
           <span>Claim Your Free Lesson</span>
         </div>
         <div class="modal-sub">
-          You get <strong>one free lesson</strong> of your choice. You will
+          You get <strong>one free micro-lesson</strong> of your choice. You will
           receive the full LP, PPT, printable worksheet, and web-based
           game activity bundled for download at no cost.
         </div>
@@ -250,6 +250,28 @@ export function createAppShell() {
             Yes, claim this free
           </button>
         </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay lesson-preview-overlay" id="lessonPreviewModal" aria-hidden="true">
+      <div class="modal-box lesson-preview-box">
+        <div class="lesson-preview-top">
+          <div>
+            <div class="lesson-preview-label">Lesson Sequence</div>
+            <div class="lesson-preview-title" id="lessonPreviewTitle"></div>
+            <div class="lesson-preview-meta" id="lessonPreviewMeta"></div>
+          </div>
+          <button
+            type="button"
+            class="lesson-preview-close"
+            data-action="close-lesson-details"
+            aria-label="Close lesson details"
+          >
+            ${icon("x", "icon icon-md")}
+          </button>
+        </div>
+        <div class="lesson-preview-summary" id="lessonPreviewSummary"></div>
+        <div class="lesson-preview-list" id="lessonPreviewList"></div>
       </div>
     </div>
 
@@ -299,8 +321,9 @@ export function createAppShell() {
             </button>
           </div>
           <p>
-            Upload PPT, LP, Worksheet, and Web Game for each lesson. A lesson
-            goes live once all four are set.<br />
+            Upload PPT, LP, Worksheet, and Web Game for each micro-lesson. A
+            slice goes live once all four are set, and each broad topic should
+            stay broken into a thin-sliced 45-minute teaching sequence.<br />
             <span class="admin-help">
               ${icon("info", "icon icon-sm")}
               Hover a row to reveal the remove button for each file.
@@ -364,7 +387,7 @@ export function createAppShell() {
           <div class="lessons-page-copy">
             <h2 class="lessons-page-title">Browse lessons</h2>
             <p class="lessons-page-sub">
-              Filter by grade and availability, claim one free lesson, then unlock complete packs with LPs, PPTs, printable worksheets, and web-based game activities.
+              Filter by grade and availability, claim one free micro-lesson, then unlock complete packs with LPs, PPTs, printable worksheets, web-based game activities, and teachable slices built for a 45-minute class.
             </p>
           </div>
           <button

@@ -1,4 +1,6 @@
-export const CURRICULUM = [
+import { enrichLesson } from "./lessonSequences.js";
+
+const BASE_CURRICULUM = [
   { grade: 7, q: "Q1", strand: "Numbers & Number Sense", topic: "Sets and the Real Number System", code: "M7NS-Ia" },
   { grade: 7, q: "Q1", strand: "Numbers & Number Sense", topic: "Absolute Value and Operations on Integers", code: "M7NS-Ic" },
   { grade: 7, q: "Q1", strand: "Numbers & Number Sense", topic: "Rational Numbers and the Number Line", code: "M7NS-Ie" },
@@ -102,3 +104,5 @@ export const CURRICULUM = [
   { grade: 10, q: "Q4", strand: "Statistics & Probability", topic: "Interpreting a Box-and-Whisker Plot", code: "M10SP-IVd" },
   { grade: 10, q: "Q4", strand: "Statistics & Probability", topic: "Statistical Mini-Research Methods", code: "M10SP-IVf" },
 ];
+
+export const CURRICULUM = BASE_CURRICULUM.map((lesson) => enrichLesson(lesson));

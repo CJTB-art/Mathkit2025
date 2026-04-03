@@ -7,15 +7,23 @@ export function openClaimModal(button) {
     return;
   }
 
-  const { key, topic, code, strand, grade, quarter } = button.dataset;
+  const { key, topic, packTopic, code, strand, grade, quarter } = button.dataset;
 
   if (!key) {
     return;
   }
 
+  state.lessonPreviewKey = null;
+  const lessonPreviewModal = document.getElementById("lessonPreviewModal");
+  if (lessonPreviewModal) {
+    lessonPreviewModal.classList.remove("open");
+    lessonPreviewModal.setAttribute("aria-hidden", "true");
+  }
+
   state.pendingClaim = {
     key,
     topic: topic || "",
+    packTopic: packTopic || "",
     code: code || "",
     strand: strand || "",
     grade: grade || "",
@@ -33,7 +41,10 @@ export function openClaimModal(button) {
   if (previewMeta) {
     previewMeta.textContent =
       `${state.pendingClaim.code} - Grade ${state.pendingClaim.grade} ` +
-      `${state.pendingClaim.quarter} - ${state.pendingClaim.strand}`;
+      `${state.pendingClaim.quarter} - ${state.pendingClaim.strand}` +
+      (state.pendingClaim.packTopic
+        ? ` - ${state.pendingClaim.packTopic}`
+        : "");
   }
 
   if (modal) {

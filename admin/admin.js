@@ -9,9 +9,11 @@ import {
 } from "../shared/scripts/helpers.js";
 import {
   ADMIN_PW,
-  getStatus,
+  getLessonProgress,
+  getSliceStatus,
+  getTotalSliceCount,
   getUploads,
-  lessonKey,
+  sliceKey,
   state,
 } from "../shared/scripts/store.js";
 
@@ -19,12 +21,14 @@ const GRADES = [7, 8, 9, 10];
 const QUARTERS = ["Q1", "Q2", "Q3", "Q4"];
 
 export function showPublic() {
+  state.lessonPreviewKey = null;
   setActiveView("home");
   syncAdminNavButton();
   scrollToTop();
 }
 
 export function showLessons() {
+  state.lessonPreviewKey = null;
   setActiveView("lessons");
   syncAdminNavButton();
   renderPublic();
@@ -32,12 +36,14 @@ export function showLessons() {
 }
 
 export function showPricing() {
+  state.lessonPreviewKey = null;
   setActiveView("pricing");
   syncAdminNavButton();
   scrollToTop();
 }
 
 export function showAdmin() {
+  state.lessonPreviewKey = null;
   syncAdminNavButton();
 
   if (state.isAdmin) {
@@ -80,18 +86,22 @@ export function renderAdmin() {
     return;
   }
 
-  const liveCount = CURRICULUM.filter((lesson) => {
-    return getStatus(lessonKey(lesson)) === "live";
-  }).length;
-  const partialCount = CURRICULUM.filter((lesson) => {
-    return getStatus(lessonKey(lesson)) === "partial";
-  }).length;
-  const emptyCount = CURRICULUM.length - liveCount - partialCount;
+  const totalSlices = getTotalSliceCount(CURRICULUM);
+  let liveCount = 0;
+  let partialCount = 0;
+
+  CURRICULUM.forEach((lesson) => {
+    const progress = getLessonProgress(lesson);
+    liveCount += progress.liveCount;
+    partialCount += progress.partialCount;
+  });
+
+  const emptyCount = totalSlices - liveCount - partialCount;
 
   stats.innerHTML = `
     <div class="astat">
-      <div class="astat-num total">${CURRICULUM.length}</div>
-      <div class="astat-label">Total Lessons</div>
+      <div class="astat-num total">${totalSlices}</div>
+      <div class="astat-label">Total Slices</div>
     </div>
     <div class="astat">
       <div class="astat-num live">${liveCount}</div>
@@ -111,15 +121,18 @@ export function renderAdmin() {
 
   GRADES.forEach((grade) => {
     const gradeLessons = CURRICULUM.filter((lesson) => lesson.grade === grade);
-    const liveLessons = gradeLessons.filter((lesson) => {
-      return getStatus(lessonKey(lesson)) === "live";
-    }).length;
+    const gradeSliceCount = gradeLessons.reduce((count, lesson) => {
+      return count + lesson.microLessons.length;
+    }, 0);
+    const gradeLiveCount = gradeLessons.reduce((count, lesson) => {
+      return count + getLessonProgress(lesson).liveCount;
+    }, 0);
 
     html += `
       <div class="admin-grade-block">
         <div class="admin-grade-title">
           Grade ${grade}
-          <span class="admin-grade-meta">${liveLessons}/${gradeLessons.length} live</span>
+          <span class="admin-grade-meta">${gradeLiveCount}/${gradeSliceCount} slices live</span>
         </div>
     `;
 
@@ -133,7 +146,7 @@ export function renderAdmin() {
       html += `
         <div class="admin-quarter-block">
           <div class="quarter-label">Quarter ${quarter.replace("Q", "")}</div>
-          ${quarterLessons.map((lesson) => renderLessonRow(lesson)).join("")}
+          ${quarterLessons.map((lesson) => renderLessonPack(lesson)).join("")}
         </div>
       `;
     });
@@ -175,7 +188,7 @@ export function handleUploadChange(input) {
     uploadState.activity &&
     uploadState.worksheet
   ) {
-    showToast("Lesson is now live.", "success");
+    showToast("Micro-lesson is now live.", "success");
   } else {
     showToast(`${file.name} saved.`, "success");
   }
@@ -204,9 +217,49 @@ export function handleDeleteUpload(button) {
   showToast("File removed.");
 }
 
-function renderLessonRow(lesson) {
-  const key = lessonKey(lesson);
-  const status = getStatus(key);
+function renderLessonPack(lesson) {
+  const progress = getLessonProgress(lesson);
+  const isCuratedPack = lesson.isCuratedSequence && lesson.sliceCount > 1;
+
+  if (!isCuratedPack) {
+    return `
+      <div class="admin-lesson-pack">
+        <div class="alr-pack-head">
+          <div class="alr-pack-code">${escapeHtml(lesson.code)}</div>
+          <div class="alr-pack-copy">
+            <div class="alr-pack-topic">${escapeHtml(lesson.topic)}</div>
+            <div class="alr-pack-meta">Single focused lesson &middot; ${lesson.durationMinutes} mins &middot; ${progress.liveCount}/${progress.totalCount} live</div>
+          </div>
+        </div>
+        <div class="admin-slice-list">
+          ${renderSingleLessonRow(lesson)}
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="admin-lesson-pack">
+      <div class="alr-pack-head">
+        <div class="alr-pack-code">${escapeHtml(lesson.code)}</div>
+        <div class="alr-pack-copy">
+          <div class="alr-pack-topic">${escapeHtml(lesson.topic)}</div>
+          <div class="alr-pack-meta">
+            ${lesson.sliceCount} teachable slices &middot; ${lesson.durationMinutes} mins each &middot; ${escapeHtml(lesson.pacingLabel)} &middot; ${progress.liveCount}/${progress.totalCount} live
+          </div>
+        </div>
+      </div>
+      <div class="admin-slice-list">
+        ${lesson.microLessons.map((microLesson) => renderSliceRow(lesson, microLesson)).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderSingleLessonRow(lesson) {
+  const microLesson = lesson.microLessons[0];
+  const key = sliceKey(lesson, microLesson);
+  const status = getSliceStatus(key);
   const statusClass =
     status === "live" ? "sp-live" : status === "partial" ? "sp-partial" : "sp-empty";
   const statusLabel =
@@ -214,9 +267,35 @@ function renderLessonRow(lesson) {
 
   return `
     <div class="admin-lesson-row">
-      <div class="alr-q">${lesson.q}</div>
-      <div class="alr-code">${escapeHtml(lesson.code)}</div>
-      <div class="alr-topic">${escapeHtml(lesson.topic)}</div>
+      <div class="alr-topic-block">
+        <div class="alr-topic">${escapeHtml(lesson.topic)}</div>
+      </div>
+      <div class="upload-slots">
+        ${renderUploadSlot(key, "ppt", "PPT")}
+        ${renderUploadSlot(key, "lp", "LP")}
+        ${renderUploadSlot(key, "activity", "Web Game")}
+        ${renderUploadSlot(key, "worksheet", "Worksheet")}
+      </div>
+      <div class="alr-status"><span class="status-pill ${statusClass}">${statusLabel}</span></div>
+    </div>
+  `;
+}
+
+function renderSliceRow(lesson, microLesson) {
+  const key = sliceKey(lesson, microLesson);
+  const status = getSliceStatus(key);
+  const statusClass =
+    status === "live" ? "sp-live" : status === "partial" ? "sp-partial" : "sp-empty";
+  const statusLabel =
+    status === "live" ? "Live" : status === "partial" ? "Partial" : "Empty";
+
+  return `
+    <div class="admin-lesson-row">
+      <div class="alr-seq">L${microLesson.sequenceNo}</div>
+      <div class="alr-topic-block">
+        <div class="alr-topic">${escapeHtml(microLesson.title)}</div>
+        <div class="alr-scope">${escapeHtml(microLesson.goal)}</div>
+      </div>
       <div class="upload-slots">
         ${renderUploadSlot(key, "ppt", "PPT")}
         ${renderUploadSlot(key, "lp", "LP")}
@@ -237,7 +316,7 @@ function renderUploadSlot(key, fileType, label) {
         ? ".doc,.docx,.pdf"
         : fileType === "worksheet"
           ? ".pdf,.doc,.docx"
-        : ".html,.htm,.zip";
+          : ".html,.htm,.zip";
 
   if (file) {
     const shortName =

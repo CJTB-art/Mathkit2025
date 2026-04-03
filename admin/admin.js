@@ -8,7 +8,20 @@ import {
   showToast,
 } from "../shared/scripts/helpers.js";
 import {
-  ADMIN_PW,
+  deleteLessonAsset,
+  getErrorMessage,
+  getFileAccept,
+  getFileLabel,
+  getSupabaseConfigMessage,
+  getSyncStatusLabel,
+  isSupabaseConfigured,
+  refreshSupabaseState,
+  signInAdmin,
+  signOutAdmin,
+  uploadLessonAsset,
+} from "../shared/scripts/supabase.js";
+import {
+  FILE_TYPES,
   getLessonProgress,
   getSliceStatus,
   getTotalSliceCount,
@@ -23,14 +36,14 @@ const QUARTERS = ["Q1", "Q2", "Q3", "Q4"];
 export function showPublic() {
   state.lessonPreviewKey = null;
   setActiveView("home");
-  syncAdminNavButton();
+  syncAdminChrome();
   scrollToTop();
 }
 
 export function showLessons() {
   state.lessonPreviewKey = null;
   setActiveView("lessons");
-  syncAdminNavButton();
+  syncAdminChrome();
   renderPublic();
   scrollToTop();
 }
@@ -38,13 +51,13 @@ export function showLessons() {
 export function showPricing() {
   state.lessonPreviewKey = null;
   setActiveView("pricing");
-  syncAdminNavButton();
+  syncAdminChrome();
   scrollToTop();
 }
 
 export function showAdmin() {
   state.lessonPreviewKey = null;
-  syncAdminNavButton();
+  syncAdminChrome();
 
   if (state.isAdmin) {
     setActiveView("admin");
@@ -55,27 +68,126 @@ export function showAdmin() {
   setActiveView("login");
   hideLoginError();
 
-  const passwordInput = document.getElementById("pwInput");
-  window.setTimeout(() => passwordInput?.focus(), 100);
+  const emailInput = document.getElementById("adminEmailInput");
+  const passwordInput = document.getElementById("adminPasswordInput");
+  const nextFocus = emailInput || passwordInput;
+
+  window.setTimeout(() => nextFocus?.focus(), 100);
 }
 
-export function submitLogin() {
-  const passwordInput = document.getElementById("pwInput");
-  const errorMessage = document.getElementById("loginErr");
+export async function submitLogin() {
+  const emailInput = document.getElementById("adminEmailInput");
+  const passwordInput = document.getElementById("adminPasswordInput");
 
-  if (!(passwordInput instanceof HTMLInputElement) || !errorMessage) {
+  if (
+    !(emailInput instanceof HTMLInputElement) ||
+    !(passwordInput instanceof HTMLInputElement)
+  ) {
     return;
   }
 
-  if (passwordInput.value === ADMIN_PW) {
-    state.isAdmin = true;
+  if (!isSupabaseConfigured()) {
+    showLoginError(getSupabaseConfigMessage());
+    return;
+  }
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    showLoginError("Enter your Supabase admin email and password.");
+    return;
+  }
+
+  setLoginBusy(true);
+  hideLoginError();
+
+  try {
+    await signInAdmin(email, password);
     passwordInput.value = "";
-    errorMessage.style.display = "none";
+    showToast("Signed in. Lesson uploads are now protected by your admin account.", "success");
     showAdmin();
-    return;
+  } catch (error) {
+    console.error(error);
+    showLoginError(getErrorMessage(error, "Unable to sign in."));
+  } finally {
+    setLoginBusy(false);
+  }
+}
+
+export async function signOutAdminSession() {
+  try {
+    await signOutAdmin();
+    syncAdminChrome();
+    renderPublic();
+    showAdmin();
+    showToast("Signed out.");
+  } catch (error) {
+    console.error(error);
+    showToast(getErrorMessage(error, "Unable to sign out."), "error");
+  }
+}
+
+export async function refreshLessonAssets(options = {}) {
+  const { silent = false } = options;
+
+  if (!isSupabaseConfigured()) {
+    syncAdminChrome();
+    if (!silent) {
+      showToast(getSupabaseConfigMessage(), "error");
+    }
+    return false;
   }
 
-  errorMessage.style.display = "block";
+  if (!state.isAdmin) {
+    if (!silent) {
+      showToast("Sign in with an approved Supabase admin account first.", "error");
+    }
+    return false;
+  }
+
+  if (!silent) {
+    showToast("Refreshing lesson assets...");
+  }
+
+  try {
+    const syncPromise = refreshSupabaseState({ includeUploads: true });
+    syncAdminChrome();
+
+    if (document.getElementById("adminView")?.classList.contains("active")) {
+      renderAdmin();
+    }
+
+    await syncPromise;
+    syncAdminChrome();
+    renderPublic();
+
+    if (document.getElementById("adminView")?.classList.contains("active")) {
+      renderAdmin();
+    }
+
+    if (!silent) {
+      showToast("Lesson assets synced.", "success");
+    }
+
+    return true;
+  } catch (error) {
+    console.error(error);
+    syncAdminChrome();
+
+    if (document.getElementById("adminView")?.classList.contains("active")) {
+      renderAdmin();
+    }
+
+    if (!silent) {
+      showToast(
+        getErrorMessage(error, "Unable to refresh lesson assets."),
+        "error",
+      );
+    }
+
+    return false;
+  }
 }
 
 export function renderAdmin() {
@@ -83,6 +195,28 @@ export function renderAdmin() {
   const catalog = document.getElementById("adminCatalog");
 
   if (!stats || !catalog) {
+    return;
+  }
+
+  syncAdminChrome();
+
+  if (!isSupabaseConfigured()) {
+    stats.innerHTML = renderAdminNotice(
+      "Supabase is not configured yet.",
+      "Add your project URL and anon key in shared/scripts/supabaseConfig.js to enable admin uploads.",
+    );
+    catalog.innerHTML = "";
+    refreshIcons();
+    return;
+  }
+
+  if (!state.uploadIndexLoaded && state.syncStatus === "loading") {
+    stats.innerHTML = renderAdminNotice(
+      "Loading lesson assets...",
+      "Pulling the latest lesson status from Supabase.",
+    );
+    catalog.innerHTML = "";
+    refreshIcons();
     return;
   }
 
@@ -97,8 +231,18 @@ export function renderAdmin() {
   });
 
   const emptyCount = totalSlices - liveCount - partialCount;
+  const syncNotice =
+    state.syncStatus === "error"
+      ? `
+        <div class="admin-wide-note admin-wide-note-error">
+          ${icon("triangle-alert", "icon icon-sm")}
+          <span>${escapeHtml(state.syncError || "Supabase sync failed.")}</span>
+        </div>
+      `
+      : "";
 
   stats.innerHTML = `
+    ${syncNotice}
     <div class="astat">
       <div class="astat-num total">${totalSlices}</div>
       <div class="astat-label">Total Slices</div>
@@ -158,7 +302,7 @@ export function renderAdmin() {
   refreshIcons();
 }
 
-export function handleUploadChange(input) {
+export async function handleUploadChange(input) {
   if (!(input instanceof HTMLInputElement)) {
     return;
   }
@@ -167,54 +311,57 @@ export function handleUploadChange(input) {
   const fileType = input.dataset.fileType;
   const file = input.files?.[0];
 
+  input.value = "";
+
   if (!key || !fileType || !file) {
     return;
   }
 
-  if (!state.uploads[key]) {
-    state.uploads[key] = {};
-  }
+  showToast(`Uploading ${file.name}...`);
 
-  state.uploads[key][fileType] = file;
+  try {
+    await uploadLessonAsset({ key, fileType, file });
+    renderAdmin();
+    renderPublic();
 
-  renderAdmin();
-  renderPublic();
+    const uploadState = getUploads(key);
 
-  const uploadState = getUploads(key);
-
-  if (
-    uploadState.ppt &&
-    uploadState.lp &&
-    uploadState.activity &&
-    uploadState.worksheet
-  ) {
-    showToast("Micro-lesson is now live.", "success");
-  } else {
-    showToast(`${file.name} saved.`, "success");
+    if (FILE_TYPES.every((type) => Boolean(uploadState[type]))) {
+      showToast("Micro-lesson is now live.", "success");
+    } else {
+      showToast(`${file.name} uploaded.`, "success");
+    }
+  } catch (error) {
+    console.error(error);
+    showToast(
+      getErrorMessage(
+        error,
+        `Unable to upload ${getFileLabel(fileType)} right now.`,
+      ),
+      "error",
+    );
   }
 }
 
-export function handleDeleteUpload(button) {
+export async function handleDeleteUpload(button) {
   const { key, fileType } = button.dataset;
 
-  if (!key || !fileType || !state.uploads[key]) {
+  if (!key || !fileType || !getUploads(key)[fileType]) {
     return;
   }
 
-  state.uploads[key][fileType] = null;
-
-  if (
-    !state.uploads[key].ppt &&
-    !state.uploads[key].lp &&
-    !state.uploads[key].activity &&
-    !state.uploads[key].worksheet
-  ) {
-    delete state.uploads[key];
+  try {
+    await deleteLessonAsset({ key, fileType });
+    renderAdmin();
+    renderPublic();
+    showToast("File removed.");
+  } catch (error) {
+    console.error(error);
+    showToast(
+      getErrorMessage(error, "Unable to remove this file right now."),
+      "error",
+    );
   }
-
-  renderAdmin();
-  renderPublic();
-  showToast("File removed.");
 }
 
 function renderLessonPack(lesson) {
@@ -271,10 +418,10 @@ function renderSingleLessonRow(lesson) {
         <div class="alr-topic">${escapeHtml(lesson.topic)}</div>
       </div>
       <div class="upload-slots">
-        ${renderUploadSlot(key, "ppt", "PPT")}
-        ${renderUploadSlot(key, "lp", "LP")}
-        ${renderUploadSlot(key, "activity", "Web Game")}
-        ${renderUploadSlot(key, "worksheet", "Worksheet")}
+        ${renderUploadSlot(key, "ppt")}
+        ${renderUploadSlot(key, "lp")}
+        ${renderUploadSlot(key, "activity")}
+        ${renderUploadSlot(key, "worksheet")}
       </div>
       <div class="alr-status"><span class="status-pill ${statusClass}">${statusLabel}</span></div>
     </div>
@@ -297,26 +444,20 @@ function renderSliceRow(lesson, microLesson) {
         <div class="alr-scope">${escapeHtml(microLesson.goal)}</div>
       </div>
       <div class="upload-slots">
-        ${renderUploadSlot(key, "ppt", "PPT")}
-        ${renderUploadSlot(key, "lp", "LP")}
-        ${renderUploadSlot(key, "activity", "Web Game")}
-        ${renderUploadSlot(key, "worksheet", "Worksheet")}
+        ${renderUploadSlot(key, "ppt")}
+        ${renderUploadSlot(key, "lp")}
+        ${renderUploadSlot(key, "activity")}
+        ${renderUploadSlot(key, "worksheet")}
       </div>
       <div class="alr-status"><span class="status-pill ${statusClass}">${statusLabel}</span></div>
     </div>
   `;
 }
 
-function renderUploadSlot(key, fileType, label) {
+function renderUploadSlot(key, fileType) {
   const file = getUploads(key)[fileType];
-  const accept =
-    fileType === "ppt"
-      ? ".pptx,.ppt,.pdf"
-      : fileType === "lp"
-        ? ".doc,.docx,.pdf"
-        : fileType === "worksheet"
-          ? ".pdf,.doc,.docx"
-          : ".html,.htm,.zip";
+  const label = getFileLabel(fileType);
+  const accept = getFileAccept(fileType);
 
   if (file) {
     const shortName =
@@ -366,6 +507,15 @@ function renderUploadSlot(key, fileType, label) {
           Upload ${label}
         </span>
       </div>
+    </div>
+  `;
+}
+
+function renderAdminNotice(title, copy) {
+  return `
+    <div class="admin-notice">
+      <div class="admin-notice-title">${escapeHtml(title)}</div>
+      <div class="admin-notice-copy">${escapeHtml(copy)}</div>
     </div>
   `;
 }
@@ -425,21 +575,118 @@ function syncNavLinks(view) {
     });
 }
 
+export function syncAdminChrome() {
+  syncAdminNavButton();
+  syncLoginHelp();
+  syncAdminMeta();
+}
+
+function syncLoginHelp() {
+  const help = document.getElementById("loginHelp");
+
+  if (!help) {
+    return;
+  }
+
+  if (!isSupabaseConfigured()) {
+    help.textContent = getSupabaseConfigMessage();
+    help.className = "login-tip warning";
+    return;
+  }
+
+  help.textContent = "Use a Supabase account that is also listed in public.admin_users.";
+  help.className = "login-tip";
+}
+
+function syncAdminMeta() {
+  const syncStatus = document.getElementById("adminSyncStatus");
+  const sessionMeta = document.getElementById("adminSessionMeta");
+  const refreshButton = document.getElementById("adminRefreshBtn");
+  const signOutButton = document.getElementById("adminSignOutBtn");
+
+  if (syncStatus) {
+    syncStatus.textContent = getSyncStatusLabel();
+    syncStatus.className = `admin-sync-pill ${state.syncStatus}`.trim();
+  }
+
+  if (sessionMeta) {
+    sessionMeta.textContent = state.isAdmin && state.authUser?.email
+      ? `Signed in as ${state.authUser.email}`
+      : state.authUser
+        ? "Public visitor session active"
+        : "Not signed in";
+  }
+
+  if (refreshButton instanceof HTMLButtonElement) {
+    refreshButton.disabled =
+      !state.isAdmin ||
+      !isSupabaseConfigured() ||
+      state.syncStatus === "loading";
+  }
+
+  if (signOutButton instanceof HTMLButtonElement) {
+    signOutButton.disabled = !state.isAdmin;
+  }
+}
+
 function hideLoginError() {
   const errorMessage = document.getElementById("loginErr");
 
   if (errorMessage) {
+    errorMessage.textContent = "";
     errorMessage.style.display = "none";
   }
+}
+
+function showLoginError(message) {
+  const errorMessage = document.getElementById("loginErr");
+
+  if (!errorMessage) {
+    return;
+  }
+
+  errorMessage.textContent = message;
+  errorMessage.style.display = "block";
+}
+
+function setLoginBusy(isBusy) {
+  const button = document.getElementById("loginSubmitBtn");
+  const emailInput = document.getElementById("adminEmailInput");
+  const passwordInput = document.getElementById("adminPasswordInput");
+
+  if (button instanceof HTMLButtonElement) {
+    button.disabled = isBusy;
+    button.innerHTML = isBusy
+      ? `${icon("loader-circle", "icon icon-sm")} Signing in...`
+      : `${icon("shield", "icon icon-sm")} Sign in`;
+  }
+
+  if (emailInput instanceof HTMLInputElement) {
+    emailInput.disabled = isBusy;
+  }
+
+  if (passwordInput instanceof HTMLInputElement) {
+    passwordInput.disabled = isBusy;
+  }
+
+  refreshIcons();
 }
 
 function syncAdminNavButton() {
   const adminButton = document.getElementById("adminNavBtn");
 
   if (adminButton) {
+    const label = !isSupabaseConfigured()
+      ? "Setup"
+      : state.syncStatus === "loading"
+        ? "Syncing"
+        : state.isAdmin
+          ? "Admin OK"
+          : "Admin";
+
     adminButton.innerHTML = `
       ${icon("shield", "icon icon-sm")}
-      <span>${state.isAdmin ? "Admin OK" : "Admin"}</span>
+      <span>${label}</span>
     `;
     refreshIcons();
   }

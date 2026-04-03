@@ -11,7 +11,9 @@ import {
   lessonKey,
   sliceKey,
   state,
+  userHasLessonAccess,
 } from "../shared/scripts/store.js";
+import { isSupabaseConfigured } from "../shared/scripts/supabase.js";
 import { showLessons } from "../admin/admin.js";
 
 const GRADES = [7, 8, 9, 10];
@@ -124,16 +126,25 @@ function renderCatalog() {
     return;
   }
 
+  if (!state.availabilityLoaded && isSupabaseConfigured()) {
+    catalog.innerHTML =
+      '<div class="catalog-empty">Loading live lesson availability...</div>';
+    return;
+  }
+
   const filteredLessons = CURRICULUM.filter((lesson) => {
     const gradeMatches =
       state.filters.grade === "all" ||
       String(lesson.grade) === state.filters.grade;
+    const quarterMatches =
+      state.filters.quarter === "all" ||
+      lesson.q === state.filters.quarter;
     const progress = getLessonProgress(lesson);
     const status = progress.liveCount > 0 ? "live" : "coming";
     const statusMatches =
       state.filters.status === "all" || state.filters.status === status;
 
-    return gradeMatches && statusMatches;
+    return gradeMatches && quarterMatches && statusMatches;
   });
 
   if (!filteredLessons.length) {
@@ -263,10 +274,10 @@ function renderLessonSummary(lesson, progress, isMyFreePack, showSliceStructure)
     }
 
     if (!state.userFreeLesson) {
-      return "Available as one focused lesson with LP, PPT, worksheet, and web game.";
+      return "Available as one focused lesson with LP, PPT, worksheet, and web game. Claim it free or buy it on its own.";
     }
 
-    return "Unlock this lesson through a grade pack or full bundle.";
+    return "Buy this lesson on its own or unlock it through a grade pack or full bundle.";
   }
 
   if (progress.liveCount === 0) {
@@ -278,10 +289,10 @@ function renderLessonSummary(lesson, progress, isMyFreePack, showSliceStructure)
   }
 
   if (!state.userFreeLesson) {
-    return `${progress.liveCount} of ${progress.totalCount} subtopics are live. Preview the sequence to browse the breakdown.`;
+    return `${progress.liveCount} of ${progress.totalCount} subtopics are live. Preview the sequence to claim one free or buy a single lesson.`;
   }
 
-  return `${progress.liveCount} of ${progress.totalCount} subtopics are live. Preview the sequence to see the full breakdown.`;
+  return `${progress.liveCount} of ${progress.totalCount} subtopics are live. Preview the sequence to buy a single lesson or see the full breakdown.`;
 }
 
 function renderLessonDetailsModal() {
@@ -344,10 +355,10 @@ function renderLessonPreviewSummary(lesson, progress, isMyFreePack) {
   }
 
   if (!state.userFreeLesson) {
-    return `${progress.liveCount} of ${progress.totalCount} subtopics are already live. Claim one free or unlock the full pack.`;
+    return `${progress.liveCount} of ${progress.totalCount} subtopics are already live. Claim one free, buy a single lesson, or unlock the full pack.`;
   }
 
-  return `${progress.liveCount} of ${progress.totalCount} subtopics are already live in this sequence.`;
+  return `${progress.liveCount} of ${progress.totalCount} subtopics are already live in this sequence and can be bought individually or unlocked in the full pack.`;
 }
 
 function renderSingleLessonFooter(lesson) {
@@ -387,6 +398,8 @@ function renderLessonPreviewRow(lesson, microLesson) {
 
 function renderSliceAction(lesson, microLesson, key, status, isMyFree, hasClaimed) {
   const downloadTopic = `${lesson.topic} - ${microLesson.title}`;
+  const buyButton = renderBuyLessonButton(lesson, microLesson, key);
+  const hasAccess = userHasLessonAccess(key);
 
   if (status !== "live") {
     return `
@@ -397,7 +410,7 @@ function renderSliceAction(lesson, microLesson, key, status, isMyFree, hasClaime
     `;
   }
 
-  if (isMyFree) {
+  if (hasAccess) {
     return `
       <button
         type="button"
@@ -414,29 +427,59 @@ function renderSliceAction(lesson, microLesson, key, status, isMyFree, hasClaime
 
   if (!hasClaimed) {
     return `
-      <button
-        type="button"
-        class="chip claim-chip"
-        data-action="claim-free"
-        data-key="${escapeAttr(key)}"
-        data-topic="${escapeAttr(microLesson.title)}"
-        data-pack-topic="${escapeAttr(lesson.topic)}"
-        data-code="${escapeAttr(lesson.code)}"
-        data-strand="${escapeAttr(lesson.strand)}"
-        data-grade="${lesson.grade}"
-        data-quarter="${escapeAttr(lesson.q)}"
-      >
-        ${icon("gift", "icon icon-sm")}
-        Claim Free
-      </button>
+      <div class="card-action-block">
+        ${renderClaimFreeButton(lesson, microLesson, key)}
+        ${buyButton}
+        <div class="card-includes">Use your free claim here or buy this one lesson directly.</div>
+      </div>
     `;
   }
 
   return `
-    <div class="card-note">
-      ${icon("lock", "icon icon-sm")}
-      Unlock in pack
+    <div class="card-action-block">
+      ${buyButton}
+      <div class="card-includes">Or unlock more value with a grade pack or the full bundle.</div>
     </div>
+  `;
+}
+
+function renderClaimFreeButton(lesson, microLesson, key) {
+  return `
+    <button
+      type="button"
+      class="chip claim-chip"
+      data-action="claim-free"
+      data-key="${escapeAttr(key)}"
+      data-topic="${escapeAttr(microLesson.title)}"
+      data-pack-topic="${escapeAttr(lesson.topic)}"
+      data-code="${escapeAttr(lesson.code)}"
+      data-strand="${escapeAttr(lesson.strand)}"
+      data-grade="${lesson.grade}"
+      data-quarter="${escapeAttr(lesson.q)}"
+    >
+      ${icon("gift", "icon icon-sm")}
+      Claim Free
+    </button>
+  `;
+}
+
+function renderBuyLessonButton(lesson, microLesson, key) {
+  return `
+    <button
+      type="button"
+      class="chip buy-chip"
+      data-action="buy-single-lesson"
+      data-key="${escapeAttr(key)}"
+      data-topic="${escapeAttr(microLesson.title)}"
+      data-pack-topic="${escapeAttr(lesson.topic)}"
+      data-code="${escapeAttr(lesson.code)}"
+      data-strand="${escapeAttr(lesson.strand)}"
+      data-grade="${lesson.grade}"
+      data-quarter="${escapeAttr(lesson.q)}"
+    >
+      ${icon("shopping-bag", "icon icon-sm")}
+      Buy Lesson - PHP 99
+    </button>
   `;
 }
 function findSliceByKey(targetKey) {

@@ -1,4 +1,8 @@
 import { showToast } from "../../shared/scripts/helpers.js";
+import {
+  claimFreeLesson,
+  getErrorMessage,
+} from "../../shared/scripts/supabase.js";
 import { state } from "../../shared/scripts/store.js";
 import { renderPublic } from "../public.js";
 
@@ -53,18 +57,36 @@ export function openClaimModal(button) {
   }
 }
 
-export function confirmClaim() {
+export async function confirmClaim() {
   if (!state.pendingClaim?.key) {
     return;
   }
 
-  state.userFreeLesson = state.pendingClaim.key;
-  closeClaimModal();
-  showToast(
-    "Lesson claimed. Your LP, PPT, worksheet, and web-based game activity bundle is ready below.",
-    "success",
-  );
-  renderPublic();
+  const confirmButton = document.querySelector('[data-action="confirm-claim"]');
+
+  if (confirmButton instanceof HTMLButtonElement) {
+    confirmButton.disabled = true;
+  }
+
+  try {
+    await claimFreeLesson(state.pendingClaim.key);
+    closeClaimModal();
+    showToast(
+      "Lesson claimed. Your LP, PPT, worksheet, and web-based game activity bundle is ready below.",
+      "success",
+    );
+    renderPublic();
+  } catch (error) {
+    console.error(error);
+    showToast(
+      getErrorMessage(error, "Unable to claim this lesson right now."),
+      "error",
+    );
+  } finally {
+    if (confirmButton instanceof HTMLButtonElement) {
+      confirmButton.disabled = false;
+    }
+  }
 }
 
 export function closeClaimModal() {

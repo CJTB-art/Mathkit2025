@@ -3,16 +3,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 7rem 1.25rem 2.25rem;
 }
 
 .login-card {
-  background: var(--bg2);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 36%),
+    var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 2.5rem;
+  padding: 2rem;
   width: 100%;
-  max-width: 380px;
+  max-width: 420px;
+  box-shadow: var(--shadow-md);
 }
 
 .login-card h2 {
@@ -42,24 +45,30 @@
 
 .field input {
   width: 100%;
-  padding: 9px 12px;
+  min-height: 46px;
+  padding: 11px 12px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border2);
   background: var(--bg);
   color: var(--text);
   font-size: 13px;
   outline: none;
-  transition: border-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
 }
 
 .field input:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(245, 200, 66, 0.1);
 }
 
 .login-btn {
   width: 100%;
+  min-height: 50px;
   padding: 10px;
-  border-radius: var(--radius-sm);
+  border-radius: 16px;
   background: var(--accent);
   color: #111;
   font-size: 13px;
@@ -77,6 +86,22 @@
   background: var(--accent2);
 }
 
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.login-tip {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 0.75rem;
+  line-height: 1.5;
+}
+
+.login-tip.warning {
+  color: var(--accent);
+}
+
 .login-err {
   font-size: 12px;
   color: var(--red);
@@ -90,13 +115,20 @@
 }
 
 .admin-wrap {
-  max-width: 960px;
+  max-width: 1120px;
   margin: 0 auto;
-  padding: 80px 1.5rem;
+  padding: 108px 1.5rem 2.25rem;
 }
 
 .admin-header {
   margin-bottom: 2rem;
+  padding: 1.15rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 36%),
+    rgba(255, 255, 255, 0.012);
+  box-shadow: var(--shadow-sm);
 }
 
 .admin-header-row {
@@ -113,6 +145,13 @@
   font-size: 1.8rem;
 }
 
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
 .admin-header p {
   font-size: 13px;
   color: var(--text2);
@@ -127,6 +166,44 @@
   gap: 6px;
 }
 
+.admin-sync-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 0.35rem;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  font-size: 11px;
+  color: var(--text2);
+}
+
+.admin-sync-pill.ready,
+.admin-sync-pill.idle {
+  color: var(--green);
+  border-color: var(--green-border);
+  background: var(--green-bg);
+}
+
+.admin-sync-pill.loading {
+  color: var(--blue);
+  border-color: var(--blue-border);
+  background: var(--blue-bg);
+}
+
+.admin-sync-pill.error {
+  color: var(--red);
+  border-color: var(--red-border);
+  background: var(--red-bg);
+}
+
+.admin-session-meta {
+  margin-top: 0.85rem;
+  font-size: 12px;
+  color: var(--text3);
+}
+
 .admin-stats {
   display: flex;
   gap: 1rem;
@@ -134,13 +211,35 @@
   flex-wrap: wrap;
 }
 
-.astat {
-  background: var(--bg2);
-  border: 1px solid var(--border);
+.admin-wide-note {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.85rem 1rem;
   border-radius: var(--radius-sm);
+  border: 1px solid var(--blue-border);
+  background: var(--blue-bg);
+  color: var(--blue);
+  font-size: 12px;
+}
+
+.admin-wide-note-error {
+  border-color: var(--red-border);
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.astat {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 38%),
+    var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 18px;
   padding: 1rem 1.25rem;
   flex: 1;
   min-width: 140px;
+  box-shadow: var(--shadow-sm);
 }
 
 .astat-num {
@@ -203,9 +302,12 @@
 .admin-lesson-pack {
   margin-bottom: 0.8rem;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg2);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 34%),
+    var(--bg2);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .alr-pack-head {
@@ -249,11 +351,13 @@
   align-items: center;
   gap: 10px;
   padding: 0.6rem 0.75rem;
-  border-radius: var(--radius-sm);
+  border-radius: 16px;
   border: 1px solid var(--border);
   background: var(--bg2);
   margin-bottom: 6px;
-  transition: background 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
   flex-wrap: wrap;
 }
 
@@ -263,6 +367,7 @@
 
 .admin-lesson-row:hover {
   background: var(--bg3);
+  border-color: var(--border2);
 }
 
 .alr-seq {
@@ -328,8 +433,9 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  min-height: 34px;
   padding: 4px 10px;
-  border-radius: 6px;
+  border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--bg);
   font-size: 11px;
@@ -375,8 +481,8 @@
 
 .del-file-btn {
   display: none;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--red);
   cursor: pointer;
@@ -404,7 +510,7 @@
 .status-pill {
   font-size: 10px;
   font-weight: 700;
-  padding: 2px 9px;
+  padding: 4px 10px;
   border-radius: 100px;
   text-transform: uppercase;
 }
@@ -427,7 +533,58 @@
   border: 1px solid var(--border);
 }
 
+.admin-notice {
+  width: 100%;
+  padding: 1.15rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 34%),
+    var(--bg2);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-notice-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.admin-notice-copy {
+  margin-top: 0.45rem;
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .login-wrap {
+    padding-top: 8.5rem;
+  }
+
+  .admin-wrap {
+    padding-top: 142px;
+  }
+}
+
 @media (max-width: 640px) {
+  .login-wrap {
+    align-items: flex-start;
+    padding: 9.4rem 1rem 1.5rem;
+  }
+
+  .login-card {
+    padding: 1.2rem 1rem;
+  }
+
+  .admin-wrap {
+    padding: 154px 1rem 1.5rem;
+  }
+
+  .admin-header {
+    padding: 1rem;
+  }
+
   .admin-lesson-row {
     flex-wrap: wrap;
   }
@@ -436,8 +593,31 @@
     width: 100%;
   }
 
+  .uslot-wrap {
+    flex: 1 1 calc(50% - 0.4rem);
+  }
+
+  .uslot {
+    width: 100%;
+    max-width: none;
+    justify-content: center;
+  }
+
+  .del-file-btn,
+  .admin-lesson-row:hover .del-file-btn {
+    display: inline-flex;
+  }
+
   .alr-status {
     min-width: auto;
     text-align: left;
+  }
+
+  .admin-toolbar {
+    width: 100%;
+  }
+
+  .admin-toolbar .btn-sm {
+    flex: 1 1 calc(50% - 0.4rem);
   }
 }

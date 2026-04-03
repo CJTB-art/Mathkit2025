@@ -1,7 +1,7 @@
 .public-hero {
-  padding: 92px 1.5rem 2.5rem;
+  padding: 108px 1.5rem 2.8rem;
   max-width: 1340px;
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 66px);
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -9,19 +9,41 @@
 
 .hero-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(520px, 1.28fr);
-  gap: clamp(2rem, 5vw, 6rem);
+  grid-template-columns: minmax(0, 0.8fr) minmax(460px, 1.2fr);
+  gap: clamp(1.8rem, 5vw, 5rem);
   align-items: center;
   width: 100%;
 }
 
 .hero-copy {
-  max-width: 520px;
+  max-width: 560px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 0.8rem;
+  margin-bottom: 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(245, 200, 66, 0.14);
+  background: transparent;
+  color: var(--accent);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
 }
 
 .public-hero h1 {
   font-family: "DM Serif Display", serif;
-  font-size: clamp(2.9rem, 5.8vw, 5.05rem);
+  font-size: clamp(2.7rem, 5.4vw, 4.6rem);
   line-height: 0.92;
   letter-spacing: -0.055em;
   text-wrap: balance;
@@ -75,10 +97,18 @@
   gap: 0.9rem;
 }
 
+.hero-note {
+  margin-top: 0.9rem;
+  font-size: 11.5px;
+  color: var(--text3);
+  line-height: 1.7;
+  max-width: 34ch;
+}
+
 .hero-cta {
-  min-height: 52px;
-  padding: 0.9rem 1.35rem;
-  border-radius: 14px;
+  min-height: 54px;
+  padding: 0.95rem 1.35rem;
+  border-radius: 18px;
   font-size: 14px;
   font-weight: 700;
   display: inline-flex;
@@ -95,7 +125,7 @@
 .hero-cta-primary {
   background: var(--accent);
   color: #111;
-  box-shadow: 0 18px 34px rgba(196, 154, 16, 0.18);
+  box-shadow: 0 18px 34px rgba(196, 154, 16, 0.2);
 }
 
 .hero-cta-primary:hover {
@@ -105,7 +135,7 @@
 
 .hero-visual {
   position: relative;
-  min-height: 640px;
+  min-height: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -157,7 +187,7 @@
   position: relative;
   z-index: 1;
   object-fit: contain;
-  transform: translateX(5%) scale(1.04);
+  transform: translateX(3%) scale(1.02);
 }
 
 .hero-image-dark {
@@ -173,13 +203,17 @@
 }
 
 .home-details {
-  padding: 1.5rem 1.5rem 0;
+  padding: 1.8rem 1.5rem 0;
 }
 
 .home-details-inner {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 2rem 0 0;
+  padding: 1.9rem 0 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
   border-top: 1px solid var(--border);
 }
 
@@ -189,10 +223,11 @@
 }
 
 .home-details-title {
-  font-family: "DM Serif Display", serif;
-  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
-  line-height: 1.08;
-  letter-spacing: -0.03em;
+  font-family: "Sora", sans-serif;
+  font-size: clamp(1.45rem, 3vw, 2.1rem);
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  font-weight: 700;
 }
 
 .home-details-sub {
@@ -206,14 +241,16 @@
 .home-details-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.9rem;
+  gap: 1rem;
 }
 
 .home-detail-card {
-  background: var(--card);
+  background: rgba(255, 255, 255, 0.01);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.15rem;
+  border-radius: 20px;
+  padding: 1.2rem;
+  min-height: 100%;
+  box-shadow: none;
 }
 
 .home-detail-label {
@@ -236,8 +273,8 @@
 }
 
 .lessons-page {
-  padding-top: 92px;
-  padding-bottom: 1.25rem;
+  padding-top: 110px;
+  padding-bottom: 1.6rem;
 }
 
 .lessons-page-head {
@@ -245,7 +282,7 @@
   margin: 0 auto 1.15rem;
   padding: 0 1.5rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
@@ -253,13 +290,18 @@
 
 .lessons-page-copy {
   max-width: 620px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
 }
 
 .lessons-page-title {
-  font-family: "DM Serif Display", serif;
-  font-size: clamp(1.6rem, 3vw, 2.15rem);
+  font-family: "Sora", sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
   line-height: 1.05;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.05em;
+  font-weight: 700;
 }
 
 .lessons-page-sub {
@@ -273,6 +315,8 @@
 .lessons-back {
   padding-inline: 12px;
   color: var(--text3);
+  align-self: flex-start;
+  margin-top: 0.15rem;
 }
 
 .lessons-divider {
@@ -288,13 +332,13 @@
 .fcb-inner {
   background: linear-gradient(
     90deg,
-    rgba(245, 200, 66, 0.06),
-    rgba(245, 200, 66, 0.02) 34%,
-    rgba(34, 197, 94, 0.04) 100%
+    rgba(245, 200, 66, 0.04),
+    rgba(245, 200, 66, 0.015) 34%,
+    rgba(34, 197, 94, 0.02) 100%
   );
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  padding: 1rem 1.05rem;
   display: flex;
   align-items: center;
   gap: 0.85rem;
@@ -352,7 +396,11 @@
   align-items: center;
   max-width: 1100px;
   margin: 0 auto 1.5rem;
-  padding: 0 1.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
 
 .filter-label {
@@ -361,11 +409,12 @@
   text-transform: uppercase;
   letter-spacing: 0.07em;
   font-weight: 600;
-  margin-right: 6px;
+  margin-right: 4px;
 }
 
 .ftab {
-  padding: 5px 14px;
+  min-height: 36px;
+  padding: 0 14px;
   border-radius: 999px;
   border: 1px solid var(--border2);
   background: transparent;
@@ -433,14 +482,14 @@
 .lessons-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 0.8rem;
+  gap: 1rem;
 }
 
 .lcard {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.1rem;
+  border-radius: 20px;
+  padding: 1.15rem;
   transition:
     transform 0.2s,
     border-color 0.2s,
@@ -450,6 +499,7 @@
   display: flex;
   flex-direction: column;
   min-height: 208px;
+  box-shadow: none;
 }
 
 .lcard::before {
@@ -464,7 +514,7 @@
 .lcard.live:hover {
   border-color: var(--border2);
   transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .lcard.live:hover::before {
@@ -486,7 +536,7 @@
 .card-top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
   margin-bottom: 0.7rem;
 }
@@ -498,9 +548,9 @@
 }
 
 .badge {
-  font-size: 9px;
+  font-size: 9.5px;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 4px 9px;
   border-radius: 100px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -537,7 +587,7 @@
 }
 
 .card-topic {
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 600;
   color: var(--text);
   margin-bottom: 5px;
@@ -547,7 +597,7 @@
 .card-code {
   font-size: 10px;
   color: var(--text3);
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.8rem;
   font-family: monospace;
 }
 
@@ -578,7 +628,7 @@
 
 .card-footer {
   margin-top: auto;
-  padding-top: 0.9rem;
+  padding-top: 1rem;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -627,6 +677,7 @@
   flex-direction: column;
   gap: 0.9rem;
   overflow: hidden;
+  border-radius: 22px;
 }
 
 .lesson-preview-top {
@@ -836,8 +887,9 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 6px 10px;
-  border-radius: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--bg2);
   font-size: 11px;
@@ -889,6 +941,18 @@
   color: #111;
 }
 
+.chip.buy-chip {
+  border-color: var(--blue-border);
+  color: var(--blue);
+  background: var(--blue-bg);
+}
+
+.chip.buy-chip:hover {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #111;
+}
+
 .section-tag {
   font-size: 11px;
   text-transform: uppercase;
@@ -910,11 +974,11 @@
 .pricing-section {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 3rem 1.5rem 4.5rem;
+  padding: 2.6rem 1.5rem 4.6rem;
 }
 
 .pricing-page {
-  padding-top: 92px;
+  padding-top: 110px;
 }
 
 .pricing-page-head {
@@ -922,7 +986,7 @@
   margin: 0 auto;
   padding: 0 1.5rem;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
@@ -930,13 +994,18 @@
 
 .pricing-page-copy {
   max-width: 640px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
 }
 
 .pricing-page-title {
-  font-family: "DM Serif Display", serif;
-  font-size: clamp(1.7rem, 3vw, 2.35rem);
-  line-height: 1.06;
-  letter-spacing: -0.03em;
+  font-family: "Sora", sans-serif;
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+  font-weight: 700;
 }
 
 .pricing-page-sub {
@@ -949,38 +1018,121 @@
 
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+  align-items: stretch;
 }
 
 .pricing-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 2rem;
+  border-radius: 20px;
+  padding: 1.2rem 1.2rem 1.25rem;
   position: relative;
-  transition: border-color 0.2s;
+  overflow: hidden;
+  transition:
+    border-color 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  box-shadow: none;
 }
 
 .pricing-card.featured {
   border-color: var(--accent);
-  background: var(--accent-bg);
+  background:
+    linear-gradient(180deg, rgba(245, 200, 66, 0.08) 0%, rgba(245, 200, 66, 0.02) 32%, transparent 100%),
+    var(--card);
+  box-shadow: var(--shadow-sm);
+  padding-top: 1.55rem;
+}
+
+.pricing-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-sm);
 }
 
 .pricing-badge {
   position: absolute;
-  top: -1px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 1rem;
+  right: 1rem;
   background: var(--accent);
   color: #111;
   font-size: 10px;
   font-weight: 700;
   padding: 4px 14px;
-  border-radius: 0 0 8px 8px;
+  border-radius: 999px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+.pricing-card-head,
+.pricing-name {
+  position: relative;
+  z-index: 1;
+}
+
+.pricing-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+}
+
+.pricing-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+
+.pricing-card-free .pricing-eyebrow,
+.pricing-card-free .pricing-value-pill {
+  color: var(--text2);
+  border-color: var(--border2);
+  background: transparent;
+}
+
+.pricing-card-single .pricing-eyebrow,
+.pricing-card-single .pricing-value-pill {
+  color: var(--text2);
+  border-color: var(--border2);
+  background: transparent;
+}
+
+.pricing-card-grade .pricing-eyebrow,
+.pricing-card-grade .pricing-value-pill {
+  color: var(--accent);
+  border-color: rgba(245, 200, 66, 0.18);
+  background: rgba(245, 200, 66, 0.04);
+}
+
+.pricing-card-bundle .pricing-eyebrow,
+.pricing-card-bundle .pricing-value-pill {
+  color: var(--text2);
+  border-color: var(--border2);
+  background: transparent;
+}
+
+.pricing-price-row,
+.pricing-per,
+.pricing-summary,
+.pricing-features,
+.pricing-cta {
+  position: relative;
+  z-index: 1;
 }
 
 .pricing-name {
@@ -989,36 +1141,72 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text2);
-  margin-bottom: 10px;
+  margin-bottom: 0.6rem;
+}
+
+.pricing-price-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.35rem;
 }
 
 .pricing-price {
   font-family: "DM Serif Display", serif;
-  font-size: 2.4rem;
+  font-size: clamp(2rem, 3vw, 2.65rem);
   color: var(--text);
   line-height: 1;
-  margin-bottom: 4px;
+  letter-spacing: -0.04em;
+}
+
+.pricing-value-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text2);
+  white-space: nowrap;
 }
 
 .pricing-per {
   font-size: 12px;
   color: var(--text3);
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.8rem;
+}
+
+.pricing-summary {
+  font-size: 12.5px;
+  color: var(--text2);
+  line-height: 1.75;
+  margin-bottom: 1.15rem;
+  max-width: 34ch;
 }
 
 .pricing-features {
   list-style: none;
   margin-bottom: 1.75rem;
+  flex: 1;
+  border-top: 1px solid var(--border);
+  padding-top: 0.25rem;
 }
 
 .pricing-features li {
   font-size: 13px;
   color: var(--text2);
-  padding: 5px 0;
+  padding: 0.7rem 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
-  font-weight: 300;
+  font-weight: 400;
+  line-height: 1.6;
   border-bottom: 1px solid var(--border);
 }
 
@@ -1034,35 +1222,51 @@
 
 .pricing-cta {
   width: 100%;
-  padding: 10px;
-  border-radius: var(--radius-sm);
+  min-height: 54px;
+  padding: 0.95rem 1.1rem;
+  border-radius: 14px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: all 0.2s;
+  gap: 10px;
+  line-height: 1.2;
+  text-align: center;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .pricing-cta-outline {
-  background: transparent;
+  background: var(--bg2);
   color: var(--text);
   border: 1px solid var(--border2);
 }
 
 .pricing-cta-outline:hover {
   background: var(--bg3);
+  border-color: var(--border);
+  transform: translateY(-1px);
 }
 
 .pricing-cta-filled {
   background: var(--accent);
   color: #111;
+  box-shadow: 0 14px 26px rgba(196, 154, 16, 0.18);
 }
 
 .pricing-cta-filled:hover {
   background: var(--accent2);
+  transform: translateY(-1px);
+}
+
+.pricing-cta-copy {
+  display: inline-block;
 }
 
 .pricing-note {
@@ -1075,14 +1279,20 @@
 
 .site-footer {
   border-top: 1px solid var(--border);
-  padding: 1.75rem 1.5rem 2.5rem;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 0;
+  padding: 1.4rem 1.35rem 1.65rem;
   max-width: 1100px;
-  margin: 0 auto;
+  margin: 0 auto 1.6rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
+  background: none;
+  box-shadow: none;
 }
 
 .footer-logo {
@@ -1123,6 +1333,7 @@
 @media (max-width: 900px) {
   .public-hero {
     min-height: auto;
+    padding-top: 142px;
     padding-bottom: 2.5rem;
   }
 
@@ -1142,6 +1353,14 @@
 
   .hero-actions {
     justify-content: center;
+  }
+
+  .hero-kicker {
+    margin-inline: auto;
+  }
+
+  .hero-note {
+    margin-inline: auto;
   }
 
   .hero-visual {
@@ -1164,15 +1383,24 @@
   .home-details-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .lessons-page,
+  .pricing-page {
+    padding-top: 142px;
+  }
+
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
   .public-hero {
-    padding: 82px 1rem 2rem;
+    padding: 154px 1rem 2rem;
   }
 
   .public-hero h1 {
-    font-size: clamp(2.4rem, 12vw, 3.5rem);
+    font-size: clamp(2.3rem, 12vw, 3.35rem);
   }
 
   .public-hero p {
@@ -1186,6 +1414,10 @@
 
   .hero-cta {
     width: 100%;
+  }
+
+  .hero-note {
+    font-size: 11px;
   }
 
   .hero-visual::before {
@@ -1203,16 +1435,49 @@
     width: 100%;
   }
 
+  .hero-visual {
+    display: none;
+  }
+
+  .hero-layout {
+    grid-template-columns: 1fr;
+  }
+
   .home-details,
   .lessons-page-head,
   .pricing-page-head,
   .free-claim-banner,
-  .filter-bar,
   .catalog,
   .pricing-section,
   .site-footer {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  .lessons-page,
+  .pricing-page {
+    padding-top: 154px;
+  }
+
+  .filter-bar {
+    margin-inline: 1rem;
+    padding: 0;
+    gap: 0.55rem;
+  }
+
+  .filter-label {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: -0.1rem;
+  }
+
+  .filter-sep {
+    display: none;
+  }
+
+  .ftab {
+    flex: 1 1 calc(50% - 0.4rem);
+    justify-content: center;
   }
 
   .lessons-grid {
@@ -1250,11 +1515,32 @@
     justify-content: flex-start;
   }
 
+  .card-action-block {
+    width: 100%;
+  }
+
+  .card-action-block .chip {
+    width: 100%;
+    justify-content: center;
+  }
+
   .home-details-grid {
     grid-template-columns: 1fr;
   }
 
+  .pricing-card {
+    padding: 1.05rem 1rem 1.1rem;
+    border-radius: 18px;
+  }
+
+  .pricing-price-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
   .site-footer {
     align-items: flex-start;
+    margin-bottom: 1.2rem;
   }
 }

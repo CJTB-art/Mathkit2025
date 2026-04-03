@@ -2,7 +2,10 @@ import {
   sanitizeFileName,
   showToast,
 } from "../../shared/scripts/helpers.js";
-import { getUploads } from "../../shared/scripts/store.js";
+import {
+  fetchBundleFiles,
+  getErrorMessage,
+} from "../../shared/scripts/supabase.js";
 
 export async function handleDownloadBundle(button) {
   const key = button.dataset.key;
@@ -12,33 +15,27 @@ export async function handleDownloadBundle(button) {
     return;
   }
 
-  const uploadState = getUploads(key);
-  const files = [
-    uploadState.ppt,
-    uploadState.lp,
-    uploadState.activity,
-    uploadState.worksheet,
-  ].filter(Boolean);
-
-  if (!files.length) {
-    showToast("No files uploaded yet.", "error");
-    return;
-  }
-
   if (!window.JSZip) {
     showToast("Bundle download is still loading. Try again.", "error");
     return;
   }
 
-  showToast("Packing your bundle...");
+  showToast("Preparing your secure bundle...");
 
   try {
+    const files = await fetchBundleFiles(key);
+
+    if (!files.length) {
+      showToast("No files uploaded yet.", "error");
+      return;
+    }
+
     const zip = new window.JSZip();
     const folderName = sanitizeFileName(topic);
     const folder = zip.folder(folderName) || zip;
 
     for (const file of files) {
-      const buffer = await file.arrayBuffer();
+      const buffer = await file.blob.arrayBuffer();
       folder.file(file.name, buffer);
     }
 
@@ -57,6 +54,9 @@ export async function handleDownloadBundle(button) {
     showToast("Bundle downloaded.", "success");
   } catch (error) {
     console.error(error);
-    showToast("Download failed. Try again.", "error");
+    showToast(
+      getErrorMessage(error, "Download failed. Try again."),
+      "error",
+    );
   }
 }

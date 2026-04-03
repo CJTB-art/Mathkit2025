@@ -13,6 +13,7 @@ export function handleBundleButton() {
   }
 
   state.filters.grade = "all";
+  state.filters.quarter = "all";
   state.filters.status = "live";
 
   browseLessons();

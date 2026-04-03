@@ -1,7 +1,9 @@
-import { showPublic } from "../../admin/admin.js";
+import { renderAdmin, showPublic, syncAdminChrome } from "../../admin/admin.js";
+import { renderPublic } from "../../client/public.js";
 import { createAppShell } from "../templates/appShell.js";
 import { bindActions } from "./actionRegistry.js";
 import { startTypewriter, syncThemeButton } from "./helpers.js";
+import { initializeSupabaseState } from "./supabase.js";
 
 const app = typeof document !== "undefined"
   ? document.getElementById("app")
@@ -13,4 +15,20 @@ if (app) {
   syncThemeButton();
   showPublic();
   startTypewriter();
+  void initializeApp();
+}
+
+async function initializeApp() {
+  try {
+    await initializeSupabaseState();
+  } catch (error) {
+    console.error(error);
+  }
+
+  syncAdminChrome();
+  renderPublic();
+
+  if (document.getElementById("adminView")?.classList.contains("active")) {
+    renderAdmin();
+  }
 }

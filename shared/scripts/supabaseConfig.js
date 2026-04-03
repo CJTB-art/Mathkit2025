@@ -1,0 +1,3 @@
+export const SUPABASE_URL = "https://vvmkkuhlbnvdqxdksfho.supabase.co";
+export const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2bWtrdWhsYm52ZHF4ZGtzZmhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMTEwMTgsImV4cCI6MjA5MDc4NzAxOH0.GQvY3xu5RckYFaJRmUyH3gLenVjXWFsrx64vdC1Azgk";
+export const SUPABASE_STORAGE_BUCKET = "lesson-assets";

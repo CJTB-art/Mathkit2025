@@ -1,16 +1,81 @@
-export const ADMIN_PW = "mathkit2025";
+export const FILE_TYPES = ["ppt", "lp", "activity", "worksheet"];
 
 export const state = {
   uploads: {},
+  sliceStatuses: {},
+  lessonAccess: {},
   userFreeLesson: null,
   pendingClaim: null,
   lessonPreviewKey: null,
   filters: {
     grade: "all",
+    quarter: "all",
     status: "all",
   },
   isAdmin: false,
+  authReady: false,
+  authUser: null,
+  uploadIndexLoaded: false,
+  availabilityLoaded: false,
+  accessLoaded: false,
+  syncStatus: "idle",
+  syncError: "",
+  configError: "",
 };
+
+export function setUserFreeLesson(key) {
+  state.userFreeLesson = key || null;
+}
+
+export function setUploads(nextUploads = {}) {
+  state.uploads = nextUploads;
+}
+
+export function setAuthUser(user) {
+  state.authUser = user || null;
+}
+
+export function setIsAdmin(isAdmin) {
+  state.isAdmin = Boolean(isAdmin);
+}
+
+export function setAuthReady(isReady) {
+  state.authReady = isReady;
+}
+
+export function markUploadsLoaded(isLoaded) {
+  state.uploadIndexLoaded = Boolean(isLoaded);
+}
+
+export function markAvailabilityLoaded(isLoaded) {
+  state.availabilityLoaded = Boolean(isLoaded);
+}
+
+export function markAccessLoaded(isLoaded) {
+  state.accessLoaded = Boolean(isLoaded);
+}
+
+export function setSyncState(status, errorMessage = "") {
+  state.syncStatus = status;
+  state.syncError = errorMessage;
+}
+
+export function setSupabaseConfigError(message = "") {
+  state.configError = message;
+}
+
+export function setSliceStatuses(nextStatuses = {}) {
+  state.sliceStatuses = nextStatuses;
+}
+
+export function setLessonAccess(nextAccess = {}) {
+  state.lessonAccess = nextAccess;
+  const freeClaim = Object.entries(nextAccess).find(([, value]) => {
+    return value?.source === "free_claim";
+  });
+
+  state.userFreeLesson = freeClaim?.[0] || null;
+}
 
 export function lessonKey(lesson) {
   return `${lesson.code}_${lesson.grade}_${lesson.q}`;
@@ -24,13 +89,16 @@ export function getUploads(key) {
   return state.uploads[key] || {};
 }
 
-export function getSliceStatus(key) {
-  const uploadState = getUploads(key);
-  const count = ["ppt", "lp", "activity", "worksheet"].filter((type) =>
-    Boolean(uploadState[type]),
+export function hasAsset(asset) {
+  return Boolean(asset && typeof asset === "object" && asset.path && asset.name);
+}
+
+export function deriveSliceStatusFromUploads(uploadState = {}) {
+  const count = FILE_TYPES.filter((type) =>
+    hasAsset(uploadState[type]),
   ).length;
 
-  if (count === 4) {
+  if (count === FILE_TYPES.length) {
     return "live";
   }
 
@@ -39,6 +107,18 @@ export function getSliceStatus(key) {
   }
 
   return "empty";
+}
+
+export function getSliceStatus(key) {
+  if (state.sliceStatuses[key]) {
+    return state.sliceStatuses[key];
+  }
+
+  return deriveSliceStatusFromUploads(getUploads(key));
+}
+
+export function userHasLessonAccess(key) {
+  return Boolean(state.isAdmin || state.lessonAccess[key]);
 }
 
 export function getLessonProgress(lesson) {

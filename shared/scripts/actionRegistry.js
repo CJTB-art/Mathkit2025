@@ -1,9 +1,23 @@
-import { showAdmin, showLessons, showPricing, showPublic, submitLogin, handleDeleteUpload, handleUploadChange } from "../../admin/admin.js";
+import {
+  handleDeleteUpload,
+  handleUploadChange,
+  refreshLessonAssets,
+  showAdmin,
+  showLessons,
+  showPricing,
+  showPublic,
+  signOutAdminSession,
+  submitLogin,
+} from "../../admin/admin.js";
 import { handleDownloadBundle } from "../../client/actions/download.js";
 import { closeClaimModal, confirmClaim, openClaimModal } from "../../client/actions/claim.js";
 import { handleBundleButton } from "../../client/buttons/getBundle.js";
 import { handleFreePlanButton } from "../../client/buttons/getStartedFree.js";
 import { handleGradePackButton } from "../../client/buttons/getGradePack.js";
+import {
+  handleSingleLessonButton,
+  handleSingleLessonPlanButton,
+} from "../../client/buttons/getSingleLesson.js";
 import { handleOpenGumroad } from "../../client/buttons/openGumroad.js";
 import { handleContactSupport } from "../../client/buttons/contactSupport.js";
 import { browseLessons, closeLessonDetails, handleSetFilter, openLessonDetails } from "../../client/public.js";
@@ -16,6 +30,8 @@ const clickHandlers = {
   "show-lessons": () => showLessons(),
   "show-pricing": () => showPricing(),
   "submit-login": () => submitLogin(),
+  "sign-out-admin": () => signOutAdminSession(),
+  "refresh-assets": () => refreshLessonAssets(),
   "close-claim-modal": () => closeClaimModal(),
   "close-lesson-details": () => closeLessonDetails(),
   "confirm-claim": (button) => confirmClaim(button),
@@ -25,8 +41,10 @@ const clickHandlers = {
   "claim-free": (button) => openClaimModal(button),
   "download-bundle": (button) => handleDownloadBundle(button),
   "cta-free-plan": () => handleFreePlanButton(),
+  "cta-single-lesson": () => handleSingleLessonPlanButton(),
   "cta-grade-pack": () => handleGradePackButton(),
   "cta-all-grades": () => handleBundleButton(),
+  "buy-single-lesson": (button) => handleSingleLessonButton(button),
   "open-gumroad": () => handleOpenGumroad(),
   "contact-support": () => handleContactSupport(),
   "delete-upload": (button) => handleDeleteUpload(button),
@@ -67,7 +85,7 @@ export function bindActions() {
       return;
     }
 
-    handleUploadChange(target);
+    void handleUploadChange(target);
   });
 
   document.addEventListener("keydown", (event) => {
@@ -76,10 +94,10 @@ export function bindActions() {
     if (
       event.key === "Enter" &&
       target instanceof HTMLInputElement &&
-      target.id === "pwInput"
+      (target.id === "adminPasswordInput" || target.id === "adminEmailInput")
     ) {
       event.preventDefault();
-      submitLogin();
+      void submitLogin();
       return;
     }
 

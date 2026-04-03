@@ -8,10 +8,19 @@ function createPricingSection({ includeHeader = true } = {}) {
         <div class="section-title">Start for free. Own it forever.</div>
       ` : ""}
       <div class="pricing-grid">
-        <div class="pricing-card">
+        <div class="pricing-card pricing-card-free">
+          <div class="pricing-card-head">
+            <div class="pricing-eyebrow">Start Here</div>
+          </div>
           <div class="pricing-name">Free</div>
-          <div class="pricing-price">PHP 0</div>
+          <div class="pricing-price-row">
+            <div class="pricing-price">PHP 0</div>
+            <div class="pricing-value-pill">1 lesson</div>
+          </div>
           <div class="pricing-per">forever</div>
+          <div class="pricing-summary">
+            Try the full MathKit experience on one live lesson before spending anything.
+          </div>
           <ul class="pricing-features">
             <li>${icon("check", "icon icon-sm chk")} 1 free lesson of your choice</li>
             <li>${icon("check", "icon icon-sm chk")} Full LP + PPT + worksheet download</li>
@@ -24,14 +33,51 @@ function createPricingSection({ includeHeader = true } = {}) {
             data-action="cta-free-plan"
           >
             ${icon("gift", "icon icon-sm")}
-            Get started free
+            <span class="pricing-cta-copy">Start Free</span>
           </button>
         </div>
-        <div class="pricing-card featured">
+        <div class="pricing-card pricing-card-single">
+          <div class="pricing-card-head">
+            <div class="pricing-eyebrow">Low Commitment</div>
+          </div>
+          <div class="pricing-name">Single Lesson</div>
+          <div class="pricing-price-row">
+            <div class="pricing-price">PHP 99</div>
+            <div class="pricing-value-pill">1 topic</div>
+          </div>
+          <div class="pricing-per">one-time - choose one ready lesson</div>
+          <div class="pricing-summary">
+            Best for teachers who only need one strong lesson pack for this week.
+          </div>
+          <ul class="pricing-features">
+            <li>${icon("check", "icon icon-sm chk")} 1 lesson bundle of your choice</li>
+            <li>${icon("check", "icon icon-sm chk")} Full LP + PPT + worksheet download</li>
+            <li>${icon("check", "icon icon-sm chk")} Full web-based game activity access</li>
+            <li>${icon("check", "icon icon-sm chk")} Best for trying one more topic</li>
+          </ul>
+          <button
+            type="button"
+            class="pricing-cta pricing-cta-outline"
+            data-action="cta-single-lesson"
+          >
+            ${icon("book-open", "icon icon-sm")}
+            <span class="pricing-cta-copy">Buy 1 Lesson</span>
+          </button>
+        </div>
+        <div class="pricing-card pricing-card-grade featured">
           <div class="pricing-badge">Most Popular</div>
+          <div class="pricing-card-head">
+            <div class="pricing-eyebrow">Teacher Favorite</div>
+          </div>
           <div class="pricing-name">Per Grade Pack</div>
-          <div class="pricing-price">PHP 299</div>
+          <div class="pricing-price-row">
+            <div class="pricing-price">PHP 299</div>
+            <div class="pricing-value-pill">Full grade</div>
+          </div>
           <div class="pricing-per">one-time - pick any grade level</div>
+          <div class="pricing-summary">
+            The sweet spot for solo teachers who want depth without buying everything at once.
+          </div>
           <ul class="pricing-features">
             <li>${icon("check", "icon icon-sm chk")} All lessons for your chosen grade</li>
             <li>${icon("check", "icon icon-sm chk")} LP + PPT + worksheet for every lesson</li>
@@ -45,13 +91,22 @@ function createPricingSection({ includeHeader = true } = {}) {
             data-action="cta-grade-pack"
           >
             ${icon("arrow-right", "icon icon-sm")}
-            Get a Grade Pack - PHP 299
+            <span class="pricing-cta-copy">Choose Grade Pack</span>
           </button>
         </div>
-        <div class="pricing-card">
+        <div class="pricing-card pricing-card-bundle">
+          <div class="pricing-card-head">
+            <div class="pricing-eyebrow">Highest Value</div>
+          </div>
           <div class="pricing-name">All Grades Bundle</div>
-          <div class="pricing-price">PHP 799</div>
+          <div class="pricing-price-row">
+            <div class="pricing-price">PHP 799</div>
+            <div class="pricing-value-pill">4 grades</div>
+          </div>
           <div class="pricing-per">one-time - Grades 7, 8, 9 and 10</div>
+          <div class="pricing-summary">
+            Built for teachers, schools, or long-term planning across multiple grade levels.
+          </div>
           <ul class="pricing-features">
             <li>${icon("check", "icon icon-sm chk")} Every lesson across all grades</li>
             <li>${icon("check", "icon icon-sm chk")} LP + PPT + worksheet for every lesson</li>
@@ -65,7 +120,7 @@ function createPricingSection({ includeHeader = true } = {}) {
             data-action="cta-all-grades"
           >
             ${icon("package", "icon icon-sm")}
-            Get the Bundle - PHP 799
+            <span class="pricing-cta-copy">Get Full Bundle</span>
           </button>
         </div>
       </div>
@@ -282,25 +337,40 @@ export function createAppShell() {
             ${icon("lock", "icon icon-lg")}
             <span>Admin Login</span>
           </h2>
-          <p>Enter your password to manage lesson uploads.</p>
+          <p>Sign in with your Supabase admin account to manage lesson uploads.</p>
           <div class="field">
-            <label for="pwInput">Password</label>
+            <label for="adminEmailInput">Email</label>
+            <input
+              type="email"
+              id="adminEmailInput"
+              placeholder="teacher@mathkit.ph"
+              autocomplete="username"
+            />
+          </div>
+          <div class="field">
+            <label for="adminPasswordInput">Password</label>
             <input
               type="password"
-              id="pwInput"
+              id="adminPasswordInput"
               placeholder="********"
               autocomplete="current-password"
             />
           </div>
-          <button type="button" class="login-btn" data-action="submit-login">
+          <button
+            type="button"
+            class="login-btn"
+            id="loginSubmitBtn"
+            data-action="submit-login"
+          >
             ${icon("shield", "icon icon-sm")}
             Sign in
           </button>
-          <div class="login-err" id="loginErr">Incorrect password. Try again.</div>
+          <div class="login-tip" id="loginHelp"></div>
+          <div class="login-err" id="loginErr">Unable to sign in.</div>
           <div class="login-actions">
             <button type="button" class="btn-sm" data-action="show-home">
               ${icon("arrow-left", "icon icon-sm")}
-              &larr; Back to Home
+              Back to Home
             </button>
           </div>
         </div>
@@ -311,14 +381,37 @@ export function createAppShell() {
       <div class="admin-wrap">
         <div class="admin-header">
           <div class="admin-header-row">
-            <h2 class="modal-title">
-              ${icon("shield", "icon icon-lg")}
-              <span>Lesson Manager</span>
-            </h2>
-            <button type="button" class="btn-sm" data-action="show-home">
-              ${icon("arrow-left", "icon icon-sm")}
-              &larr; Back to Home
-            </button>
+            <div>
+              <h2 class="modal-title">
+                ${icon("shield", "icon icon-lg")}
+                <span>Lesson Manager</span>
+              </h2>
+              <div class="admin-sync-pill" id="adminSyncStatus"></div>
+            </div>
+            <div class="admin-toolbar">
+              <button
+                type="button"
+                class="btn-sm"
+                id="adminRefreshBtn"
+                data-action="refresh-assets"
+              >
+                ${icon("refresh-cw", "icon icon-sm")}
+                Refresh
+              </button>
+              <button
+                type="button"
+                class="btn-sm"
+                id="adminSignOutBtn"
+                data-action="sign-out-admin"
+              >
+                ${icon("log-out", "icon icon-sm")}
+                Sign out
+              </button>
+              <button type="button" class="btn-sm" data-action="show-home">
+                ${icon("arrow-left", "icon icon-sm")}
+                Back to Home
+              </button>
+            </div>
           </div>
           <p>
             Upload PPT, LP, Worksheet, and Web Game for each micro-lesson. A
@@ -330,6 +423,7 @@ export function createAppShell() {
               Re-uploading replaces the old file.
             </span>
           </p>
+          <div class="admin-session-meta" id="adminSessionMeta"></div>
         </div>
         <div class="admin-stats" id="adminStats"></div>
         <div id="adminCatalog"></div>
@@ -340,6 +434,7 @@ export function createAppShell() {
       <div class="public-hero">
         <div class="hero-layout">
           <div class="hero-copy">
+            <div class="hero-kicker">DepEd-aligned Math Resource Library</div>
             <h1>
               Lesson plans that<br />
               <span class="hero-type-line">
@@ -361,6 +456,9 @@ export function createAppShell() {
                 ${icon("search", "icon icon-sm")}
                 Browse Lessons
               </button>
+            </div>
+            <div class="hero-note">
+              Built for quick browsing during planning time, after class, or on your phone at home.
             </div>
           </div>
           <div class="hero-visual">
@@ -387,7 +485,7 @@ export function createAppShell() {
           <div class="lessons-page-copy">
             <h2 class="lessons-page-title">Browse lessons</h2>
             <p class="lessons-page-sub">
-              Filter by grade and availability, claim one free micro-lesson, then unlock complete packs with LPs, PPTs, printable worksheets, web-based game activities, and teachable slices built for a 45-minute class.
+              Filter by grade, quarter, and availability, claim one free micro-lesson, buy a single lesson when you only need one topic, or unlock complete packs with LPs, PPTs, printable worksheets, web-based game activities, and teachable slices built for a 45-minute class.
             </p>
           </div>
           <button
@@ -450,6 +548,53 @@ export function createAppShell() {
             10
           </button>
           <div class="filter-sep"></div>
+          <span class="filter-label">Quarter</span>
+          <button
+            type="button"
+            class="ftab active"
+            data-action="set-filter"
+            data-filter="quarter"
+            data-value="all"
+          >
+            All
+          </button>
+          <button
+            type="button"
+            class="ftab"
+            data-action="set-filter"
+            data-filter="quarter"
+            data-value="Q1"
+          >
+            Q1
+          </button>
+          <button
+            type="button"
+            class="ftab"
+            data-action="set-filter"
+            data-filter="quarter"
+            data-value="Q2"
+          >
+            Q2
+          </button>
+          <button
+            type="button"
+            class="ftab"
+            data-action="set-filter"
+            data-filter="quarter"
+            data-value="Q3"
+          >
+            Q3
+          </button>
+          <button
+            type="button"
+            class="ftab"
+            data-action="set-filter"
+            data-filter="quarter"
+            data-value="Q4"
+          >
+            Q4
+          </button>
+          <div class="filter-sep"></div>
           <span class="filter-label">Status</span>
           <button
             type="button"
@@ -493,7 +638,7 @@ export function createAppShell() {
             <div class="section-tag">Pricing</div>
             <h2 class="pricing-page-title">Simple one-time access for teachers and grade-level needs.</h2>
             <p class="pricing-page-sub">
-              Choose a free lesson, a single grade pack, or the full bundle for LPs, PPTs, printable worksheets, and web-based game activities. No subscriptions and no renewals.
+              Choose a free lesson, a single lesson, a grade pack, or the full bundle for LPs, PPTs, printable worksheets, and web-based game activities. No subscriptions and no renewals.
             </p>
           </div>
           <button

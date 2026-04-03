@@ -112,10 +112,9 @@ const SEQUENCE_OVERRIDES = {
   },
   "M7GE-IIIa": {
     packTitle: "Basic Concepts in Geometry",
-    pacingLabel: "Represent first, then describe subsets",
+    pacingLabel: "Core geometric ideas in one connected lesson",
     microLessons: [
-      createSlice("Points, Lines, and Planes", "Represent points, lines, and planes using concrete, pictorial, and symbolic models."),
-      createSlice("Subsets of a Line", "Illustrate line segments, rays, opposite rays, and related subsets of a line."),
+      createSlice("Points, Lines, Planes, and Subsets of a Line", "Represent points, lines, and planes using concrete, pictorial, and symbolic models and illustrate line segments, rays, opposite rays, and related subsets of a line."),
     ],
   },
   "M7GE-IIIb": {
@@ -183,18 +182,16 @@ const SEQUENCE_OVERRIDES = {
   },
   "M8AL-Ie-1": {
     packTitle: "Rectangular Coordinate System",
-    pacingLabel: "Coordinate plane before plotting and interpretation",
+    pacingLabel: "Coordinate-plane orientation and plotting",
     microLessons: [
-      createSlice("Axes, Origin, and Quadrants", "Illustrate the coordinate plane, its axes, the origin, and the four quadrants."),
-      createSlice("Plotting and Naming Ordered Pairs", "Plot points and identify ordered pairs correctly on the rectangular coordinate system."),
+      createSlice("Axes, Origin, Quadrants, and Ordered Pairs", "Illustrate the coordinate plane, its axes, the origin, and the four quadrants and plot points and identify ordered pairs correctly on the rectangular coordinate system."),
     ],
   },
   "M8AL-Ie-4": {
     packTitle: "Slope of a Line",
-    pacingLabel: "Interpret slope before computing it",
+    pacingLabel: "Slope as meaning and measure",
     microLessons: [
-      createSlice("Meaning of Slope", "Illustrate slope as rate of change and as the steepness or direction of a line."),
-      createSlice("Finding Slope from Graph, Points, and Equation", "Determine the slope of a line from its graph, two given points, or its equation."),
+      createSlice("Meaning of Slope and Finding Slope", "Illustrate slope as rate of change and as the steepness or direction of a line and determine the slope of a line from its graph, two given points, or its equation."),
     ],
   },
   "M8AL-Ii": {
@@ -291,10 +288,9 @@ const SEQUENCE_OVERRIDES = {
   },
   "M8GE-IIf": {
     packTitle: "Conditional Statements",
-    pacingLabel: "Rewrite first, then analyze",
+    pacingLabel: "Conditional statements as complete claims",
     microLessons: [
-      createSlice("Writing Statements in If-Then Form", "Rewrite mathematical and everyday statements in if-then form correctly."),
-      createSlice("Identifying Hypothesis and Conclusion", "Identify the hypothesis and conclusion of a conditional statement and use them to interpret the claim."),
+      createSlice("If-Then Statements with Hypothesis and Conclusion", "Rewrite mathematical and everyday statements in if-then form correctly and identify the hypothesis and conclusion of a conditional statement to interpret the claim."),
     ],
   },
   "M8GE-IIg": {
@@ -316,10 +312,9 @@ const SEQUENCE_OVERRIDES = {
   },
   "M8GE-IIIa": {
     packTitle: "Axiomatic Structure of Geometry",
-    pacingLabel: "Foundations before theorem building",
+    pacingLabel: "Geometric foundations within one logical structure",
     microLessons: [
-      createSlice("Undefined Terms, Definitions, and Postulates", "Distinguish undefined terms, definitions, and postulates in a geometric system."),
-      createSlice("From Postulates to Theorems", "Explain how theorems are built from accepted postulates and earlier results."),
+      createSlice("Undefined Terms, Definitions, Postulates, and Theorems", "Distinguish undefined terms, definitions, and postulates in a geometric system and explain how theorems are built from accepted postulates and earlier results."),
     ],
   },
   "M8GE-IIId": {
@@ -410,18 +405,16 @@ const SEQUENCE_OVERRIDES = {
   },
   "M9AL-Ic": {
     packTitle: "Quadratic Equations",
-    pacingLabel: "Solve first, then characterize roots",
+    pacingLabel: "Formula-based solving with root analysis",
     microLessons: [
-      createSlice("Quadratic Formula", "Solve quadratic equations by using the quadratic formula."),
-      createSlice("Discriminant and Nature of the Roots", "Use the discriminant to characterize the nature of the roots of a quadratic equation."),
+      createSlice("Quadratic Formula and Nature of the Roots", "Solve quadratic equations by using the quadratic formula and use the discriminant to characterize the nature of the roots of a quadratic equation."),
     ],
   },
   "M9AL-Id": {
     packTitle: "Roots of Quadratic Equations",
-    pacingLabel: "Coefficients first, then reverse the process",
+    pacingLabel: "Root relationships and equation building",
     microLessons: [
-      createSlice("Finding the Sum and Product of Roots", "Use the coefficients of a quadratic equation to determine the sum and product of its roots."),
-      createSlice("Forming a Quadratic Equation from Given Roots", "Construct a quadratic equation when the roots, or their sum and product, are given."),
+      createSlice("Sum and Product of Roots and Quadratic Equations", "Use the coefficients of a quadratic equation to determine the sum and product of its roots and construct a quadratic equation when the roots, or their sum and product, are given."),
     ],
   },
   "M9AL-Ie": {
@@ -565,10 +558,9 @@ const SEQUENCE_OVERRIDES = {
   },
   "M9GE-IVc": {
     packTitle: "Angles of Elevation and Depression",
-    pacingLabel: "Interpret the angle, then solve",
+    pacingLabel: "Angle interpretation in right-triangle contexts",
     microLessons: [
-      createSlice("Angles of Elevation", "Represent and solve situations involving angles of elevation."),
-      createSlice("Angles of Depression", "Represent and solve situations involving angles of depression."),
+      createSlice("Angles of Elevation and Depression", "Represent and solve situations involving angles of elevation and angles of depression."),
     ],
   },
   "M9GE-IVd": {
@@ -649,10 +641,9 @@ const SEQUENCE_OVERRIDES = {
   },
   "M10AL-Ig-2": {
     packTitle: "Remainder and Factor Theorems",
-    pacingLabel: "Evaluate first, then determine factors",
+    pacingLabel: "Theorem-based testing of values and factors",
     microLessons: [
-      createSlice("Remainder Theorem", "Use the remainder theorem to evaluate polynomial expressions and remainders efficiently."),
-      createSlice("Factor Theorem", "Use the factor theorem to determine whether a given binomial is a factor of a polynomial."),
+      createSlice("Remainder and Factor Theorems", "Use the remainder theorem to evaluate polynomial expressions and remainders efficiently and use the factor theorem to determine whether a given binomial is a factor of a polynomial."),
     ],
   },
   "M10AL-Ih": {
@@ -684,10 +675,9 @@ const SEQUENCE_OVERRIDES = {
   },
   "M10AL-IIb-1": {
     packTitle: "Descartes' Rule of Signs",
-    pacingLabel: "Sign changes before root prediction",
+    pacingLabel: "Real-zero patterns through sign changes",
     microLessons: [
-      createSlice("Applying Descartes' Rule to Positive Real Zeros", "Use sign changes in f(x) to predict the possible number of positive real zeros."),
-      createSlice("Applying Descartes' Rule to Negative Real Zeros", "Use sign changes in f(-x) to predict the possible number of negative real zeros and summarize the possible real-zero patterns."),
+      createSlice("Applying Descartes' Rule to Positive and Negative Real Zeros", "Use sign changes in f(x) and f(-x) to predict the possible numbers of positive and negative real zeros and summarize the possible real-zero patterns."),
     ],
   },
   "M10AL-IIb-2": {
@@ -753,18 +743,16 @@ const SEQUENCE_OVERRIDES = {
   },
   "M7SP-IVa": {
     packTitle: "Introduction to Statistics",
-    pacingLabel: "Statistical problem to data plan",
+    pacingLabel: "From questions to investigation design",
     microLessons: [
-      createSlice("Statistical and Non-Statistical Questions", "Differentiate statistical questions from non-statistical questions and identify situations that require data."),
-      createSlice("Planning for Statistical Investigation", "Pose a solvable statistical question and identify what data need to be gathered."),
+      createSlice("Statistical Questions and Investigation Planning", "Differentiate statistical questions from non-statistical questions and identify situations that require data and the data needed for a solvable statistical investigation."),
     ],
   },
   "M7SP-IVb": {
     packTitle: "Data Collection and Frequency Distribution",
-    pacingLabel: "Gather first, then organize",
+    pacingLabel: "From collected data to organized displays",
     microLessons: [
-      createSlice("Gathering and Classifying Data", "Identify types of data and gather statistical data using simple instruments."),
-      createSlice("Organizing Data in Frequency Tables", "Organize collected data into frequency distribution tables."),
+      createSlice("Gathering and Classifying Data with Frequency Tables", "Identify types of data and gather statistical data using simple instruments and organize collected data into frequency distribution tables."),
     ],
   },
   "M7SP-IVh": {
@@ -822,18 +810,16 @@ const SEQUENCE_OVERRIDES = {
   },
   "M10SP-IIIb-1": {
     packTitle: "Circular Permutations",
-    pacingLabel: "Illustrate first, then solve",
+    pacingLabel: "Circular arrangements from model to solution",
     microLessons: [
-      createSlice("Illustrating Circular Permutations", "Represent circular arrangements and compare them with linear arrangements."),
-      createSlice("Solving Circular Permutation Problems", "Solve counting problems involving circular permutations."),
+      createSlice("Illustrating and Solving Circular Permutations", "Represent circular arrangements and compare them with linear arrangements and solve counting problems involving circular permutations."),
     ],
   },
   "M10SP-IIIb-2": {
     packTitle: "Permutations with Repetition",
-    pacingLabel: "Count first, then apply",
+    pacingLabel: "Repeated-object arrangements in context",
     microLessons: [
-      createSlice("Counting Arrangements with Repeated Objects", "Count distinct arrangements when some objects are identical."),
-      createSlice("Problems Involving Permutations with Repetition", "Solve contextual problems involving permutations with repeated objects."),
+      createSlice("Counting and Solving Permutations with Repetition", "Count distinct arrangements when some objects are identical and solve contextual problems involving permutations with repeated objects."),
     ],
   },
   "M10SP-IIIc": {
@@ -865,10 +851,9 @@ const SEQUENCE_OVERRIDES = {
   },
   "M10SP-IVd": {
     packTitle: "Box-and-Whisker Plot",
-    pacingLabel: "Read the plot, then interpret the distribution",
+    pacingLabel: "Read and interpret distribution features together",
     microLessons: [
-      createSlice("Reading a Box-and-Whisker Plot", "Identify the five-number summary from a box-and-whisker plot."),
-      createSlice("Interpreting Distribution from a Box Plot", "Use a box plot to describe spread, clustering, skew, and possible outliers."),
+      createSlice("Reading a Box-and-Whisker Plot and Interpreting Distribution", "Identify the five-number summary from a box-and-whisker plot and use a box plot to describe spread, clustering, skew, and possible outliers."),
     ],
   },
   "M10SP-IVf": {

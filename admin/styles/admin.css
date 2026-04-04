@@ -358,7 +358,7 @@
   transition:
     background 0.2s,
     border-color 0.2s;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .admin-lesson-row + .admin-lesson-row {
@@ -378,8 +378,9 @@
 }
 
 .alr-topic-block {
-  flex: 1;
-  min-width: 220px;
+  flex: 1 1 240px;
+  min-width: 0;
+  max-width: 360px;
 }
 
 .alr-topic {
@@ -421,10 +422,13 @@
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
+  flex: 2 1 520px;
+  min-width: 0;
 }
 
 .alr-game-status {
-  min-width: 150px;
+  flex: 0 0 190px;
+  min-width: 190px;
 }
 
 .game-status-field {
@@ -541,7 +545,8 @@
 }
 
 .alr-status {
-  min-width: 70px;
+  flex: 0 0 80px;
+  min-width: 80px;
   text-align: right;
 }
 

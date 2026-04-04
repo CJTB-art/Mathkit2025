@@ -39,8 +39,8 @@ const FILE_TYPE_META = {
     accept: ".pptx,.ppt,.pdf",
   },
   lp: {
-    label: "LP",
-    accept: ".doc,.docx,.pdf",
+    label: "LP (Word)",
+    accept: ".doc,.docx",
   },
   activity: {
     label: "Web Game",
@@ -136,6 +136,32 @@ function sanitizeExtension(value = "") {
   return safeExtension.startsWith(".")
     ? safeExtension
     : `.${safeExtension}`;
+}
+
+function getFileExtension(fileName = "") {
+  const extensionIndex = String(fileName).lastIndexOf(".");
+
+  if (extensionIndex < 0) {
+    return "";
+  }
+
+  return String(fileName).slice(extensionIndex).toLowerCase();
+}
+
+function validateUploadFileType(fileType, file) {
+  if (!file) {
+    throw new Error("Missing upload file.");
+  }
+
+  if (fileType !== "lp") {
+    return;
+  }
+
+  const extension = getFileExtension(file.name);
+
+  if (extension !== ".doc" && extension !== ".docx") {
+    throw new Error("Lesson Plan uploads must be a Word file (.doc or .docx), not a PDF.");
+  }
 }
 
 function buildStoragePath(sliceKey, fileType, fileName) {
@@ -711,6 +737,7 @@ export async function updateLessonGameStatus({ key, gameStatus }) {
 export async function uploadLessonAsset({ key, fileType, file }) {
   ensureConfigured();
   ensureAdminSession();
+  validateUploadFileType(fileType, file);
 
   const currentAssets = normalizeAssetsMap(getUploads(key));
   const currentAsset = currentAssets[fileType];

@@ -414,12 +414,14 @@ export function createAppShell() {
             </div>
           </div>
           <p>
-            Upload PPT, LP, and Worksheet for each micro-lesson, then choose
+            Upload PPT, an editable Word LP, and Worksheet for each micro-lesson, then choose
             whether the lesson has no game, a coming-soon game, or an available
             game. A slice goes live once the required files for its selected
             game status are complete.<br />
             <span class="admin-help">
               ${icon("info", "icon icon-sm")}
+              LP uploads must be `.doc` or `.docx` so teachers can edit them.
+              Also,
               Set Game to Available only when the web activity file is ready.
               Hover a row to reveal the remove button for each file, and
               re-uploading replaces the old file.

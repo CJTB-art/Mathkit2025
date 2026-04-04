@@ -9,12 +9,19 @@ const app = typeof document !== "undefined"
   ? document.getElementById("app")
   : null;
 
+if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+  window.history.scrollRestoration = "manual";
+}
+
 if (app) {
   app.innerHTML = createAppShell();
   bindActions();
   syncThemeButton();
   showPublic();
   startTypewriter();
+  window.requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  });
   void initializeApp();
 }
 

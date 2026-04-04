@@ -347,18 +347,18 @@ function renderLessonDetailsModal() {
 
 function renderLessonPreviewSummary(lesson, progress, isMyFreePack) {
   if (progress.liveCount === 0) {
-    return `${lesson.packTitle} is structured as ${lesson.sliceCount} teachable subtopics so the topic stays manageable inside a class period.`;
+    return `${lesson.packTitle} is broken into ${lesson.sliceCount} focused subtopics for easier pacing in class.`;
   }
 
   if (isMyFreePack) {
-    return `Your free lesson is inside this sequence. ${progress.liveCount} of ${progress.totalCount} subtopics are already live.`;
+    return `Your free lesson is in this sequence. ${progress.liveCount} of ${progress.totalCount} subtopics are live.`;
   }
 
   if (!state.userFreeLesson) {
-    return `${progress.liveCount} of ${progress.totalCount} subtopics are already live. Claim one free, buy a single lesson, or unlock the full pack.`;
+    return `${progress.liveCount} of ${progress.totalCount} subtopics are live. Claim one free or buy a single lesson.`;
   }
 
-  return `${progress.liveCount} of ${progress.totalCount} subtopics are already live in this sequence and can be bought individually or unlocked in the full pack.`;
+  return `${progress.liveCount} of ${progress.totalCount} subtopics are live in this sequence and can be bought individually.`;
 }
 
 function renderSingleLessonFooter(lesson) {
@@ -413,17 +413,11 @@ function renderSliceSupplementalInfo(lesson, microLesson, key, status) {
 }
 
 function renderLessonMaterialsBlock(status) {
-  const note = status === "live"
-    ? "LP, PPT, and worksheet are included with this lesson."
-    : "LP, PPT, and worksheet will appear here once this lesson is published.";
-
   return `
-    <div class="lesson-info-block">
-      <div class="lesson-info-label">Lesson Materials</div>
-      <div class="lesson-info-pills">
-        ${LESSON_MATERIALS.map((item) => `<span class="lesson-info-pill">${item}</span>`).join("")}
-      </div>
-      <div class="lesson-info-note">${note}</div>
+    <div class="lesson-meta-line">
+      <span class="lesson-meta-label">Materials</span>
+      <span class="lesson-meta-value">${LESSON_MATERIALS.join(" · ")}</span>
+      <span class="lesson-meta-note">${status === "live" ? "Included" : "Pending"}</span>
     </div>
   `;
 }
@@ -437,34 +431,39 @@ function renderGameStatusBlock(lesson, microLesson, key, status) {
 
   if (gameStatus === "coming_soon") {
     return `
-      <div class="lesson-game-block is-muted">
-        <div class="lesson-game-badge muted">Interactive Game: Coming Soon</div>
-        <div class="lesson-game-note">
-          A web-based activity for this lesson is currently being developed.
-        </div>
+      <div class="lesson-meta-line">
+        <span class="lesson-meta-label">Game</span>
+        <span class="lesson-meta-badge muted">Coming soon</span>
+        <span class="lesson-meta-note">Web activity in development.</span>
       </div>
     `;
   }
 
   const hasAccess = userHasLessonAccess(key);
-  const accessCta = hasAccess && status === "live"
-    ? renderGameAccessButton(key, `${lesson.topic} - ${microLesson.title}`)
-    : status === "live"
-      ? '<div class="lesson-game-note">Game access unlocks after claim or purchase.</div>'
-      : '<div class="lesson-game-note">Game access appears once this lesson is published.</div>';
+  const requirementNote = "Devices, internet, PIN, and QR/session link.";
 
   return `
-    <div class="lesson-game-block">
-      <div class="lesson-game-badge">Interactive Game</div>
-      <div class="lesson-game-note">Ready classroom requirements:</div>
-      <ul class="lesson-game-requirements">
-        <li>Student Devices</li>
-        <li>Stable internet</li>
-        <li>Class PIN</li>
-        <li>QR Code / session link</li>
-      </ul>
-      ${accessCta}
+    <div class="lesson-meta-line">
+      <span class="lesson-meta-label">Game</span>
+      <span class="lesson-meta-badge">Ready</span>
+      <span class="lesson-meta-note">
+        ${status !== "live"
+          ? "Appears once published."
+          : hasAccess
+            ? "Ready to open."
+            : "Unlocks after claim or purchase."}
+      </span>
     </div>
+    ${hasAccess && status === "live"
+      ? `
+        <div class="lesson-inline-action">
+          ${renderGameAccessButton(key, `${lesson.topic} - ${microLesson.title}`)}
+          <span class="lesson-meta-helper">${requirementNote}</span>
+        </div>
+      `
+      : status === "live"
+        ? '<div class="lesson-meta-helper">Unlocks after claim or purchase.</div>'
+        : ""}
   `;
 }
 

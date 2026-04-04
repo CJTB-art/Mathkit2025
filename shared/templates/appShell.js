@@ -413,20 +413,18 @@ export function createAppShell() {
               </button>
             </div>
           </div>
-          <p>
-            Upload PPT, an editable Word LP, and Worksheet for each micro-lesson, then choose
-            whether the lesson has no game, a coming-soon game, or an available
-            game. A slice goes live once the required files for its selected
-            game status are complete.<br />
-            <span class="admin-help">
-              ${icon("info", "icon icon-sm")}
-              LP uploads must be <code>.doc</code> or <code>.docx</code> so teachers can edit them.
-              Also,
-              Set Game to Available only when the web activity file is ready.
-              Hover a row to reveal the remove button for each file, and
-              re-uploading replaces the old file.
-            </span>
-          </p>
+          <div class="admin-search-row">
+            <label class="admin-search-field" for="adminSearchInput">
+              ${icon("search", "icon icon-sm")}
+              <input
+                type="search"
+                id="adminSearchInput"
+                placeholder="Search by code, topic, or slice..."
+                autocomplete="off"
+                spellcheck="false"
+              />
+            </label>
+          </div>
           <div class="admin-session-meta" id="adminSessionMeta"></div>
         </div>
         <div class="admin-stats" id="adminStats"></div>

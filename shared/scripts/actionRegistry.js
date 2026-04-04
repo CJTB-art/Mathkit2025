@@ -1,4 +1,5 @@
 import {
+  handleAdminSearchInput,
   handleDeleteUpload,
   handleGameStatusChange,
   handleUploadChange,
@@ -94,6 +95,14 @@ export function bindActions() {
     }
 
     void handleUploadChange(target);
+  });
+
+  document.addEventListener("input", (event) => {
+    const target = event.target;
+
+    if (target instanceof HTMLInputElement && target.id === "adminSearchInput") {
+      handleAdminSearchInput(target);
+    }
   });
 
   document.addEventListener("keydown", (event) => {

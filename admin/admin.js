@@ -36,6 +36,7 @@ const GRADES = [7, 8, 9, 10];
 const QUARTERS = ["Q1", "Q2", "Q3", "Q4"];
 let adminAutoRefreshBound = false;
 let adminAutoRefreshSuspendedUntil = 0;
+let adminSearchQuery = "";
 
 export function showPublic() {
   state.lessonPreviewKey = null;
@@ -67,6 +68,7 @@ export function showAdmin() {
     bindAdminAutoRefresh();
     setActiveView("admin");
     renderAdmin();
+    syncAdminSearchInput();
     void refreshLessonAssets({ silent: true });
     return;
   }
@@ -205,6 +207,7 @@ export function renderAdmin() {
   }
 
   syncAdminChrome();
+  syncAdminSearchInput();
 
   if (!isSupabaseConfigured()) {
     stats.innerHTML = renderAdminNotice(
@@ -271,12 +274,17 @@ export function renderAdmin() {
 
   GRADES.forEach((grade) => {
     const gradeLessons = CURRICULUM.filter((lesson) => lesson.grade === grade);
-    const gradeSliceCount = gradeLessons.reduce((count, lesson) => {
+    const filteredGradeLessons = gradeLessons.filter((lesson) => lessonMatchesAdminSearch(lesson));
+    const gradeSliceCount = filteredGradeLessons.reduce((count, lesson) => {
       return count + lesson.microLessons.length;
     }, 0);
-    const gradeLiveCount = gradeLessons.reduce((count, lesson) => {
+    const gradeLiveCount = filteredGradeLessons.reduce((count, lesson) => {
       return count + getLessonProgress(lesson).liveCount;
     }, 0);
+
+    if (!filteredGradeLessons.length) {
+      return;
+    }
 
     html += `
       <div class="admin-grade-block">
@@ -287,7 +295,7 @@ export function renderAdmin() {
     `;
 
     QUARTERS.forEach((quarter) => {
-      const quarterLessons = gradeLessons.filter((lesson) => lesson.q === quarter);
+      const quarterLessons = filteredGradeLessons.filter((lesson) => lesson.q === quarter);
 
       if (!quarterLessons.length) {
         return;
@@ -304,8 +312,31 @@ export function renderAdmin() {
     html += "</div>";
   });
 
+  if (!html) {
+    catalog.innerHTML = renderAdminNotice(
+      "No lessons found.",
+      adminSearchQuery.trim()
+        ? `No lesson packs matched "${adminSearchQuery.trim()}".`
+        : "No lesson packs are available yet.",
+    );
+    refreshIcons();
+    return;
+  }
+
   catalog.innerHTML = html;
   refreshIcons();
+}
+
+export function handleAdminSearchInput(input) {
+  if (!(input instanceof HTMLInputElement)) {
+    return;
+  }
+
+  adminSearchQuery = input.value || "";
+
+  if (document.getElementById("adminView")?.classList.contains("active")) {
+    renderAdmin();
+  }
 }
 
 export async function handleUploadChange(input) {
@@ -754,6 +785,43 @@ function syncAdminNavButton() {
     `;
     refreshIcons();
   }
+}
+
+function syncAdminSearchInput() {
+  const input = document.getElementById("adminSearchInput");
+
+  if (!(input instanceof HTMLInputElement)) {
+    return;
+  }
+
+  if (input.value !== adminSearchQuery) {
+    input.value = adminSearchQuery;
+  }
+}
+
+function lessonMatchesAdminSearch(lesson) {
+  const query = adminSearchQuery.trim().toLowerCase();
+
+  if (!query) {
+    return true;
+  }
+
+  const haystack = [
+    lesson.code,
+    lesson.topic,
+    lesson.packTitle,
+    lesson.pacingLabel,
+    ...(lesson.microLessons || []).flatMap((microLesson) => [
+      microLesson.title,
+      microLesson.goal,
+      microLesson.sliceId,
+    ]),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return haystack.includes(query);
 }
 
 function bindAdminAutoRefresh() {

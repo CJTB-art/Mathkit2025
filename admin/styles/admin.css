@@ -160,12 +160,40 @@
   font-weight: 300;
 }
 
-.admin-help {
-  color: var(--blue);
-  font-size: 12px;
-  display: inline-flex;
+.admin-search-row {
+  margin-top: 0.9rem;
+}
+
+.admin-search-field {
+  display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
+  min-height: 46px;
+  width: min(520px, 100%);
+  padding: 0 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border2);
+  background: var(--bg);
+  color: var(--text2);
+}
+
+.admin-search-field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(245, 200, 66, 0.1);
+}
+
+.admin-search-field input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  outline: none;
+  font-size: 13px;
+}
+
+.admin-search-field input::placeholder {
+  color: var(--text3);
 }
 
 .admin-sync-pill {
@@ -634,6 +662,10 @@
 
   .admin-header {
     padding: 1rem;
+  }
+
+  .admin-search-field {
+    width: 100%;
   }
 
   .admin-lesson-row {

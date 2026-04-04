@@ -260,6 +260,11 @@
   color: var(--red);
 }
 
+.admin-search-empty {
+  display: none;
+  margin-bottom: 1.25rem;
+}
+
 .astat {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 38%),

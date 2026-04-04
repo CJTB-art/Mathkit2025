@@ -274,17 +274,12 @@ export function renderAdmin() {
 
   GRADES.forEach((grade) => {
     const gradeLessons = CURRICULUM.filter((lesson) => lesson.grade === grade);
-    const filteredGradeLessons = gradeLessons.filter((lesson) => lessonMatchesAdminSearch(lesson));
-    const gradeSliceCount = filteredGradeLessons.reduce((count, lesson) => {
+    const gradeSliceCount = gradeLessons.reduce((count, lesson) => {
       return count + lesson.microLessons.length;
     }, 0);
-    const gradeLiveCount = filteredGradeLessons.reduce((count, lesson) => {
+    const gradeLiveCount = gradeLessons.reduce((count, lesson) => {
       return count + getLessonProgress(lesson).liveCount;
     }, 0);
-
-    if (!filteredGradeLessons.length) {
-      return;
-    }
 
     html += `
       <div class="admin-grade-block">
@@ -295,7 +290,7 @@ export function renderAdmin() {
     `;
 
     QUARTERS.forEach((quarter) => {
-      const quarterLessons = filteredGradeLessons.filter((lesson) => lesson.q === quarter);
+      const quarterLessons = gradeLessons.filter((lesson) => lesson.q === quarter);
 
       if (!quarterLessons.length) {
         return;
@@ -312,18 +307,18 @@ export function renderAdmin() {
     html += "</div>";
   });
 
-  if (!html) {
-    catalog.innerHTML = renderAdminNotice(
-      "No lessons found.",
-      adminSearchQuery.trim()
-        ? `No lesson packs matched "${adminSearchQuery.trim()}".`
-        : "No lesson packs are available yet.",
-    );
-    refreshIcons();
-    return;
-  }
-
-  catalog.innerHTML = html;
+  catalog.innerHTML = `
+    <div class="admin-search-empty" id="adminSearchEmpty">
+      ${renderAdminNotice(
+        "No lessons found.",
+        adminSearchQuery.trim()
+          ? `No lesson packs matched "${adminSearchQuery.trim()}".`
+          : "No lesson packs are available yet.",
+      )}
+    </div>
+    ${html}
+  `;
+  applyAdminSearchFilter();
   refreshIcons();
 }
 
@@ -335,7 +330,7 @@ export function handleAdminSearchInput(input) {
   adminSearchQuery = input.value || "";
 
   if (document.getElementById("adminView")?.classList.contains("active")) {
-    renderAdmin();
+    applyAdminSearchFilter();
   }
 }
 
@@ -437,10 +432,11 @@ export async function handleDeleteUpload(button) {
 function renderLessonPack(lesson) {
   const progress = getLessonProgress(lesson);
   const isCuratedPack = lesson.isCuratedSequence && lesson.sliceCount > 1;
+  const searchText = escapeAttr(buildLessonSearchText(lesson));
 
   if (!isCuratedPack) {
     return `
-      <div class="admin-lesson-pack">
+      <div class="admin-lesson-pack" data-search-text="${searchText}">
         <div class="alr-pack-head">
           <div class="alr-pack-code">${escapeHtml(lesson.code)}</div>
           <div class="alr-pack-copy">
@@ -456,7 +452,7 @@ function renderLessonPack(lesson) {
   }
 
   return `
-    <div class="admin-lesson-pack">
+    <div class="admin-lesson-pack" data-search-text="${searchText}">
       <div class="alr-pack-head">
         <div class="alr-pack-code">${escapeHtml(lesson.code)}</div>
         <div class="alr-pack-copy">
@@ -799,18 +795,14 @@ function syncAdminSearchInput() {
   }
 }
 
-function lessonMatchesAdminSearch(lesson) {
-  const query = adminSearchQuery.trim().toLowerCase();
-
-  if (!query) {
-    return true;
-  }
-
-  const haystack = [
+function buildLessonSearchText(lesson) {
+  return [
     lesson.code,
     lesson.topic,
     lesson.packTitle,
     lesson.pacingLabel,
+    lesson.grade ? `grade ${lesson.grade}` : "",
+    lesson.q ? `quarter ${lesson.q.replace("Q", "")}` : "",
     ...(lesson.microLessons || []).flatMap((microLesson) => [
       microLesson.title,
       microLesson.goal,
@@ -818,10 +810,72 @@ function lessonMatchesAdminSearch(lesson) {
     ]),
   ]
     .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
+    .join(" ");
+}
 
-  return haystack.includes(query);
+function applyAdminSearchFilter() {
+  const catalog = document.getElementById("adminCatalog");
+
+  if (!catalog) {
+    return;
+  }
+
+  const query = adminSearchQuery.trim().toLowerCase();
+  let visiblePackCount = 0;
+
+  catalog.querySelectorAll(".admin-lesson-pack").forEach((pack) => {
+    if (!(pack instanceof HTMLElement)) {
+      return;
+    }
+
+    const haystack = (pack.dataset.searchText || "").toLowerCase();
+    const isVisible = !query || haystack.includes(query);
+    pack.style.display = isVisible ? "" : "none";
+
+    if (isVisible) {
+      visiblePackCount += 1;
+    }
+  });
+
+  catalog.querySelectorAll(".admin-quarter-block").forEach((quarterBlock) => {
+    if (!(quarterBlock instanceof HTMLElement)) {
+      return;
+    }
+
+    const hasVisiblePack = Array.from(
+      quarterBlock.querySelectorAll(":scope > .admin-lesson-pack"),
+    ).some((pack) => pack instanceof HTMLElement && pack.style.display !== "none");
+
+    quarterBlock.style.display = hasVisiblePack ? "" : "none";
+  });
+
+  catalog.querySelectorAll(".admin-grade-block").forEach((gradeBlock) => {
+    if (!(gradeBlock instanceof HTMLElement)) {
+      return;
+    }
+
+    const hasVisibleQuarter = Array.from(
+      gradeBlock.querySelectorAll(":scope > .admin-quarter-block"),
+    ).some((quarterBlock) =>
+      quarterBlock instanceof HTMLElement && quarterBlock.style.display !== "none"
+    );
+
+    gradeBlock.style.display = hasVisibleQuarter ? "" : "none";
+  });
+
+  const emptyState = document.getElementById("adminSearchEmpty");
+
+  if (emptyState instanceof HTMLElement) {
+    const copy = emptyState.querySelector(".admin-notice-copy");
+
+    if (copy instanceof HTMLElement) {
+      copy.textContent = query
+        ? `No lesson packs matched "${adminSearchQuery.trim()}".`
+        : "No lesson packs are available yet.";
+    }
+
+    emptyState.style.display = visiblePackCount === 0 ? "block" : "none";
+  }
 }
 
 function bindAdminAutoRefresh() {

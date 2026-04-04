@@ -445,7 +445,7 @@ function renderSingleLessonRow(lesson) {
     status === "live" ? "Live" : status === "partial" ? "Partial" : "Empty";
 
   return `
-    <div class="admin-lesson-row">
+    <div class="admin-lesson-row admin-lesson-row--single">
       <div class="alr-topic-block">
         <div class="alr-topic">${escapeHtml(lesson.topic)}</div>
       </div>
@@ -472,7 +472,7 @@ function renderSliceRow(lesson, microLesson) {
     status === "live" ? "Live" : status === "partial" ? "Partial" : "Empty";
 
   return `
-    <div class="admin-lesson-row">
+    <div class="admin-lesson-row admin-lesson-row--slice">
       <div class="alr-seq">L${microLesson.sequenceNo}</div>
       <div class="alr-topic-block">
         <div class="alr-topic">${escapeHtml(microLesson.title)}</div>

@@ -118,6 +118,7 @@
   max-width: 1120px;
   margin: 0 auto;
   padding: 108px 1.5rem 2.25rem;
+  overflow-x: hidden;
 }
 
 .admin-header {
@@ -308,6 +309,7 @@
     var(--bg2);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+  max-width: 100%;
 }
 
 .alr-pack-head {
@@ -344,10 +346,11 @@
 
 .admin-slice-list {
   padding: 0.75rem;
+  min-width: 0;
 }
 
 .admin-lesson-row {
-  display: flex;
+  display: grid;
   align-items: center;
   gap: 10px;
   padding: 0.6rem 0.75rem;
@@ -358,7 +361,14 @@
   transition:
     background 0.2s,
     border-color 0.2s;
-  flex-wrap: nowrap;
+}
+
+.admin-lesson-row--single {
+  grid-template-columns: minmax(220px, 1.2fr) minmax(0, 1.8fr) 190px 80px;
+}
+
+.admin-lesson-row--slice {
+  grid-template-columns: 52px minmax(220px, 1.2fr) minmax(0, 1.8fr) 190px 80px;
 }
 
 .admin-lesson-row + .admin-lesson-row {
@@ -378,9 +388,7 @@
 }
 
 .alr-topic-block {
-  flex: 1 1 240px;
   min-width: 0;
-  max-width: 360px;
 }
 
 .alr-topic {
@@ -422,12 +430,11 @@
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  flex: 2 1 520px;
   min-width: 0;
+  align-content: center;
 }
 
 .alr-game-status {
-  flex: 0 0 190px;
   min-width: 190px;
 }
 
@@ -545,9 +552,9 @@
 }
 
 .alr-status {
-  flex: 0 0 80px;
   min-width: 80px;
   text-align: right;
+  justify-self: end;
 }
 
 .status-pill {
@@ -629,6 +636,7 @@
   }
 
   .admin-lesson-row {
+    display: flex;
     flex-wrap: wrap;
   }
 

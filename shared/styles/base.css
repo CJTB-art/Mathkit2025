@@ -61,6 +61,7 @@ html {
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: var(--border2) transparent;
+  overflow-x: hidden;
 }
 
 body {
@@ -80,6 +81,7 @@ body {
     color 0.3s;
   scrollbar-width: thin;
   scrollbar-color: var(--border2) transparent;
+  overflow-x: hidden;
 }
 
 a {

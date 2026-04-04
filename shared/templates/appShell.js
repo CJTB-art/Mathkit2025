@@ -420,7 +420,7 @@ export function createAppShell() {
             game status are complete.<br />
             <span class="admin-help">
               ${icon("info", "icon icon-sm")}
-              LP uploads must be `.doc` or `.docx` so teachers can edit them.
+              LP uploads must be <code>.doc</code> or <code>.docx</code> so teachers can edit them.
               Also,
               Set Game to Available only when the web activity file is ready.
               Hover a row to reveal the remove button for each file, and

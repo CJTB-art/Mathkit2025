@@ -35,6 +35,7 @@ import {
 const GRADES = [7, 8, 9, 10];
 const QUARTERS = ["Q1", "Q2", "Q3", "Q4"];
 let adminAutoRefreshBound = false;
+let adminAutoRefreshSuspendedUntil = 0;
 
 export function showPublic() {
   state.lessonPreviewKey = null;
@@ -769,7 +770,11 @@ function bindAdminAutoRefresh() {
       .getElementById("adminView")
       ?.classList.contains("active");
 
-    if (!isAdminViewActive || !state.isAdmin) {
+    if (
+      !isAdminViewActive ||
+      !state.isAdmin ||
+      Date.now() < adminAutoRefreshSuspendedUntil
+    ) {
       return;
     }
 
@@ -780,6 +785,19 @@ function bindAdminAutoRefresh() {
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
       refreshVisibleAdmin();
+    }
+  });
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if (!(target instanceof Element)) {
+      return;
+    }
+
+    const uploadInput = target.closest('input[data-action="upload-file"]');
+
+    if (uploadInput) {
+      adminAutoRefreshSuspendedUntil = Date.now() + 5000;
     }
   });
 

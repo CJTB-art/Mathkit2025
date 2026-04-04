@@ -34,6 +34,7 @@ import {
 
 const GRADES = [7, 8, 9, 10];
 const QUARTERS = ["Q1", "Q2", "Q3", "Q4"];
+let adminAutoRefreshBound = false;
 
 export function showPublic() {
   state.lessonPreviewKey = null;
@@ -62,8 +63,10 @@ export function showAdmin() {
   syncAdminChrome();
 
   if (state.isAdmin) {
+    bindAdminAutoRefresh();
     setActiveView("admin");
     renderAdmin();
+    void refreshLessonAssets({ silent: true });
     return;
   }
 
@@ -325,6 +328,7 @@ export async function handleUploadChange(input) {
     await uploadLessonAsset({ key, fileType, file });
     renderAdmin();
     renderPublic();
+    void refreshLessonAssets({ silent: true });
 
     const uploadState = getUploads(key);
 
@@ -363,6 +367,7 @@ export async function handleGameStatusChange(select) {
     await updateLessonGameStatus({ key, gameStatus });
     renderAdmin();
     renderPublic();
+    void refreshLessonAssets({ silent: true });
     showToast("Game status updated.", "success");
   } catch (error) {
     console.error(error);
@@ -386,6 +391,7 @@ export async function handleDeleteUpload(button) {
     await deleteLessonAsset({ key, fileType });
     renderAdmin();
     renderPublic();
+    void refreshLessonAssets({ silent: true });
     showToast("File removed.");
   } catch (error) {
     console.error(error);
@@ -747,6 +753,37 @@ function syncAdminNavButton() {
     `;
     refreshIcons();
   }
+}
+
+function bindAdminAutoRefresh() {
+  if (
+    adminAutoRefreshBound ||
+    typeof window === "undefined" ||
+    typeof document === "undefined"
+  ) {
+    return;
+  }
+
+  const refreshVisibleAdmin = () => {
+    const isAdminViewActive = document
+      .getElementById("adminView")
+      ?.classList.contains("active");
+
+    if (!isAdminViewActive || !state.isAdmin) {
+      return;
+    }
+
+    void refreshLessonAssets({ silent: true });
+  };
+
+  window.addEventListener("focus", refreshVisibleAdmin);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      refreshVisibleAdmin();
+    }
+  });
+
+  adminAutoRefreshBound = true;
 }
 
 function scrollToTop() {

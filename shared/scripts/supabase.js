@@ -482,6 +482,39 @@ async function fetchBundleManifest(key) {
   return Array.isArray(payload.files) ? payload.files : [];
 }
 
+async function fetchLessonAssetManifest(key, fileType) {
+  const accessToken = await ensureAuthenticatedToken();
+  const response = await fetch("/api/lesson-asset", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ key, fileType }),
+  });
+
+  let payload = {};
+
+  try {
+    payload = await response.json();
+  } catch (error) {
+    payload = {};
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      typeof payload.error === "string" && payload.error
+        ? payload.error
+        : "Unable to open this lesson asset.",
+    );
+  }
+
+  return {
+    name: typeof payload.name === "string" ? payload.name : "",
+    url: typeof payload.url === "string" ? payload.url : "",
+  };
+}
+
 export function isSupabaseConfigured() {
   return isConfigured;
 }
@@ -719,6 +752,26 @@ export async function fetchBundleFiles(key) {
   }
 
   return bundleFiles;
+}
+
+export async function fetchLessonAssetUrl(key, fileType) {
+  ensureConfigured();
+
+  if (!key) {
+    throw new Error("Missing lesson key.");
+  }
+
+  if (!fileType) {
+    throw new Error("Missing lesson asset type.");
+  }
+
+  const asset = await fetchLessonAssetManifest(key, fileType);
+
+  if (!asset.url) {
+    throw new Error("This lesson asset is not available yet.");
+  }
+
+  return asset;
 }
 
 export function getErrorMessage(error, fallbackMessage = "Something went wrong.") {

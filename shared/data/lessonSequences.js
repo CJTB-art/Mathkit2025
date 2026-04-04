@@ -1,4 +1,5 @@
 const DEFAULT_DURATION_MINUTES = 45;
+const VALID_GAME_STATUSES = new Set(["none", "available", "coming_soon"]);
 
 const SEQUENCE_OVERRIDES = {
   "M7NS-Ia": {
@@ -867,6 +868,7 @@ const SEQUENCE_OVERRIDES = {
 };
 
 export function enrichLesson(lesson) {
+  const gameStatus = validateGameStatus(lesson.code, lesson.gameStatus);
   const override = SEQUENCE_OVERRIDES[lesson.code];
 
   if (override) {
@@ -874,6 +876,7 @@ export function enrichLesson(lesson) {
 
     return {
       ...lesson,
+      gameStatus,
       durationMinutes: DEFAULT_DURATION_MINUTES,
       packTitle: override.packTitle,
       pacingLabel: override.pacingLabel,
@@ -893,6 +896,7 @@ export function enrichLesson(lesson) {
 
   return {
     ...lesson,
+    gameStatus,
     durationMinutes: DEFAULT_DURATION_MINUTES,
     packTitle,
     pacingLabel: "Single focused lesson",
@@ -919,4 +923,14 @@ function finalizeMicroLessons(code, microLessons) {
 function getPackTitle(topic) {
   const [prefix] = topic.split(":");
   return prefix.trim();
+}
+
+function validateGameStatus(code, gameStatus) {
+  if (!VALID_GAME_STATUSES.has(gameStatus)) {
+    throw new Error(
+      `Lesson ${code || "unknown"} is incomplete. Set gameStatus to "none", "available", or "coming_soon" before publishing.`,
+    );
+  }
+
+  return gameStatus;
 }

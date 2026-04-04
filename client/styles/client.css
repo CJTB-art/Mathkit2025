@@ -856,11 +856,97 @@
   color: var(--text2);
 }
 
+.lesson-supplemental {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+}
+
+.lesson-info-block,
+.lesson-game-block {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg2);
+  padding: 0.7rem 0.8rem;
+}
+
+.lesson-game-block.is-muted {
+  background: var(--bg3);
+}
+
+.lesson-info-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.lesson-info-pills {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-top: 0.45rem;
+}
+
+.lesson-info-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text2);
+}
+
+.lesson-info-note,
+.lesson-game-note {
+  margin-top: 0.45rem;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text2);
+}
+
+.lesson-game-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--green-border);
+  background: var(--green-bg);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--green);
+  text-transform: uppercase;
+}
+
+.lesson-game-badge.muted {
+  border-color: var(--border2);
+  background: var(--bg3);
+  color: var(--text2);
+}
+
+.lesson-game-requirements {
+  margin: 0.55rem 0 0;
+  padding-left: 1.05rem;
+  display: grid;
+  gap: 0.28rem;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text2);
+}
+
 .lesson-preview-row-action {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  align-self: center;
+  align-self: start;
 }
 
 .card-action-block {
@@ -881,6 +967,19 @@
 .card-includes {
   font-size: 10.5px;
   color: var(--text3);
+}
+
+.single-lesson-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.single-lesson-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .chip {
@@ -937,6 +1036,18 @@
 }
 
 .chip.dl-bundle:hover {
+  background: var(--green);
+  color: #111;
+}
+
+.chip.game-access-chip {
+  margin-top: 0.6rem;
+  border-color: var(--green-border);
+  color: var(--green);
+  background: var(--green-bg);
+}
+
+.chip.game-access-chip:hover {
   background: var(--green);
   color: #111;
 }

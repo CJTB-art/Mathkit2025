@@ -11,7 +11,7 @@ export function openClaimModal(button) {
     return;
   }
 
-  const { key, topic, packTopic, code, strand, grade, quarter } = button.dataset;
+  const { key, topic, packTopic, code, strand, grade, quarter, gameStatus } = button.dataset;
 
   if (!key) {
     return;
@@ -32,6 +32,7 @@ export function openClaimModal(button) {
     strand: strand || "",
     grade: grade || "",
     quarter: quarter || "",
+    gameStatus: gameStatus || "",
   };
 
   const previewTopic = document.getElementById("claimPreviewTopic");
@@ -72,7 +73,7 @@ export async function confirmClaim() {
     await claimFreeLesson(state.pendingClaim.key);
     closeClaimModal();
     showToast(
-      "Lesson claimed. Your LP, PPT, worksheet, and web-based game activity bundle is ready below.",
+      getClaimSuccessMessage(state.pendingClaim.gameStatus),
       "success",
     );
     renderPublic();
@@ -98,4 +99,16 @@ export function closeClaimModal() {
     modal.classList.remove("open");
     modal.setAttribute("aria-hidden", "true");
   }
+}
+
+function getClaimSuccessMessage(gameStatus) {
+  if (gameStatus === "available") {
+    return "Lesson claimed. Your LP, PPT, worksheet, and interactive game access are ready below.";
+  }
+
+  if (gameStatus === "coming_soon") {
+    return "Lesson claimed. Your LP, PPT, and worksheet are ready below. The interactive game is still in development.";
+  }
+
+  return "Lesson claimed. Your LP, PPT, and worksheet are ready below.";
 }

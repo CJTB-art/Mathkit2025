@@ -281,8 +281,8 @@ export function createAppShell() {
         </div>
         <div class="modal-sub">
           You get <strong>one free micro-lesson</strong> of your choice. You will
-          receive the full LP, PPT, printable worksheet, and web-based
-          game activity bundled for download at no cost.
+          receive the full LP, PPT, printable worksheet, and any interactive
+          game access that is already available for that lesson at no cost.
         </div>
         <div class="modal-lesson-preview">
           <div class="topic" id="claimPreviewTopic"></div>
@@ -485,7 +485,7 @@ export function createAppShell() {
           <div class="lessons-page-copy">
             <h2 class="lessons-page-title">Browse lessons</h2>
             <p class="lessons-page-sub">
-              Filter by grade, quarter, and availability, claim one free micro-lesson, buy a single lesson when you only need one topic, or unlock complete packs with LPs, PPTs, printable worksheets, web-based game activities, and teachable slices built for a 45-minute class.
+              Filter by grade, quarter, and availability, claim one free micro-lesson, buy a single lesson when you only need one topic, or unlock complete packs with LPs, PPTs, printable worksheets, and lesson-specific interactive activities shown on each catalog entry.
             </p>
           </div>
           <button

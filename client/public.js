@@ -18,6 +18,7 @@ import { showLessons } from "../admin/admin.js";
 
 const GRADES = [7, 8, 9, 10];
 const QUARTERS = ["Q1", "Q2", "Q3", "Q4"];
+const LESSON_MATERIALS = ["LP", "PPT", "Worksheet"];
 
 export function handleSetFilter(button) {
   const { filter, value } = button.dataset;
@@ -77,7 +78,7 @@ function renderClaimBanner() {
           <div class="fcb-title">You have 1 free lesson to claim.</div>
           <div class="fcb-sub">
             Pick any available micro-lesson, claim it once, and get the full LP, PPT,
-            worksheet, and web-based game activity in one zip download.
+            worksheet, plus any interactive game access marked on that lesson.
           </div>
         </div>
       </div>
@@ -95,9 +96,7 @@ function renderClaimBanner() {
           Free lesson claimed: ${escapeHtml(claimed?.slice.title || "Current lesson")}
         </div>
         <div class="fcb-sub">
-          ${claimed
-            ? `Inside ${escapeHtml(claimed.lesson.topic)}. Download your LP, PPT, worksheet, and web-based game activity bundle anytime from the matching slice below.`
-            : "Download your LP, PPT, worksheet, and web-based game activity bundle anytime from the matching slice below."}
+          ${getClaimedBannerCopy(claimed)}
         </div>
       </div>
     </div>
@@ -274,7 +273,7 @@ function renderLessonSummary(lesson, progress, isMyFreePack, showSliceStructure)
     }
 
     if (!state.userFreeLesson) {
-      return "Available as one focused lesson with LP, PPT, worksheet, and web game. Claim it free or buy it on its own.";
+      return "Available as one focused lesson with LP, PPT, and worksheet. Check the lesson section below to see the interactive game status.";
     }
 
     return "Buy this lesson on its own or unlock it through a grade pack or full bundle.";
@@ -362,14 +361,20 @@ function renderLessonPreviewSummary(lesson, progress, isMyFreePack) {
 }
 
 function renderSingleLessonFooter(lesson) {
-  return renderSliceAction(
-    lesson,
-    lesson.microLessons[0],
-    sliceKey(lesson, lesson.microLessons[0]),
-    getSliceStatus(sliceKey(lesson, lesson.microLessons[0])),
-    state.userFreeLesson === sliceKey(lesson, lesson.microLessons[0]),
-    Boolean(state.userFreeLesson),
-  );
+  const microLesson = lesson.microLessons[0];
+  const key = sliceKey(lesson, microLesson);
+  const status = getSliceStatus(key);
+  const isMyFree = state.userFreeLesson === key;
+  const hasClaimed = Boolean(state.userFreeLesson);
+
+  return `
+    <div class="single-lesson-stack">
+      ${renderSliceSupplementalInfo(lesson, microLesson, key, status)}
+      <div class="single-lesson-actions">
+        ${renderSliceAction(lesson, microLesson, key, status, isMyFree, hasClaimed)}
+      </div>
+    </div>
+  `;
 }
 
 function renderLessonPreviewRow(lesson, microLesson) {
@@ -388,10 +393,74 @@ function renderLessonPreviewRow(lesson, microLesson) {
           <span class="lesson-preview-state">${isMyFree ? "Free" : status === "live" ? "Ready" : "Soon"}</span>
         </div>
         <div class="lesson-preview-row-goal">${escapeHtml(microLesson.goal)}</div>
+        ${renderSliceSupplementalInfo(lesson, microLesson, key, status)}
       </div>
       <div class="lesson-preview-row-action">
         ${renderSliceAction(lesson, microLesson, key, status, isMyFree, hasClaimed)}
       </div>
+    </div>
+  `;
+}
+
+function renderSliceSupplementalInfo(lesson, microLesson, key, status) {
+  return `
+    <div class="lesson-supplemental">
+      ${renderLessonMaterialsBlock(status)}
+      ${renderGameStatusBlock(lesson, microLesson, key, status)}
+    </div>
+  `;
+}
+
+function renderLessonMaterialsBlock(status) {
+  const note = status === "live"
+    ? "LP, PPT, and worksheet are included with this lesson."
+    : "LP, PPT, and worksheet will appear here once this lesson is published.";
+
+  return `
+    <div class="lesson-info-block">
+      <div class="lesson-info-label">Lesson Materials</div>
+      <div class="lesson-info-pills">
+        ${LESSON_MATERIALS.map((item) => `<span class="lesson-info-pill">${item}</span>`).join("")}
+      </div>
+      <div class="lesson-info-note">${note}</div>
+    </div>
+  `;
+}
+
+function renderGameStatusBlock(lesson, microLesson, key, status) {
+  if (lesson.gameStatus === "none") {
+    return "";
+  }
+
+  if (lesson.gameStatus === "coming_soon") {
+    return `
+      <div class="lesson-game-block is-muted">
+        <div class="lesson-game-badge muted">Interactive Game: Coming Soon</div>
+        <div class="lesson-game-note">
+          A web-based activity for this lesson is currently being developed.
+        </div>
+      </div>
+    `;
+  }
+
+  const hasAccess = userHasLessonAccess(key);
+  const accessCta = hasAccess && status === "live"
+    ? renderGameAccessButton(key, `${lesson.topic} - ${microLesson.title}`)
+    : status === "live"
+      ? '<div class="lesson-game-note">Game access unlocks after claim or purchase.</div>'
+      : '<div class="lesson-game-note">Game access appears once this lesson is published.</div>';
+
+  return `
+    <div class="lesson-game-block">
+      <div class="lesson-game-badge">Interactive Game</div>
+      <div class="lesson-game-note">Ready classroom requirements:</div>
+      <ul class="lesson-game-requirements">
+        <li>Student Devices</li>
+        <li>Stable internet</li>
+        <li>Class PIN</li>
+        <li>QR Code / session link</li>
+      </ul>
+      ${accessCta}
     </div>
   `;
 }
@@ -456,9 +525,25 @@ function renderClaimFreeButton(lesson, microLesson, key) {
       data-strand="${escapeAttr(lesson.strand)}"
       data-grade="${lesson.grade}"
       data-quarter="${escapeAttr(lesson.q)}"
+      data-game-status="${escapeAttr(lesson.gameStatus)}"
     >
       ${icon("gift", "icon icon-sm")}
       Claim Free
+    </button>
+  `;
+}
+
+function renderGameAccessButton(key, topic) {
+  return `
+    <button
+      type="button"
+      class="chip game-access-chip"
+      data-action="open-game-asset"
+      data-key="${escapeAttr(key)}"
+      data-topic="${escapeAttr(topic)}"
+    >
+      ${icon("play", "icon icon-sm")}
+      Access Game
     </button>
   `;
 }
@@ -492,4 +577,20 @@ function findSliceByKey(targetKey) {
   }
 
   return null;
+}
+
+function getClaimedBannerCopy(claimed) {
+  if (!claimed) {
+    return "Download your LP, PPT, and worksheet bundle anytime from the matching slice below.";
+  }
+
+  if (claimed.lesson.gameStatus === "available") {
+    return `Inside ${escapeHtml(claimed.lesson.topic)}. Download your LP, PPT, and worksheet bundle anytime, and use the matching lesson entry below to access the interactive game.`;
+  }
+
+  if (claimed.lesson.gameStatus === "coming_soon") {
+    return `Inside ${escapeHtml(claimed.lesson.topic)}. Download your LP, PPT, and worksheet bundle anytime from the matching slice below. The interactive game is still in development.`;
+  }
+
+  return `Inside ${escapeHtml(claimed.lesson.topic)}. Download your LP, PPT, and worksheet bundle anytime from the matching slice below.`;
 }

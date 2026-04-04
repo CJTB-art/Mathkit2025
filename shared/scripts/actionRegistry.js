@@ -10,6 +10,7 @@ import {
   submitLogin,
 } from "../../admin/admin.js";
 import { handleDownloadBundle } from "../../client/actions/download.js";
+import { handleOpenGame } from "../../client/actions/game.js";
 import { closeClaimModal, confirmClaim, openClaimModal } from "../../client/actions/claim.js";
 import { handleBundleButton } from "../../client/buttons/getBundle.js";
 import { handleFreePlanButton } from "../../client/buttons/getStartedFree.js";
@@ -40,6 +41,7 @@ const clickHandlers = {
   "browse-lessons": () => browseLessons(),
   "claim-free": (button) => openClaimModal(button),
   "download-bundle": (button) => handleDownloadBundle(button),
+  "open-game-asset": (button) => handleOpenGame(button),
   "cta-free-plan": () => handleFreePlanButton(),
   "cta-single-lesson": () => handleSingleLessonPlanButton(),
   "cta-grade-pack": () => handleGradePackButton(),

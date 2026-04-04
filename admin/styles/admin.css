@@ -115,9 +115,10 @@
 }
 
 .admin-wrap {
-  max-width: 1120px;
+  width: min(1680px, calc(100vw - 2rem));
+  max-width: none;
   margin: 0 auto;
-  padding: 108px 1.5rem 2.25rem;
+  padding: 108px clamp(1rem, 1.4vw, 1.75rem) 2.25rem;
   overflow-x: hidden;
 }
 

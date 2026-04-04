@@ -1,5 +1,6 @@
 import {
   handleDeleteUpload,
+  handleGameStatusChange,
   handleUploadChange,
   refreshLessonAssets,
   showAdmin,
@@ -78,6 +79,11 @@ export function bindActions() {
 
   document.addEventListener("change", (event) => {
     const target = event.target;
+
+    if (target instanceof HTMLSelectElement && target.dataset.action === "change-game-status") {
+      void handleGameStatusChange(target);
+      return;
+    }
 
     if (!(target instanceof HTMLInputElement)) {
       return;

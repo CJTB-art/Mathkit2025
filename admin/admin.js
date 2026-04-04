@@ -18,10 +18,12 @@ import {
   refreshSupabaseState,
   signInAdmin,
   signOutAdmin,
+  updateLessonGameStatus,
   uploadLessonAsset,
 } from "../shared/scripts/supabase.js";
 import {
   FILE_TYPES,
+  getGameStatus,
   getLessonProgress,
   getSliceStatus,
   getTotalSliceCount,
@@ -343,6 +345,36 @@ export async function handleUploadChange(input) {
   }
 }
 
+export async function handleGameStatusChange(select) {
+  if (!(select instanceof HTMLSelectElement)) {
+    return;
+  }
+
+  const key = select.dataset.key;
+  const gameStatus = select.value;
+
+  if (!key || !gameStatus) {
+    return;
+  }
+
+  select.disabled = true;
+
+  try {
+    await updateLessonGameStatus({ key, gameStatus });
+    renderAdmin();
+    renderPublic();
+    showToast("Game status updated.", "success");
+  } catch (error) {
+    console.error(error);
+    showToast(
+      getErrorMessage(error, "Unable to update the game status right now."),
+      "error",
+    );
+  } finally {
+    select.disabled = false;
+  }
+}
+
 export async function handleDeleteUpload(button) {
   const { key, fileType } = button.dataset;
 
@@ -423,6 +455,9 @@ function renderSingleLessonRow(lesson) {
         ${renderUploadSlot(key, "activity")}
         ${renderUploadSlot(key, "worksheet")}
       </div>
+      <div class="alr-game-status">
+        ${renderGameStatusControl(key)}
+      </div>
       <div class="alr-status"><span class="status-pill ${statusClass}">${statusLabel}</span></div>
     </div>
   `;
@@ -449,8 +484,30 @@ function renderSliceRow(lesson, microLesson) {
         ${renderUploadSlot(key, "activity")}
         ${renderUploadSlot(key, "worksheet")}
       </div>
+      <div class="alr-game-status">
+        ${renderGameStatusControl(key)}
+      </div>
       <div class="alr-status"><span class="status-pill ${statusClass}">${statusLabel}</span></div>
     </div>
+  `;
+}
+
+function renderGameStatusControl(key) {
+  const gameStatus = getGameStatus(key);
+
+  return `
+    <label class="game-status-field">
+      <span class="game-status-label">Game</span>
+      <select
+        class="game-status-select"
+        data-action="change-game-status"
+        data-key="${escapeAttr(key)}"
+      >
+        <option value="none" ${gameStatus === "none" ? "selected" : ""}>No Game</option>
+        <option value="coming_soon" ${gameStatus === "coming_soon" ? "selected" : ""}>Coming Soon</option>
+        <option value="available" ${gameStatus === "available" ? "selected" : ""}>Available</option>
+      </select>
+    </label>
   `;
 }
 

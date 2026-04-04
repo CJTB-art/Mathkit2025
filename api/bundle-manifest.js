@@ -59,12 +59,16 @@ async function parseJsonBody(req) {
   });
 }
 
-function normalizeAssetsMap(assets) {
+function normalizeAssetsMap(assets, gameStatus = "none") {
   if (!assets || typeof assets !== "object") {
     return [];
   }
 
   return FILE_TYPES.map((fileType) => {
+    if (fileType === "activity" && gameStatus !== "available") {
+      return null;
+    }
+
     const asset = assets[fileType];
 
     if (!asset || typeof asset !== "object" || !asset.path || !asset.name) {
@@ -111,6 +115,20 @@ async function isAdminUser(serviceClient, email) {
   }
 
   return Boolean(data);
+}
+
+async function getLessonGameStatus(serviceClient, sliceKey) {
+  const { data, error } = await serviceClient
+    .from("lesson_settings")
+    .select("game_status")
+    .eq("slice_key", sliceKey)
+    .maybeSingle();
+
+  if (error && error.code !== "PGRST116") {
+    throw error;
+  }
+
+  return data?.game_status || "none";
 }
 
 async function hasLessonAccess(serviceClient, userId, sliceKey) {
@@ -212,6 +230,8 @@ module.exports = async (req, res) => {
       }
     }
 
+    const gameStatus = await getLessonGameStatus(serviceClient, key);
+
     const { data: assetRow, error: assetError } = await serviceClient
       .from("lesson_assets")
       .select("assets")
@@ -222,7 +242,7 @@ module.exports = async (req, res) => {
       throw assetError;
     }
 
-    const assets = normalizeAssetsMap(assetRow?.assets);
+    const assets = normalizeAssetsMap(assetRow?.assets, gameStatus);
 
     if (!assets.length) {
       sendJson(res, 404, {

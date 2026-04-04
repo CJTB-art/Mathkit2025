@@ -2,12 +2,14 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 import {
   FILE_TYPES,
   deriveSliceStatusFromUploads,
+  getGameStatus,
   getUploads,
   markAccessLoaded,
   markAvailabilityLoaded,
   markUploadsLoaded,
   setAuthReady,
   setAuthUser,
+  setGameStatuses,
   setIsAdmin,
   setLessonAccess,
   setSliceStatuses,
@@ -23,6 +25,7 @@ import {
 } from "./supabaseConfig.js";
 
 const LESSON_ASSETS_TABLE = "lesson_assets";
+const LESSON_SETTINGS_TABLE = "lesson_settings";
 const LESSON_AVAILABILITY_TABLE = "lesson_availability";
 const LESSON_ENTITLEMENTS_TABLE = "lesson_entitlements";
 const ADMIN_RPC = "is_admin";
@@ -192,6 +195,23 @@ function buildStatusesFromRows(rows = []) {
   return nextStatuses;
 }
 
+function buildGameStatusesFromRows(rows = []) {
+  const nextStatuses = {};
+
+  rows.forEach((row) => {
+    if (
+      row?.slice_key &&
+      (row.game_status === "none" ||
+        row.game_status === "coming_soon" ||
+        row.game_status === "available")
+    ) {
+      nextStatuses[row.slice_key] = row.game_status;
+    }
+  });
+
+  return nextStatuses;
+}
+
 function pickPrimaryAccessSource(currentSource = "", nextSource = "") {
   const currentPriority = ACCESS_SOURCE_PRIORITY[currentSource] || 0;
   const nextPriority = ACCESS_SOURCE_PRIORITY[nextSource] || 0;
@@ -227,6 +247,7 @@ function resetPublicStateForMissingConfig() {
   setAuthUser(null);
   setIsAdmin(false);
   setUploads({});
+  setGameStatuses({});
   setSliceStatuses({});
   setLessonAccess({});
   markUploadsLoaded(false);
@@ -241,8 +262,8 @@ function clearAdminUploads() {
   markUploadsLoaded(false);
 }
 
-function updateLocalSliceStatus(key, uploads) {
-  state.sliceStatuses[key] = deriveSliceStatusFromUploads(uploads);
+function updateLocalSliceStatus(key, uploads, gameStatus = getGameStatus(key)) {
+  state.sliceStatuses[key] = deriveSliceStatusFromUploads(uploads, gameStatus);
   markAvailabilityLoaded(true);
 }
 
@@ -329,6 +350,20 @@ async function syncLessonAvailability() {
   markAvailabilityLoaded(true);
 }
 
+async function syncLessonSettings() {
+  ensureConfigured();
+
+  const { data, error } = await supabase
+    .from(LESSON_SETTINGS_TABLE)
+    .select("slice_key, game_status");
+
+  if (error) {
+    throw error;
+  }
+
+  setGameStatuses(buildGameStatusesFromRows(data || []));
+}
+
 async function syncLessonAccess(session = null) {
   ensureConfigured();
 
@@ -384,6 +419,7 @@ export async function refreshSupabaseState(options = {}) {
     const { isAdmin } = await syncAuthState(session);
 
     await Promise.all([
+      syncLessonSettings(),
       syncLessonAvailability(),
       syncLessonAccess(session),
       includeUploads && isAdmin
@@ -430,6 +466,23 @@ async function upsertLessonAssets(sliceKey, assets) {
     {
       slice_key: sliceKey,
       assets,
+      updated_at: new Date().toISOString(),
+    },
+    {
+      onConflict: "slice_key",
+    },
+  );
+
+  if (error) {
+    throw error;
+  }
+}
+
+async function upsertLessonGameStatus(sliceKey, gameStatus) {
+  const { error } = await supabase.from(LESSON_SETTINGS_TABLE).upsert(
+    {
+      slice_key: sliceKey,
+      game_status: gameStatus,
       updated_at: new Date().toISOString(),
     },
     {
@@ -631,6 +684,28 @@ export async function claimFreeLesson(key) {
 
   await syncLessonAccess();
   return state.lessonAccess[key] || null;
+}
+
+export async function updateLessonGameStatus({ key, gameStatus }) {
+  ensureConfigured();
+  ensureAdminSession();
+
+  if (!key) {
+    throw new Error("Missing lesson key.");
+  }
+
+  if (
+    gameStatus !== "none" &&
+    gameStatus !== "coming_soon" &&
+    gameStatus !== "available"
+  ) {
+    throw new Error("Choose None, Coming Soon, or Available for the game status.");
+  }
+
+  await upsertLessonGameStatus(key, gameStatus);
+  state.gameStatuses[key] = gameStatus;
+  updateLocalSliceStatus(key, getUploads(key), gameStatus);
+  return gameStatus;
 }
 
 export async function uploadLessonAsset({ key, fileType, file }) {

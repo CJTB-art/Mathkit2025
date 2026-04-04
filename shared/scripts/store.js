@@ -1,7 +1,10 @@
 export const FILE_TYPES = ["ppt", "lp", "activity", "worksheet"];
+export const CORE_FILE_TYPES = ["ppt", "lp", "worksheet"];
+export const GAME_STATUS_OPTIONS = ["none", "coming_soon", "available"];
 
 export const state = {
   uploads: {},
+  gameStatuses: {},
   sliceStatuses: {},
   lessonAccess: {},
   userFreeLesson: null,
@@ -29,6 +32,10 @@ export function setUserFreeLesson(key) {
 
 export function setUploads(nextUploads = {}) {
   state.uploads = nextUploads;
+}
+
+export function setGameStatuses(nextStatuses = {}) {
+  state.gameStatuses = nextStatuses;
 }
 
 export function setAuthUser(user) {
@@ -89,20 +96,30 @@ export function getUploads(key) {
   return state.uploads[key] || {};
 }
 
+export function getGameStatus(key) {
+  const value = state.gameStatuses[key];
+  return GAME_STATUS_OPTIONS.includes(value) ? value : "none";
+}
+
 export function hasAsset(asset) {
   return Boolean(asset && typeof asset === "object" && asset.path && asset.name);
 }
 
-export function deriveSliceStatusFromUploads(uploadState = {}) {
-  const count = FILE_TYPES.filter((type) =>
+export function deriveSliceStatusFromUploads(uploadState = {}, gameStatus = "none") {
+  const normalizedGameStatus = GAME_STATUS_OPTIONS.includes(gameStatus)
+    ? gameStatus
+    : "none";
+  const coreCount = CORE_FILE_TYPES.filter((type) =>
     hasAsset(uploadState[type]),
   ).length;
+  const needsActivity = normalizedGameStatus === "available";
+  const hasActivity = hasAsset(uploadState.activity);
 
-  if (count === FILE_TYPES.length) {
+  if (coreCount === CORE_FILE_TYPES.length && (!needsActivity || hasActivity)) {
     return "live";
   }
 
-  if (count > 0) {
+  if (coreCount > 0 || hasActivity) {
     return "partial";
   }
 
@@ -114,7 +131,7 @@ export function getSliceStatus(key) {
     return state.sliceStatuses[key];
   }
 
-  return deriveSliceStatusFromUploads(getUploads(key));
+  return deriveSliceStatusFromUploads(getUploads(key), getGameStatus(key));
 }
 
 export function userHasLessonAccess(key) {

@@ -423,6 +423,44 @@
   flex-wrap: wrap;
 }
 
+.alr-game-status {
+  min-width: 150px;
+}
+
+.game-status-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.game-status-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.game-status-select {
+  min-height: 34px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border2);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 12px;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
+}
+
+.game-status-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(245, 200, 66, 0.1);
+}
+
 .uslot-wrap {
   position: relative;
   display: inline-flex;
@@ -590,6 +628,10 @@
   }
 
   .upload-slots {
+    width: 100%;
+  }
+
+  .alr-game-status {
     width: 100%;
   }
 

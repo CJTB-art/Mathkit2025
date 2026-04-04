@@ -21,12 +21,15 @@ This now creates:
 
 - `public.admin_users`
 - `public.lesson_assets`
+- `public.lesson_settings`
 - `public.lesson_availability`
 - `public.lesson_entitlements`
 - `public.is_admin()`
 - `public.claim_free_lesson(text)`
 
 It also makes the storage bucket private and locks direct file access down to admins only.
+
+If you already set Supabase up earlier, rerun `supabase/setup.sql` after pulling the latest changes so the new `lesson_settings` table and game-status availability logic are added.
 
 ## 4. Set the frontend config
 

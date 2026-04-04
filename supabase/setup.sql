@@ -61,14 +61,52 @@ before update on public.lesson_assets
 for each row
 execute function public.set_lesson_assets_updated_at();
 
+create table if not exists public.lesson_settings (
+  slice_key text primary key,
+  game_status text not null default 'none',
+  updated_at timestamptz not null default timezone('utc', now()),
+  constraint lesson_settings_game_status_check
+    check (game_status in ('none', 'coming_soon', 'available'))
+);
+
+create or replace function public.set_lesson_settings_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = timezone('utc', now());
+  return new;
+end;
+$$;
+
+drop trigger if exists lesson_settings_set_updated_at on public.lesson_settings;
+
+create trigger lesson_settings_set_updated_at
+before update on public.lesson_settings
+for each row
+execute function public.set_lesson_settings_updated_at();
+
 create table if not exists public.lesson_availability (
   slice_key text primary key,
   asset_count integer not null default 0,
+  game_status text not null default 'none',
   status text not null default 'empty',
   updated_at timestamptz not null default timezone('utc', now()),
   constraint lesson_availability_status_check
-    check (status in ('empty', 'partial', 'live'))
+    check (status in ('empty', 'partial', 'live')),
+  constraint lesson_availability_game_status_check
+    check (game_status in ('none', 'coming_soon', 'available'))
 );
+
+alter table public.lesson_availability
+add column if not exists game_status text not null default 'none';
+
+alter table public.lesson_availability
+drop constraint if exists lesson_availability_game_status_check;
+
+alter table public.lesson_availability
+add constraint lesson_availability_game_status_check
+check (game_status in ('none', 'coming_soon', 'available'));
 
 create or replace function public.count_uploaded_assets(p_assets jsonb)
 returns integer
@@ -78,6 +116,35 @@ as $$
   select count(*)::integer
   from jsonb_each(coalesce(p_assets, '{}'::jsonb)) as item(key, value)
   where coalesce(value ->> 'path', '') <> ''
+    and coalesce(value ->> 'name', '') <> '';
+$$;
+
+create or replace function public.has_uploaded_asset(
+  p_assets jsonb,
+  p_asset_key text
+)
+returns boolean
+language sql
+immutable
+as $$
+  select exists (
+    select 1
+    from jsonb_each(coalesce(p_assets, '{}'::jsonb)) as item(key, value)
+    where item.key = p_asset_key
+      and coalesce(value ->> 'path', '') <> ''
+      and coalesce(value ->> 'name', '') <> ''
+  );
+$$;
+
+create or replace function public.count_uploaded_core_assets(p_assets jsonb)
+returns integer
+language sql
+immutable
+as $$
+  select count(*)::integer
+  from jsonb_each(coalesce(p_assets, '{}'::jsonb)) as item(key, value)
+  where item.key in ('ppt', 'lp', 'worksheet')
+    and coalesce(value ->> 'path', '') <> ''
     and coalesce(value ->> 'name', '') <> '';
 $$;
 
@@ -92,16 +159,28 @@ set search_path = public
 as $$
 declare
   v_asset_count integer := public.count_uploaded_assets(p_assets);
+  v_game_status text := coalesce(
+    (
+      select game_status
+      from public.lesson_settings
+      where slice_key = p_slice_key
+    ),
+    'none'
+  );
+  v_core_asset_count integer := public.count_uploaded_core_assets(p_assets);
+  v_has_activity boolean := public.has_uploaded_asset(p_assets, 'activity');
   v_status text := case
-    when v_asset_count >= 4 then 'live'
-    when v_asset_count > 0 then 'partial'
+    when v_core_asset_count = 3
+      and (v_game_status <> 'available' or v_has_activity) then 'live'
+    when v_core_asset_count > 0 or v_has_activity then 'partial'
     else 'empty'
   end;
 begin
-  insert into public.lesson_availability (slice_key, asset_count, status, updated_at)
-  values (p_slice_key, v_asset_count, v_status, timezone('utc', now()))
+  insert into public.lesson_availability (slice_key, asset_count, game_status, status, updated_at)
+  values (p_slice_key, v_asset_count, v_game_status, v_status, timezone('utc', now()))
   on conflict (slice_key) do update
   set asset_count = excluded.asset_count,
+      game_status = excluded.game_status,
       status = excluded.status,
       updated_at = excluded.updated_at;
 end;
@@ -116,6 +195,28 @@ as $$
 begin
   perform public.sync_lesson_availability(new.slice_key, new.assets);
   return new;
+end;
+$$;
+
+create or replace function public.sync_lesson_availability_from_settings()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_slice_key text := coalesce(new.slice_key, old.slice_key);
+  v_assets jsonb := coalesce(
+    (
+      select assets
+      from public.lesson_assets
+      where slice_key = coalesce(new.slice_key, old.slice_key)
+    ),
+    '{}'::jsonb
+  );
+begin
+  perform public.sync_lesson_availability(v_slice_key, v_assets);
+  return coalesce(new, old);
 end;
 $$;
 
@@ -135,6 +236,7 @@ $$;
 
 drop trigger if exists lesson_assets_sync_availability on public.lesson_assets;
 drop trigger if exists lesson_assets_delete_availability on public.lesson_assets;
+drop trigger if exists lesson_settings_sync_availability on public.lesson_settings;
 
 create trigger lesson_assets_sync_availability
 after insert or update on public.lesson_assets
@@ -145,6 +247,11 @@ create trigger lesson_assets_delete_availability
 after delete on public.lesson_assets
 for each row
 execute function public.delete_lesson_availability_from_assets();
+
+create trigger lesson_settings_sync_availability
+after insert or update or delete on public.lesson_settings
+for each row
+execute function public.sync_lesson_availability_from_settings();
 
 create table if not exists public.lesson_entitlements (
   id bigint generated by default as identity primary key,
@@ -237,6 +344,7 @@ $$;
 grant execute on function public.claim_free_lesson(text) to authenticated;
 
 alter table public.lesson_assets enable row level security;
+alter table public.lesson_settings enable row level security;
 alter table public.lesson_availability enable row level security;
 alter table public.lesson_entitlements enable row level security;
 
@@ -248,6 +356,8 @@ drop policy if exists "Admins can read lesson assets" on public.lesson_assets;
 drop policy if exists "Admins can insert lesson assets" on public.lesson_assets;
 drop policy if exists "Admins can update lesson assets" on public.lesson_assets;
 drop policy if exists "Admins can delete lesson assets" on public.lesson_assets;
+drop policy if exists "Public can read lesson settings" on public.lesson_settings;
+drop policy if exists "Admins can manage lesson settings" on public.lesson_settings;
 
 create policy "Admins can read lesson assets"
 on public.lesson_assets
@@ -274,6 +384,18 @@ for delete
 to authenticated
 using (public.is_admin());
 
+create policy "Public can read lesson settings"
+on public.lesson_settings
+for select
+using (true);
+
+create policy "Admins can manage lesson settings"
+on public.lesson_settings
+for all
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
 drop policy if exists "Public can read lesson availability" on public.lesson_availability;
 
 create policy "Public can read lesson availability"
@@ -299,6 +421,8 @@ with check (public.is_admin());
 
 grant select on public.lesson_availability to anon, authenticated;
 grant select, insert, update, delete on public.lesson_assets to authenticated;
+grant select on public.lesson_settings to anon, authenticated;
+grant insert, update, delete on public.lesson_settings to authenticated;
 grant select on public.lesson_entitlements to authenticated;
 grant insert, update, delete on public.lesson_entitlements to authenticated;
 
@@ -357,18 +481,5 @@ using (
   and public.is_admin()
 );
 
-insert into public.lesson_availability (slice_key, asset_count, status, updated_at)
-select
-  slice_key,
-  public.count_uploaded_assets(assets) as asset_count,
-  case
-    when public.count_uploaded_assets(assets) >= 4 then 'live'
-    when public.count_uploaded_assets(assets) > 0 then 'partial'
-    else 'empty'
-  end as status,
-  updated_at
-from public.lesson_assets
-on conflict (slice_key) do update
-set asset_count = excluded.asset_count,
-    status = excluded.status,
-    updated_at = excluded.updated_at;
+select public.sync_lesson_availability(slice_key, assets)
+from public.lesson_assets;

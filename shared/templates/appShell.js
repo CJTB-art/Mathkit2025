@@ -414,13 +414,15 @@ export function createAppShell() {
             </div>
           </div>
           <p>
-            Upload PPT, LP, Worksheet, and Web Game for each micro-lesson. A
-            slice goes live once all four are set, and each broad topic should
-            stay broken into a thin-sliced 45-minute teaching sequence.<br />
+            Upload PPT, LP, and Worksheet for each micro-lesson, then choose
+            whether the lesson has no game, a coming-soon game, or an available
+            game. A slice goes live once the required files for its selected
+            game status are complete.<br />
             <span class="admin-help">
               ${icon("info", "icon icon-sm")}
-              Hover a row to reveal the remove button for each file.
-              Re-uploading replaces the old file.
+              Set Game to Available only when the web activity file is ready.
+              Hover a row to reveal the remove button for each file, and
+              re-uploading replaces the old file.
             </span>
           </p>
           <div class="admin-session-meta" id="adminSessionMeta"></div>

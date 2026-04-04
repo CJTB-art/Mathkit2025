@@ -6,6 +6,7 @@ import {
   refreshIcons,
 } from "../shared/scripts/helpers.js";
 import {
+  getGameStatus,
   getLessonProgress,
   getSliceStatus,
   lessonKey,
@@ -428,11 +429,13 @@ function renderLessonMaterialsBlock(status) {
 }
 
 function renderGameStatusBlock(lesson, microLesson, key, status) {
-  if (lesson.gameStatus === "none") {
+  const gameStatus = getGameStatus(key);
+
+  if (gameStatus === "none") {
     return "";
   }
 
-  if (lesson.gameStatus === "coming_soon") {
+  if (gameStatus === "coming_soon") {
     return `
       <div class="lesson-game-block is-muted">
         <div class="lesson-game-badge muted">Interactive Game: Coming Soon</div>
@@ -525,7 +528,7 @@ function renderClaimFreeButton(lesson, microLesson, key) {
       data-strand="${escapeAttr(lesson.strand)}"
       data-grade="${lesson.grade}"
       data-quarter="${escapeAttr(lesson.q)}"
-      data-game-status="${escapeAttr(lesson.gameStatus)}"
+      data-game-status="${escapeAttr(getGameStatus(key))}"
     >
       ${icon("gift", "icon icon-sm")}
       Claim Free
@@ -571,7 +574,7 @@ function findSliceByKey(targetKey) {
   for (const lesson of CURRICULUM) {
     for (const microLesson of lesson.microLessons) {
       if (sliceKey(lesson, microLesson) === targetKey) {
-        return { lesson, slice: microLesson };
+        return { lesson, slice: microLesson, key: targetKey };
       }
     }
   }
@@ -584,11 +587,11 @@ function getClaimedBannerCopy(claimed) {
     return "Download your LP, PPT, and worksheet bundle anytime from the matching slice below.";
   }
 
-  if (claimed.lesson.gameStatus === "available") {
+  if (getGameStatus(claimed.key) === "available") {
     return `Inside ${escapeHtml(claimed.lesson.topic)}. Download your LP, PPT, and worksheet bundle anytime, and use the matching lesson entry below to access the interactive game.`;
   }
 
-  if (claimed.lesson.gameStatus === "coming_soon") {
+  if (getGameStatus(claimed.key) === "coming_soon") {
     return `Inside ${escapeHtml(claimed.lesson.topic)}. Download your LP, PPT, and worksheet bundle anytime from the matching slice below. The interactive game is still in development.`;
   }
 

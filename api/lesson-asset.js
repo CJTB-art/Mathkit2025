@@ -107,6 +107,20 @@ async function hasLessonAccess(serviceClient, userId, sliceKey) {
   return Array.isArray(data) && data.length > 0;
 }
 
+async function getLessonGameStatus(serviceClient, sliceKey) {
+  const { data, error } = await serviceClient
+    .from("lesson_settings")
+    .select("game_status")
+    .eq("slice_key", sliceKey)
+    .maybeSingle();
+
+  if (error && error.code !== "PGRST116") {
+    throw error;
+  }
+
+  return data?.game_status || "none";
+}
+
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     sendJson(res, 405, { error: "Use POST to access lesson assets." });
@@ -195,6 +209,15 @@ module.exports = async (req, res) => {
         });
         return;
       }
+    }
+
+    const gameStatus = await getLessonGameStatus(serviceClient, key);
+
+    if (gameStatus !== "available") {
+      sendJson(res, 404, {
+        error: "The interactive game is not enabled for this lesson yet.",
+      });
+      return;
     }
 
     const { data: assetRow, error: assetError } = await serviceClient

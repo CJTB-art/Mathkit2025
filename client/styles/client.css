@@ -60,7 +60,6 @@
 }
 
 .hero-type-line {
-  --typewriter-letters: 6;
   --typewriter-width: 7ch;
   display: inline-flex;
   align-items: baseline;
@@ -71,32 +70,16 @@
 
 .hero-emphasis {
   display: inline-block;
-  width: 0;
-  overflow: hidden;
   white-space: nowrap;
-  padding-right: 0.08em;
   color: var(--accent);
   font-style: italic;
-  border-right: 0.08em solid currentColor;
-  animation: hero-typewriter 4.8s steps(var(--typewriter-letters), end) infinite,
-    hero-caret 0.9s step-end infinite;
+  min-height: 1em;
 }
 
-@keyframes hero-typewriter {
-  0%,
-  10% {
-    width: 0;
-  }
-
-  26%,
-  62% {
-    width: var(--typewriter-width);
-  }
-
-  78%,
-  100% {
-    width: 0;
-  }
+.hero-type-line.is-animated .hero-emphasis {
+  padding-right: 0.08em;
+  border-right: 0.08em solid currentColor;
+  animation: hero-caret 0.9s step-end infinite;
 }
 
 @keyframes hero-caret {
@@ -116,9 +99,7 @@
     min-width: 0;
   }
 
-  .hero-emphasis {
-    width: auto;
-    overflow: visible;
+  .hero-type-line.is-animated .hero-emphasis {
     padding-right: 0;
     border-right: none;
     animation: none;

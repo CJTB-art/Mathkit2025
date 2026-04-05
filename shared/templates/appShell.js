@@ -439,8 +439,12 @@ export function createAppShell() {
             <div class="hero-kicker">DepEd-aligned Math Resource Library</div>
             <h1>
               Lesson plans that<br />
-              <span class="hero-type-line">
-                <span class="hero-emphasis">engage</span>
+              <span
+                class="hero-type-line"
+                data-typewriter-words="engage|inspire|challenge|empower|motivate|encourage|support|guide|equip|excite"
+                aria-label="engage, inspire, challenge, empower, motivate, encourage, support, guide, equip, and excite"
+              >
+                <span class="hero-emphasis" aria-hidden="true">engage</span>
               </span><br />
               your students.
             </h1>

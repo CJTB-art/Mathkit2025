@@ -250,7 +250,7 @@ function renderLessonCard(lesson) {
             data-lesson-key="${escapeAttr(lessonId)}"
             aria-haspopup="dialog"
           >
-            ${icon("sparkles", "icon icon-sm")}
+            ${icon("list", "icon icon-sm")}
             Preview Subtopics
           </button>
         </div>

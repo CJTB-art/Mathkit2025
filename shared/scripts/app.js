@@ -2,7 +2,7 @@ import { renderAdmin, showPublic, syncAdminChrome } from "../../admin/admin.js";
 import { renderPublic } from "../../client/public.js";
 import { createAppShell } from "../templates/appShell.js";
 import { bindActions } from "./actionRegistry.js";
-import { startTypewriter, syncThemeButton } from "./helpers.js";
+import { syncThemeButton } from "./helpers.js";
 import { initializeSupabaseState } from "./supabase.js";
 
 const app = typeof document !== "undefined"
@@ -18,7 +18,6 @@ if (app) {
   bindActions();
   syncThemeButton();
   showPublic();
-  startTypewriter();
   window.requestAnimationFrame(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
   });

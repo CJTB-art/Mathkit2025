@@ -440,7 +440,7 @@ export function createAppShell() {
             <h1>
               Lesson plans that<br />
               <span class="hero-type-line">
-                <span id="typewriter-word"></span><span class="tw-cursor">|</span>
+                <span class="hero-emphasis">engage</span>
               </span><br />
               your students.
             </h1>

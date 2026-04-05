@@ -1,19 +1,4 @@
-const TYPEWRITER_WORDS = [
-  "engage",
-  "excite",
-  "challenge",
-  "motivate",
-  "captivate",
-  "inspire",
-  "empower",
-];
-
 let toastTimer = 0;
-let typewriterTimer = 0;
-let typewriterIndex = 0;
-let typewriterCharacter = 0;
-let typewriterDeleting = false;
-let typewriterStarted = false;
 
 const HTML_ESCAPES = {
   "&": "&amp;",
@@ -95,52 +80,6 @@ export function toggleTheme() {
 
   root.setAttribute("data-theme", nextTheme);
   syncThemeButton();
-}
-
-export function startTypewriter() {
-  if (typewriterStarted) {
-    return;
-  }
-
-  typewriterStarted = true;
-
-  const element = document.getElementById("typewriter-word");
-
-  if (!element) {
-    return;
-  }
-
-  const tick = () => {
-    const word = TYPEWRITER_WORDS[typewriterIndex];
-
-    if (!typewriterDeleting) {
-      element.textContent = word.slice(0, typewriterCharacter + 1);
-      typewriterCharacter += 1;
-
-      if (typewriterCharacter === word.length) {
-        typewriterTimer = window.setTimeout(() => {
-          typewriterDeleting = true;
-          tick();
-        }, 1800);
-        return;
-      }
-    } else {
-      element.textContent = word.slice(0, typewriterCharacter - 1);
-      typewriterCharacter -= 1;
-
-      if (typewriterCharacter === 0) {
-        typewriterDeleting = false;
-        typewriterIndex = (typewriterIndex + 1) % TYPEWRITER_WORDS.length;
-      }
-    }
-
-    typewriterTimer = window.setTimeout(
-      tick,
-      typewriterDeleting ? 60 : 90,
-    );
-  };
-
-  typewriterTimer = window.setTimeout(tick, 400);
 }
 
 export function refreshIcons() {

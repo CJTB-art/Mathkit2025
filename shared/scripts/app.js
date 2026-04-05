@@ -61,7 +61,6 @@ function initializeHeroTypewriter() {
     return;
   }
 
-  const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const longestWord = words.reduce((longest, word) => {
     return Math.max(longest, word.length);
   }, 0);
@@ -92,11 +91,6 @@ function initializeHeroTypewriter() {
   };
 
   const step = () => {
-    if (reduceMotionQuery.matches) {
-      renderStaticWord();
-      return;
-    }
-
     const currentWord = words[wordIndex];
 
     if (isDeleting) {
@@ -128,7 +122,7 @@ function initializeHeroTypewriter() {
   };
 
   const startAnimation = () => {
-    if (reduceMotionQuery.matches || words.length === 1) {
+    if (words.length === 1) {
       renderStaticWord();
       return;
     }
@@ -143,17 +137,4 @@ function initializeHeroTypewriter() {
   };
 
   startAnimation();
-
-  const handleMotionChange = () => {
-    startAnimation();
-  };
-
-  if (typeof reduceMotionQuery.addEventListener === "function") {
-    reduceMotionQuery.addEventListener("change", handleMotionChange);
-    return;
-  }
-
-  if (typeof reduceMotionQuery.addListener === "function") {
-    reduceMotionQuery.addListener(handleMotionChange);
-  }
 }

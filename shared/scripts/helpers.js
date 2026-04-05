@@ -1,4 +1,5 @@
 let toastTimer = 0;
+let themeSwitchFrame = 0;
 
 const HTML_ESCAPES = {
   "&": "&amp;",
@@ -62,15 +63,11 @@ export function syncThemeButton() {
 
   const isDark = document.documentElement.getAttribute("data-theme") === "dark";
 
-  button.innerHTML = `
-    ${icon(isDark ? "sun" : "moon", "icon icon-sm")}
-    <span>${isDark ? "Light" : "Dark"}</span>
-  `;
+  button.textContent = isDark ? "Light" : "Dark";
   button.setAttribute(
     "aria-label",
     isDark ? "Switch to light theme" : "Switch to dark theme",
   );
-  refreshIcons();
 }
 
 export function toggleTheme() {
@@ -78,8 +75,21 @@ export function toggleTheme() {
   const nextTheme =
     root.getAttribute("data-theme") === "dark" ? "light" : "dark";
 
+  if (themeSwitchFrame) {
+    window.cancelAnimationFrame(themeSwitchFrame);
+    themeSwitchFrame = 0;
+  }
+
+  root.classList.add("theme-switching");
   root.setAttribute("data-theme", nextTheme);
   syncThemeButton();
+
+  themeSwitchFrame = window.requestAnimationFrame(() => {
+    themeSwitchFrame = window.requestAnimationFrame(() => {
+      root.classList.remove("theme-switching");
+      themeSwitchFrame = 0;
+    });
+  });
 }
 
 export function refreshIcons() {

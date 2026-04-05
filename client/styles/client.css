@@ -111,12 +111,15 @@
   }
 
   .hero-type-line.is-animated .hero-emphasis {
-    padding-right: 0;
+    padding-right: 0.2em;
   }
 
   .hero-type-line.is-animated .hero-emphasis::after {
-    content: none;
-    animation: none;
+    content: "|";
+    animation-name: hero-caret !important;
+    animation-duration: 0.9s !important;
+    animation-timing-function: step-end !important;
+    animation-iteration-count: infinite !important;
   }
 }
 

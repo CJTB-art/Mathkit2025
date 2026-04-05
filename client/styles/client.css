@@ -60,15 +60,69 @@
 }
 
 .hero-type-line {
+  --typewriter-letters: 6;
+  --typewriter-width: 7ch;
   display: inline-flex;
   align-items: baseline;
   gap: 2px;
   min-height: 1.08em;
+  min-width: calc(var(--typewriter-width) + 0.18em);
 }
 
 .hero-emphasis {
+  display: inline-block;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-right: 0.08em;
   color: var(--accent);
   font-style: italic;
+  border-right: 0.08em solid currentColor;
+  animation: hero-typewriter 4.8s steps(var(--typewriter-letters), end) infinite,
+    hero-caret 0.9s step-end infinite;
+}
+
+@keyframes hero-typewriter {
+  0%,
+  10% {
+    width: 0;
+  }
+
+  26%,
+  62% {
+    width: var(--typewriter-width);
+  }
+
+  78%,
+  100% {
+    width: 0;
+  }
+}
+
+@keyframes hero-caret {
+  0%,
+  49% {
+    border-right-color: currentColor;
+  }
+
+  50%,
+  100% {
+    border-right-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-type-line {
+    min-width: 0;
+  }
+
+  .hero-emphasis {
+    width: auto;
+    overflow: visible;
+    padding-right: 0;
+    border-right: none;
+    animation: none;
+  }
 }
 
 .hero-actions {
